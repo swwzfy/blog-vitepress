@@ -10,6 +10,7 @@ title: 文章
 
 ### 6月
 
+- [给 AI 加一层「规格书」：OpenSpec 使用体验](/posts/openspec-review) - 2026-06-26
 - [扬州咖啡馆工作指南](/posts/yangzhou-cafe) - 2026-06-22
 - [用 Rust 重写我的命令行工具](/posts/rust-cli) - 2026-06-12
 

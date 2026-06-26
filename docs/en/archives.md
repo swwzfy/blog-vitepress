@@ -10,6 +10,7 @@ All articles, sorted by date.
 
 ### June
 
+- [Adding a Spec Layer for AI — My OpenSpec Experience](/en/posts/openspec-review) - 2026-06-26
 - [Yangzhou Coffee Shop Work Guide](/en/posts/yangzhou-cafe) - 2026-06-22
 - [Rewriting My CLI Tool in Rust](/en/posts/rust-cli) - 2026-06-12
 
