@@ -1,0 +1,21 @@
+{
+  "name": "blog-vitepress",
+  "version": "1.0.0",
+  "description": "Kiran's Blog",
+  "scripts": {
+    "dev": "vitepress dev docs",
+    "build": "vitepress build docs",
+    "preview": "vitepress preview docs"
+  },
+  "keywords": [],
+  "author": "Kiran",
+  "license": "ISC",
+  "devDependencies": {
+    "sitemap": "9.0.1",
+    "vitepress": "1.6.4",
+    "vitepress-plugin-rss": "0.4.4"
+  },
+  "dependencies": {
+    "@giscus/vue": "3.1.1"
+  }
+}
