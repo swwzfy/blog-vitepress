@@ -12,10 +12,8 @@ const giscusConfig = {
   categoryId: 'DIC_kwDOTFnNyc4C_6e9',
 }
 
-const commentRef = ref<HTMLElement | null>(null)
 const showComment = ref(true)
 
-// 路由变化时强制重新挂载 Giscus 组件
 watch(() => page.value.relativePath, async () => {
   showComment.value = false
   await nextTick()
@@ -24,7 +22,7 @@ watch(() => page.value.relativePath, async () => {
 </script>
 
 <template>
-  <div ref="commentRef" class="comment-section">
+  <div class="comment-section">
     <Giscus
       v-if="showComment"
       :key="page.relativePath"
@@ -50,7 +48,6 @@ watch(() => page.value.relativePath, async () => {
   border-top: 1px solid var(--vp-c-divider);
 }
 
-/* Giscus 响应式 */
 .comment-section :deep(iframe) {
   max-width: 100%;
 }

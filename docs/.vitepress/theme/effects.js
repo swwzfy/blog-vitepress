@@ -1,3 +1,9 @@
+// 页面可见性状态
+let isPageVisible = true
+document.addEventListener('visibilitychange', () => {
+  isPageVisible = !document.hidden
+})
+
 // 效果容器
 function getEffectsLayer() {
   let layer = document.getElementById('effects-layer');
@@ -26,7 +32,6 @@ function initParticles() {
   const ctx = canvas.getContext('2d');
   let particles = [];
   let mouseX = -1000, mouseY = -1000;
-  let isVisible = true;
 
   function resize() {
     canvas.width = window.innerWidth;
@@ -34,11 +39,6 @@ function initParticles() {
   }
   resize();
   window.addEventListener('resize', resize);
-
-  // Page Visibility API
-  document.addEventListener('visibilitychange', () => {
-    isVisible = !document.hidden;
-  });
 
   class Particle {
     constructor() { this.reset(); }
@@ -126,8 +126,7 @@ function initParticles() {
   }
 
   function animate() {
-    // 页面不可见时暂停动画
-    if (!isVisible) {
+    if (!isPageVisible) {
       requestAnimationFrame(animate);
       return;
     }
@@ -153,12 +152,6 @@ function initCursorGlow() {
   layer.appendChild(glow);
 
   let glowX = 0, glowY = 0, mouseX = 0, mouseY = 0;
-  let isVisible = true;
-
-  // Page Visibility API
-  document.addEventListener('visibilitychange', () => {
-    isVisible = !document.hidden;
-  });
 
   document.addEventListener('mousemove', e => {
     mouseX = e.clientX;
@@ -170,8 +163,7 @@ function initCursorGlow() {
   });
 
   function animate() {
-    // 页面不可见时暂停动画
-    if (!isVisible) {
+    if (!isPageVisible) {
       requestAnimationFrame(animate);
       return;
     }
@@ -229,9 +221,7 @@ function initBackToTop() {
 
 // 初始化（SSR 安全 + 可访问性检查）
 if (typeof window !== 'undefined') {
-  // 检查用户是否偏好减少动画
   const prefersReducedMotion = window.matchMedia('(prefers-reduced-motion: reduce)').matches;
-  // 检查是否为移动设备
   const isMobile = window.innerWidth <= 768;
 
   if (!prefersReducedMotion) {
@@ -242,7 +232,6 @@ if (typeof window !== 'undefined') {
     }
   }
 
-  // 阅读进度条和回到顶部按钮始终初始化
   initReadingProgress();
   initBackToTop();
 }
