@@ -14,10 +14,24 @@ const isEn = computed(() => lang.value.startsWith('en'))
 const zhModules = import.meta.glob('../../posts/*.md', { eager: true })
 const enModules = import.meta.glob('../../en/posts/*.md', { eager: true })
 
+function formatDate(dateStr: string): string {
+  if (!dateStr) return ''
+  const d = new Date(dateStr)
+  return `${d.getFullYear()}-${String(d.getMonth() + 1).padStart(2, '0')}-${String(d.getDate()).padStart(2, '0')}`
+}
+
 interface GroupedPosts {
   [year: string]: {
     [month: string]: Post[]
   }
+}
+
+const sortedYears = computed<string[]>(() => {
+  return Object.keys(grouped.value).sort((a, b) => Number(b) - Number(a))
+})
+
+function sortedMonths(year: string): string[] {
+  return Object.keys(grouped.value[year]).sort((a, b) => Number(b) - Number(a))
 }
 
 const grouped = computed<GroupedPosts>(() => {
@@ -52,19 +66,19 @@ const grouped = computed<GroupedPosts>(() => {
 })
 
 function monthLabel(m: string): string {
-  return isEn.value ? `${m}月` : `${m}月`
+  return `${m}月`
 }
 </script>
 
 <template>
-  <div v-for="(months, year) in grouped" :key="year" class="archive-year">
+  <div v-for="year in sortedYears" :key="year" class="archive-year">
     <h2>{{ year }}</h2>
-    <div v-for="(posts, month) in months" :key="month" class="archive-month">
+    <div v-for="month in sortedMonths(year)" :key="month" class="archive-month">
       <h3>{{ monthLabel(month) }}</h3>
       <ul class="archive-list">
-        <li v-for="post in posts" :key="post.url">
+        <li v-for="post in grouped[year][month]" :key="post.url">
           <a :href="post.url">{{ post.title }}</a>
-          <time>{{ post.date }}</time>
+          <time>{{ formatDate(post.date) }}</time>
         </li>
       </ul>
     </div>
