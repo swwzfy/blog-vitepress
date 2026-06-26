@@ -86,7 +86,8 @@ export default defineConfig({
     ['meta', { property: 'og:locale', content: 'zh_CN' }],
     ['meta', { name: 'twitter:card', content: 'summary' }],
     ['meta', { name: 'twitter:title', content: "Kiran's Blog" }],
-    ['meta', { name: 'twitter:description', content: '独立开发者 · 写作者 · 终身学习者' }]
+    ['meta', { name: 'twitter:description', content: '独立开发者 · 写作者 · 终身学习者' }],
+    ['script', { async: '', src: '//busuanzi.ibruce.info/busuanzi/2.3/busuanzi.pure.mini.js' }]
   ],
   async buildEnd(siteConfig) {
     const { SitemapStream, streamToPromise } = await import('sitemap')

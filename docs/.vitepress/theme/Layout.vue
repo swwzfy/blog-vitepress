@@ -107,6 +107,8 @@ watch(() => page.value.relativePath, update)
           <span class="meta-reading">{{ readingTime }} 分钟阅读</span>
           <span class="meta-dot">·</span>
           <span class="meta-words">{{ wordCount }} 字</span>
+          <span class="meta-dot">·</span>
+          <span class="meta-views">👁 <span id="busuanzi_value_page_pv">-</span> 次阅读</span>
         </div>
         <div v-if="frontmatter.tags?.length" class="article-tags">
           <span v-for="tag in frontmatter.tags" :key="tag" class="tag">{{ tag }}</span>
@@ -171,6 +173,11 @@ watch(() => page.value.relativePath, update)
 
     <template #layout-bottom>
       <footer class="site-footer">
+        <div class="site-stats">
+          <span id="busuanzi_container_site_uv">访客 <span id="busuanzi_value_site_uv">-</span></span>
+          <span class="stats-dot">·</span>
+          <span id="busuanzi_container_site_pv">访问 <span id="busuanzi_value_site_pv">-</span></span>
+        </div>
         <a href="https://beian.miit.gov.cn/" target="_blank" rel="noopener">苏ICP备2026040107号-1</a>
       </footer>
     </template>

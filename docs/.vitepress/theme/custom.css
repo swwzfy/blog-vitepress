@@ -822,3 +822,16 @@
 .site-footer a:hover {
   color: var(--vp-c-brand-1);
 }
+
+.site-stats {
+  margin-bottom: 8px;
+}
+
+.stats-dot {
+  margin: 0 8px;
+  opacity: 0.4;
+}
+
+.meta-views {
+  color: var(--vp-c-text-3);
+}
