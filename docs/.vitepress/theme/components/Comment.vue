@@ -8,10 +8,10 @@ const { isDark, page } = useData()
 // ===== 配置 =====
 // 去 https://giscus.app/ 生成你的配置，替换以下值
 const giscusConfig = {
-  repo: 'your-username/your-repo',        // 替换为你的 GitHub 仓库
-  repoId: 'R_xxxxxxxxxxxxxx',             // 替换为 giscus.app 生成的 repoId
-  category: 'Announcements',              // 替换为 Discussions 分类名
-  categoryId: 'DIC_xxxxxxxxxxxxxx',       // 替换为 giscus.app 生成的 categoryId
+  repo: 'swwzfy/blog-vitepress',
+  repoId: 'R_kgDOTFnNyQ',
+  category: 'Announcements',
+  categoryId: 'DIC_kwDOTFnNyc4C_6e9',
 }
 
 // ===== 客户端敏感词过滤（兜底，主要靠 GitHub 仓库 Settings） =====
