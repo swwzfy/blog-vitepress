@@ -1,10 +1,11 @@
 ---
 title: Tags
-aside: true
 ---
 
 # Tags
 
 Browse articles by tag.
+
+## All Tags
 
 <Tags />
