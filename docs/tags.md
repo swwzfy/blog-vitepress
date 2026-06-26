@@ -1,5 +1,6 @@
 ---
 title: 标签
+aside: true
 ---
 
 # 标签

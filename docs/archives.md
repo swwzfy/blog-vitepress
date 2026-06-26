@@ -1,5 +1,6 @@
 ---
 title: 文章
+aside: true
 ---
 
 # 文章

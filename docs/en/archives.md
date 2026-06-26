@@ -1,5 +1,6 @@
 ---
 title: Articles
+aside: true
 ---
 
 # Articles
