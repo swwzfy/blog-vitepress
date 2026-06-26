@@ -1,0 +1,64 @@
+name: Discussion Content Filter
+
+on:
+  discussion_comment:
+    types: [created]
+
+jobs:
+  filter:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+
+      - name: Check comment content
+        uses: actions/github-script@v7
+        with:
+          github-token: ${{ secrets.GITHUB_TOKEN }}
+          script: |
+            const fs = require('fs');
+            const path = '.github/sensitive-words.txt';
+
+            // 读取敏感词列表
+            let words = [];
+            try {
+              const content = fs.readFileSync(path, 'utf8');
+              words = content.split('\n')
+                .map(w => w.trim())
+                .filter(w => w && !w.startsWith('#'));
+            } catch (e) {
+              console.log('敏感词文件读取失败，跳过检查');
+              return;
+            }
+
+            if (words.length === 0) {
+              console.log('敏感词列表为空，跳过检查');
+              return;
+            }
+
+            // 获取评论内容
+            const comment = context.payload.comment;
+            const body = (comment.body || '').toLowerCase();
+
+            // 检查是否命中
+            const matched = words.filter(w => body.includes(w.toLowerCase()));
+
+            if (matched.length > 0) {
+              console.log(`命中敏感词: ${matched.join(', ')}`);
+
+              // 隐藏评论（标记为 minimized）
+              await github.graphql(`
+                mutation($id: ID!, $classifier: ReportedContentClassifiers!) {
+                  minimizeComment(input: {subjectId: $id, classifier: $classifier}) {
+                    minimizedComment { isMinimized }
+                  }
+                }
+              `, {
+                id: comment.node_id,
+                classifier: 'SPAM'
+              });
+
+              console.log('评论已隐藏');
+            } else {
+              console.log('未命中敏感词，放行');
+            }
