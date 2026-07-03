@@ -2,7 +2,7 @@
 import DefaultTheme from 'vitepress/theme'
 import { useData, withBase } from 'vitepress'
 import { ref, computed, onMounted, watch, nextTick } from 'vue'
-import Comment from './components/Comment.vue'
+// import Comment from './components/Comment.vue' // 评论功能已下线
 
 const { Layout } = DefaultTheme
 const { frontmatter, page } = useData()
@@ -126,7 +126,7 @@ watch(() => page.value.relativePath, update)
           </a>
         </div>
       </div>
-      <Comment v-if="isArticle" />
+      <!-- <Comment v-if="isArticle" /> --> <!-- 评论功能已下线 -->
     </template>
 
     <template #not-found>
