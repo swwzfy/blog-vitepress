@@ -1,17 +1,8 @@
 import { defineConfig } from 'vitepress'
 import { writeFileSync } from 'fs'
 import { resolve } from 'path'
-import { RSSOptions, RssPlugin } from 'vitepress-plugin-rss'
 
 const hostname = 'https://www.jossecho.com'
-
-const RSS: RSSOptions = {
-  title: "Kiran's Blog",
-  baseUrl: hostname,
-  copyright: `Copyright (c) 2026-present, Kiran`,
-  description: '独立开发者 · 写作者 · 终身学习者',
-  language: 'zh-CN',
-}
 
 export default defineConfig({
   title: "Kiran's Blog",
@@ -49,6 +40,14 @@ export default defineConfig({
       lang: 'en-US',
       title: "Kiran's Blog",
       description: 'Indie Developer · Writer · Lifelong Learner',
+      head: [
+        ['meta', { property: 'og:image', content: hostname + '/og-en.png' }],
+        ['meta', { property: 'og:image:width', content: '1200' }],
+        ['meta', { property: 'og:image:height', content: '630' }],
+        ['meta', { name: 'twitter:image', content: hostname + '/og-en.png' }],
+        ['meta', { property: 'og:description', content: 'Indie Developer · Writer · Lifelong Learner' }],
+        ['meta', { name: 'twitter:description', content: 'Indie Developer · Writer · Lifelong Learner' }]
+      ],
       themeConfig: {
         nav: [
           { text: 'Home', link: '/en/' },
@@ -74,7 +73,38 @@ export default defineConfig({
     }
   },
   vite: {
-    plugins: [RssPlugin(RSS)]
+    // 给 dev / preview 的 RSS 与 HTML 预览补 Content-Type charset。
+    // 多数 reader 优先看 HTTP 头而不是 XML prolog，缺 charset 在中文 Windows 上会乱码。
+    plugins: [
+      {
+        name: 'rss-charset-headers',
+        configureServer(server) {
+          server.middlewares.use((req, res, next) => {
+            if (req.url === '/feed.rss' || req.url === '/en/feed.rss') {
+              res.setHeader('Content-Type', 'application/rss+xml; charset=utf-8')
+            } else if (req.url === '/feed.html' || req.url === '/en/feed.html') {
+              res.setHeader('Content-Type', 'text/html; charset=utf-8')
+            }
+            next()
+          })
+        },
+        configurePreviewServer(server) {
+          server.middlewares.use((req, res, next) => {
+            if (req.url === '/feed.rss' || req.url === '/en/feed.rss') {
+              res.setHeader('Content-Type', 'application/rss+xml; charset=utf-8')
+            } else if (req.url === '/feed.html' || req.url === '/en/feed.html') {
+              res.setHeader('Content-Type', 'text/html; charset=utf-8')
+            }
+            next()
+          })
+        }
+      }
+    ],
+    resolve: {
+      alias: {
+        '@': resolve(process.cwd(), 'docs/.vitepress/theme')
+      }
+    }
   },
   head: [
     ['link', { rel: 'icon', type: 'image/svg+xml', href: '/favicon.svg' }],
@@ -84,7 +114,15 @@ export default defineConfig({
     ['meta', { property: 'og:title', content: "Kiran's Blog" }],
     ['meta', { property: 'og:description', content: '独立开发者 · 写作者 · 终身学习者' }],
     ['meta', { property: 'og:locale', content: 'zh_CN' }],
-    ['meta', { name: 'twitter:card', content: 'summary' }],
+    ['meta', { property: 'og:image', content: hostname + '/og.png' }],
+    ['meta', { property: 'og:image:width', content: '1200' }],
+    ['meta', { property: 'og:image:height', content: '630' }],
+    ['meta', { name: 'twitter:image', content: hostname + '/og.png' }],
+    ['meta', { name: 'twitter:card', content: 'summary_large_image' }],
+    // i18n SEO：每个语种首页互链，x-default 指向中文
+    ['link', { rel: 'alternate', hreflang: 'zh-CN', href: hostname + '/' }],
+    ['link', { rel: 'alternate', hreflang: 'en', href: hostname + '/en/' }],
+    ['link', { rel: 'alternate', hreflang: 'x-default', href: hostname + '/' }],
     ['meta', { name: 'twitter:title', content: "Kiran's Blog" }],
     ['meta', { name: 'twitter:description', content: '独立开发者 · 写作者 · 终身学习者' }],
     ['script', { async: '', src: '//busuanzi.ibruce.info/busuanzi/2.3/busuanzi.pure.mini.js' }]
@@ -100,13 +138,39 @@ export default defineConfig({
     sitemap.end()
     const data = await streamToPromise(sitemap)
     writeFileSync(resolve(siteConfig.outDir, 'sitemap.xml'), data.toString())
+
+    // RSS 双语：自写 build-rss.js 替代 vitepress-plugin-rss（0.4.4 locales bug）
+    // esbuild 编译 config 后 import.meta.url 指向临时 .mjs，导致 '../scripts' 路径偏移。
+    // 用 process.cwd() 拼绝对路径稳定；createRequire 把 cwd 包成 require 入口。
+    const { createRequire } = await import('module')
+    const cwdRequire = createRequire(resolve(process.cwd(), 'index.js'))
+    const { buildRss } = cwdRequire('./scripts/build-rss.js')
+    await buildRss(siteConfig)
+
+    // 把生成的 RSS / HTML 预览镜像一份到 docs/public/，dev mode 下 VitePress 默认会 serve public/
+    // 解决 dev mode 访问 /feed.rss / /feed.html 报 404 的问题
+    // outDir 默认是 docs/.vitepress/dist，publicDir 默认是 docs/public/
+    const { copyFileSync, mkdirSync } = await import('node:fs')
+    const { dirname, relative } = await import('node:path')
+    const PROJECT_ROOT_DOCS = resolve(siteConfig.outDir, '..', '..')
+    const PUBLIC_DIR = resolve(PROJECT_ROOT_DOCS, 'public')
+    const files = ['feed.rss', 'en/feed.rss', 'feed.html', 'en/feed.html']
+    for (const rel of files) {
+      const srcPath = resolve(siteConfig.outDir, rel)
+      const destPath = resolve(PUBLIC_DIR, rel)
+      mkdirSync(dirname(destPath), { recursive: true })
+      copyFileSync(srcPath, destPath)
+      console.log(`  mirrored ${rel} -> ${relative(PROJECT_ROOT_DOCS, destPath)}`)
+    }
   },
   themeConfig: {
     search: {
       provider: 'local'
     },
     socialLinks: [
-      { icon: 'github', link: 'https://github.com/' }
+      { icon: 'rss', link: '/feed.rss', ariaLabel: 'RSS Feed' },
+      { icon: 'github', link: 'https://github.com/swwzfy' },
+      { icon: 'mail', link: 'mailto:swwzfy@163.com' }
     ],
     footer: {
       message: 'Released under the MIT License.',

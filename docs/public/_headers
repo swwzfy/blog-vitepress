@@ -1,0 +1,17 @@
+# Netlify / Cloudflare Pages 通用 headers 配置。
+# VitePress 把 docs/public/ 整包复制到 dist/，部署时由 host 解析该文件。
+# 主要为 RSS 阅读器补足 charset；多数 reader 会先看 HTTP Content-Type 而不是 XML prolog。
+#
+# /feed.html 浏览器友好预览页同理。
+
+/feed.rss
+  Content-Type: application/rss+xml; charset=utf-8
+
+/en/feed.rss
+  Content-Type: application/rss+xml; charset=utf-8
+
+/feed.html
+  Content-Type: text/html; charset=utf-8
+
+/en/feed.html
+  Content-Type: text/html; charset=utf-8
