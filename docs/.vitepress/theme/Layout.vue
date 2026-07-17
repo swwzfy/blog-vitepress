@@ -1,32 +1,45 @@
 <script setup lang="ts">
 import DefaultTheme from 'vitepress/theme'
-import { useData, withBase } from 'vitepress'
+import { useData } from 'vitepress'
 import { ref, computed, onMounted, watch, nextTick } from 'vue'
-// import Comment from './components/Comment.vue' // 评论功能已下线
+import { zhPosts, enPosts } from '@/utils/posts'
+import { formatDate } from '@/utils/format'
+import { useLocale } from '@/composables/useLocale'
 
 const { Layout } = DefaultTheme
 const { frontmatter, page } = useData()
+const { t, isEn } = useLocale()
 
-// 文章页检测
 const isArticle = computed(() => !!frontmatter.value.date)
 
-// 阅读时间 & 字数
 const wordCount = ref(0)
 const readingTime = ref(0)
+
+/** 阅读时长缓存，避免重复扫文 */
+const readTimeCache = new Map<string, { words: number; minutes: number }>()
 
 function computeReadingTime() {
   nextTick(() => {
     const el = document.querySelector('.vp-doc')
     if (!el) return
+    const path = page.value.relativePath
+    const cached = readTimeCache.get(path)
+    if (cached) {
+      wordCount.value = cached.words
+      readingTime.value = cached.minutes
+      return
+    }
     const text = el.textContent || ''
     const chinese = (text.match(/[一-鿿]/g) || []).length
     const english = (text.match(/[a-zA-Z]+/g) || []).length
-    wordCount.value = chinese + english
-    readingTime.value = Math.max(1, Math.ceil((chinese + english) / 300))
+    const words = chinese + english
+    const minutes = Math.max(1, Math.ceil(words / 300))
+    readTimeCache.set(path, { words, minutes })
+    wordCount.value = words
+    readingTime.value = minutes
   })
 }
 
-// 相关文章
 interface RelatedPost {
   title: string
   url: string
@@ -35,55 +48,39 @@ interface RelatedPost {
 }
 
 const relatedPosts = ref<RelatedPost[]>([])
-const postModules = import.meta.glob('../../posts/*.md', { eager: true })
 
 function findRelated() {
   const currentTags: string[] = frontmatter.value.tags || []
   const currentPath = page.value.relativePath.replace(/\.md$/, '')
-
   if (!currentTags.length) {
     relatedPosts.value = []
     return
   }
-
-  const posts: RelatedPost[] = []
-
-  for (const [filePath, mod] of Object.entries(postModules)) {
-    const data = (mod as any).__pageData
-    if (!data) continue
-    const relPath = filePath.replace(/^\.\.\/\.\.\//, '').replace(/\.md$/, '')
-    if (relPath === currentPath) continue
-    const tags: string[] = data.frontmatter?.tags || []
-    if (!tags.some(t => currentTags.includes(t))) continue
-    posts.push({
-      title: data.title || '',
-      url: withBase('/' + relPath),
-      date: data.frontmatter?.date || '',
-      tags
+  const source = isEn.value ? enPosts : zhPosts
+  relatedPosts.value = source
+    .filter(p => {
+      const relPath = p.url.replace(/^\//, '').replace(/\/$/, '')
+      return relPath !== currentPath && p.tags.some(tg => currentTags.includes(tg))
     })
-  }
-
-  relatedPosts.value = posts
     .sort((a, b) => {
-      const aScore = a.tags.filter(t => currentTags.includes(t)).length
-      const bScore = b.tags.filter(t => currentTags.includes(t)).length
+      const aScore = a.tags.filter(tg => currentTags.includes(tg)).length
+      const bScore = b.tags.filter(tg => currentTags.includes(tg)).length
       return bScore - aScore || new Date(b.date).getTime() - new Date(a.date).getTime()
     })
-    .slice(0, 3)
+    .slice(0, 3) as RelatedPost[]
 }
 
-// 日期格式化
-function formatDate(dateStr: string): string {
-  if (!dateStr) return ''
-  const d = new Date(dateStr)
-  return `${d.getFullYear()}-${String(d.getMonth() + 1).padStart(2, '0')}-${String(d.getDate()).padStart(2, '0')}`
-}
-
-// 初始化 & 路由更新
 function update() {
   if (!isArticle.value) return
   computeReadingTime()
   findRelated()
+}
+
+/** 通用后退入口：history 可用就用，否则回首页。 */
+function goBack() {
+  if (typeof window === 'undefined') return
+  if (window.history.length > 1) window.history.back()
+  else window.location.href = '/'
 }
 
 onMounted(update)
@@ -94,21 +91,21 @@ watch(() => page.value.relativePath, update)
   <Layout>
     <template #doc-before>
       <div v-if="isArticle" class="article-header">
-        <button class="back-btn" onclick="history.back()">
+        <button class="back-btn" @click="goBack">
           <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
             <path d="M19 12H5"></path>
             <polyline points="12 19 5 12 12 5"></polyline>
           </svg>
-          <span>返回</span>
+          <span>{{ t('back') }}</span>
         </button>
         <div class="article-meta">
           <time class="meta-date">{{ formatDate(frontmatter.date) }}</time>
           <span class="meta-dot">·</span>
-          <span class="meta-reading">{{ readingTime }} 分钟阅读</span>
+          <span class="meta-reading">{{ readingTime }} {{ t('minRead') }}</span>
           <span class="meta-dot">·</span>
-          <span class="meta-words">{{ wordCount }} 字</span>
+          <span class="meta-words">{{ wordCount }} {{ t('words') }}</span>
           <span class="meta-dot">·</span>
-          <span class="meta-views">👁 <span id="busuanzi_value_page_pv">-</span> 次阅读</span>
+          <span class="meta-views">👁 <span id="busuanzi_value_page_pv">-</span> {{ t('reads') }}</span>
         </div>
         <div v-if="frontmatter.tags?.length" class="article-tags">
           <span v-for="tag in frontmatter.tags" :key="tag" class="tag">{{ tag }}</span>
@@ -118,7 +115,7 @@ watch(() => page.value.relativePath, update)
 
     <template #doc-after>
       <div v-if="isArticle && relatedPosts.length" class="related-posts">
-        <h3 class="related-title">相关文章</h3>
+        <h3 class="related-title">{{ t('relatedPosts') }}</h3>
         <div class="related-grid">
           <a v-for="post in relatedPosts" :key="post.url" :href="post.url" class="related-card">
             <span class="related-date">{{ formatDate(post.date) }}</span>
@@ -146,24 +143,22 @@ watch(() => page.value.relativePath, update)
               <span class="digit">0</span>
               <span class="digit">4</span>
             </div>
-            <h1 class="error-title">页面迷失在虚空中</h1>
-            <p class="error-desc">
-              你要找的页面可能已被移除、改名，或者从未存在过。
-            </p>
+            <h1 class="error-title">{{ t('pageNotFound') }}</h1>
+            <p class="error-desc">{{ t('pageNotFoundDesc') }}</p>
             <div class="not-found-actions">
-              <button class="back-button" onclick="history.back()">
+              <button class="back-button" @click="goBack">
                 <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
                   <path d="M19 12H5"></path>
                   <polyline points="12 19 5 12 12 5"></polyline>
                 </svg>
-                返回上一页
+                {{ t('backPrev') }}
               </button>
               <a href="/" class="home-button">
                 <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
                   <path d="M3 9l9-7 9 7v11a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2z"></path>
                   <polyline points="9 22 9 12 15 12 15 22"></polyline>
                 </svg>
-                返回首页
+                {{ t('backHome') }}
               </a>
             </div>
           </div>
@@ -173,12 +168,35 @@ watch(() => page.value.relativePath, update)
 
     <template #layout-bottom>
       <footer class="site-footer">
-        <div class="site-stats">
-          <span id="busuanzi_container_site_uv">访客 <span id="busuanzi_value_site_uv">-</span></span>
-          <span class="stats-dot">·</span>
-          <span id="busuanzi_container_site_pv">访问 <span id="busuanzi_value_site_pv">-</span></span>
+        <div class="footer-landscape-wrap" aria-hidden="true">
+          <img class="footer-landscape footer-landscape-light" src="/footer-landscape.webp" alt="" loading="lazy" />
+          <img class="footer-landscape footer-landscape-dark" src="/footer-landscape-dark.webp" alt="" loading="lazy" />
         </div>
-        <a href="https://beian.miit.gov.cn/" target="_blank" rel="noopener">苏ICP备2026040107号-1</a>
+
+        <div class="footer-inner">
+          <div class="footer-main">
+            <div class="footer-brand">Kiran's Blog</div>
+            <p class="footer-desc">{{ t('footerDesc') }}</p>
+            <p class="footer-meta">
+              © 2026 Kiran. {{ t('rights') }}<br />
+              Powered by VitePress
+            </p>
+            <div class="site-stats">
+              <span id="busuanzi_container_site_uv">{{ t('visit') }} <span id="busuanzi_value_site_uv">-</span></span>
+              <span class="stats-dot">·</span>
+              <span id="busuanzi_container_site_pv">{{ t('views') }} <span id="busuanzi_value_site_pv">-</span></span>
+            </div>
+          </div>
+
+          <div class="footer-aside">
+            <a v-if="isEn" href="/en/feed.rss">RSS</a>
+            <a v-else href="/feed.rss">RSS</a>
+            <span class="aside-dot">/</span>
+            <a href="https://github.com/swwzfy" target="_blank" rel="noopener">GitHub</a>
+            <span class="aside-dot">/</span>
+            <a href="https://beian.miit.gov.cn/" target="_blank" rel="noopener">苏ICP备2026040107号-1</a>
+          </div>
+        </div>
       </footer>
     </template>
   </Layout>

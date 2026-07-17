@@ -170,11 +170,14 @@ export default defineConfig({
     socialLinks: [
       { icon: 'rss', link: '/feed.rss', ariaLabel: 'RSS Feed' },
       { icon: 'github', link: 'https://github.com/swwzfy' },
-      { icon: 'mail', link: 'mailto:swwzfy@163.com' }
-    ],
-    footer: {
-      message: 'Released under the MIT License.',
-      copyright: '© 2026 Kiran'
-    }
+      {
+        icon: {
+          svg: '<svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect width="20" height="16" x="2" y="4" rx="2" fill="none"/><path d="m22 7-8.97 5.7a1.94 1.94 0 0 1-2.06 0L2 7" fill="none"/></svg>'
+        },
+        link: 'mailto:swwzfy@163.com',
+        ariaLabel: 'Email'
+      }
+    ]
+    // footer 配置已移除：用 #layout-bottom 自定义
   }
 })

@@ -4,7 +4,7 @@ title: 关于
 
 # 关于
 
-## Kiran
+## Kiran · joss回响
 
 独立开发者 · 写作者
 
@@ -28,6 +28,6 @@ title: 关于
 
 ### 联系方式
 
-- [GitHub](https://github.com/)
-- [知乎](https://www.zhihu.com/)
-- [Email](mailto:swwzfy@163.com)
+- 🐙 [GitHub](https://github.com/swwzfy)
+- 💭 [知乎](https://www.zhihu.com/people/zi-fei-yu-53-37)
+- 📧 [Email](mailto:swwzfy@163.com)

@@ -4,7 +4,7 @@ title: About
 
 # About
 
-## Kiran
+## Kiran · joss echo
 
 Indie Developer · Writer
 
@@ -28,6 +28,6 @@ Coffee enthusiast, indie developer, occasional runner. In Yangzhou, building my 
 
 ### Contact
 
-- [GitHub](https://github.com/)
-- [Twitter](https://twitter.com/)
-- [Email](mailto:swwzfy@163.com)
+- 🐙 [GitHub](https://github.com/swwzfy)
+- 💭 [Zhihu](https://www.zhihu.com/people/zi-fei-yu-53-37)
+- 📧 [Email](mailto:swwzfy@163.com)

@@ -9,6 +9,11 @@
   max-width: 100% !important;
 }
 
+/* 隐藏 VitePress 默认 footer（用 #layout-bottom 自定义） */
+.VPFooter {
+  display: none;
+}
+
 /* ============================================
    自定义滚动条
    ============================================ */
@@ -804,34 +809,143 @@
 }
 
 /* ============================================
-   ICP 备案 Footer
+   站点 Footer
    ============================================ */
 .site-footer {
-  text-align: center;
-  padding: 24px 0;
+  width: 100%;
+  padding: 64px 0 32px;
+  border-top: 1px solid var(--vp-c-divider);
+  background: var(--vp-c-bg-soft);
+  color: var(--vp-c-text-2);
+}
+
+/* —— 顶部风景图（右上角，紧贴 footer 右边） —— */
+.footer-landscape-wrap {
+  display: flex;
+  justify-content: flex-end;
+  pointer-events: none;
+  user-select: none;
+  margin-bottom: 24px;
+}
+
+.footer-landscape {
+  display: block;
+  width: 360px;
+  max-width: 80%;
+  height: auto;
+  opacity: 0.7;
+  transition: opacity 0.3s ease;
+}
+
+.footer-landscape-light {
+  display: block;
+}
+.footer-landscape-dark {
+  display: none;
+}
+
+.dark .footer-landscape-light {
+  display: none;
+}
+.dark .footer-landscape-dark {
+  display: block;
+}
+
+/* —— 内容区 —— */
+.footer-inner {
+  max-width: 1152px;
+  margin: 0 auto;
+  padding: 0 24px;
+  display: flex;
+  align-items: flex-end;
+  justify-content: space-between;
+  gap: 32px;
+}
+
+.footer-main {
+  flex: 1 1 auto;
+  min-width: 0;
+}
+
+.footer-brand {
+  font-size: 22px;
+  font-weight: 700;
+  color: var(--vp-c-text-1);
+  letter-spacing: -0.01em;
+  margin-bottom: 8px;
+}
+
+.footer-desc {
+  font-size: 14px;
+  color: var(--vp-c-text-2);
+  margin: 0 0 14px;
+  line-height: 1.6;
+}
+
+.footer-meta {
   font-size: 13px;
   color: var(--vp-c-text-3);
-}
-
-.site-footer a {
-  color: var(--vp-c-text-3);
-  text-decoration: none;
-  transition: color 0.2s;
-}
-
-.site-footer a:hover {
-  color: var(--vp-c-brand-1);
+  margin: 0 0 14px;
+  line-height: 1.7;
 }
 
 .site-stats {
-  margin-bottom: 8px;
+  font-size: 12px;
+  color: var(--vp-c-text-3);
+}
+
+.site-stats span {
+  white-space: nowrap;
 }
 
 .stats-dot {
   margin: 0 8px;
-  opacity: 0.4;
+  opacity: 0.5;
 }
 
-.meta-views {
+/* —— 右侧 aside —— */
+.footer-aside {
+  flex: 0 0 auto;
+  display: flex;
+  align-items: center;
+  gap: 6px;
+  font-size: 13px;
   color: var(--vp-c-text-3);
+  white-space: nowrap;
+}
+
+.footer-aside a {
+  color: var(--vp-c-text-3);
+  text-decoration: none;
+  transition: color 0.2s ease;
+}
+
+.footer-aside a:hover {
+  color: var(--vp-c-brand-1);
+}
+
+.aside-dot {
+  opacity: 0.4;
+  user-select: none;
+}
+
+/* —— 移动端 —— */
+@media (max-width: 640px) {
+  .site-footer {
+    padding: 48px 0 24px;
+  }
+  .footer-inner {
+    padding: 0 20px;
+  }
+  .footer-landscape {
+    width: 240px;
+  }
+  .footer-inner {
+    flex-direction: column;
+    align-items: flex-start;
+    gap: 20px;
+  }
+  .footer-aside {
+    flex-wrap: wrap;
+  }
 }

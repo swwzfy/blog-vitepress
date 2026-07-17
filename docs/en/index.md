@@ -2,8 +2,8 @@
 layout: home
 hero:
   name: Kiran
-  text: Indie Developer · Writer
-  tagline: Sanskrit for "light" — clean, simple, unconventional
+  text: joss echo
+  tagline: Indie Developer · Writer · Sanskrit for "light" — clean, simple, unconventional
   actions:
     - theme: brand
       text: Start Reading →
@@ -26,9 +26,9 @@ features:
 <Stats />
 <RecentPosts />
 
-<div class="hero-aside-widget" id="hero-aside">
+<Teleport to=".VPHero .container" defer>
   <DateTimeWeather />
-</div>
+</Teleport>
 
 <style>
 .VPHero .container {
@@ -40,7 +40,7 @@ features:
   flex: 1;
   min-width: 0;
 }
-.hero-aside-widget {
+.datetime-weather {
   width: 280px;
   flex-shrink: 0;
   margin-top: -20px;
@@ -51,19 +51,8 @@ features:
     flex-direction: column;
     gap: 16px;
   }
-  .hero-aside-widget {
+  .datetime-weather {
     width: 100%;
   }
 }
 </style>
-
-<script setup>
-import { onMounted } from 'vue'
-onMounted(() => {
-  const widget = document.getElementById('hero-aside')
-  const container = document.querySelector('.VPHero .container')
-  if (widget && container) {
-    container.appendChild(widget)
-  }
-})
-</script>
