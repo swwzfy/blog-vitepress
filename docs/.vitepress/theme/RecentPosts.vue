@@ -1,49 +1,19 @@
 <script setup lang="ts">
 import { computed } from 'vue'
-import { useData, withBase } from 'vitepress'
+import { zhPosts, enPosts } from '@/utils/posts'
+import { formatDate } from '@/utils/format'
+import { useLocale } from '@/composables/useLocale'
 
-interface Post {
-  title: string
-  url: string
-  date: string
-  description: string
-  tags: string[]
-}
+const RECENT_LIMIT = 5
 
-const { frontmatter, lang } = useData()
-const isEn = computed(() => lang.value.startsWith('en'))
+const { isEn } = useLocale()
 
-const zhModules = import.meta.glob('../../posts/*.md', { eager: true })
-const enModules = import.meta.glob('../../en/posts/*.md', { eager: true })
-
-const posts = computed<Post[]>(() => {
-  const list: Post[] = []
-  const modules = isEn.value ? enModules : zhModules
-
-  for (const [filePath, mod] of Object.entries(modules)) {
-    const data = (mod as any).__pageData
-    if (!data) continue
-
-    const relPath = filePath.replace(/^\.\.\/\.\.\//, '').replace(/\.md$/, '')
-    list.push({
-      title: data.title || '',
-      url: withBase('/' + relPath),
-      date: data.frontmatter?.date || '',
-      description: data.frontmatter?.description || '',
-      tags: data.frontmatter?.tags || []
-    })
-  }
-
-  return list
+const posts = computed(() => {
+  const source = isEn.value ? enPosts : zhPosts
+  return [...source]
     .sort((a, b) => new Date(b.date).getTime() - new Date(a.date).getTime())
-    .slice(0, 5)
+    .slice(0, RECENT_LIMIT)
 })
-
-function formatDate(dateStr: string): string {
-  if (!dateStr) return ''
-  const d = new Date(dateStr)
-  return `${d.getFullYear()}-${String(d.getMonth() + 1).padStart(2, '0')}-${String(d.getDate()).padStart(2, '0')}`
-}
 </script>
 
 <template>

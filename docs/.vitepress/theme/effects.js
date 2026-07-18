@@ -33,9 +33,16 @@ function initParticles() {
   let particles = [];
   let mouseX = -1000, mouseY = -1000;
 
+  // DPR 适配：物理像素 = CSS 像素 * dpr，避免 retina 上模糊。dpr 上限 2 防止 4K 屏过度膨胀。
+  const dpr = Math.min(window.devicePixelRatio || 1, 2)
   function resize() {
-    canvas.width = window.innerWidth;
-    canvas.height = window.innerHeight;
+    const w = window.innerWidth
+    const h = window.innerHeight
+    canvas.style.width = w + 'px'
+    canvas.style.height = h + 'px'
+    canvas.width = Math.floor(w * dpr)
+    canvas.height = Math.floor(h * dpr)
+    ctx.setTransform(dpr, 0, 0, dpr, 0, 0)
   }
   resize();
   window.addEventListener('resize', resize);
@@ -187,8 +194,8 @@ function initReadingProgress() {
   function updateProgress() {
     const scrollTop = window.scrollY;
     const docHeight = document.documentElement.scrollHeight - window.innerHeight;
-    const progress = docHeight > 0 ? (scrollTop / docHeight) * 100 : 0;
-    document.querySelector('.reading-progress').style.width = progress + '%';
+    const pct = docHeight > 0 ? (scrollTop / docHeight) * 100 : 0;
+    progress.style.width = pct + '%'; // 用闭包里的引用，避免每帧 querySelector
   }
 
   window.addEventListener('scroll', updateProgress, { passive: true });
@@ -224,14 +231,22 @@ if (typeof window !== 'undefined') {
   const prefersReducedMotion = window.matchMedia('(prefers-reduced-motion: reduce)').matches;
   const isMobile = window.innerWidth <= 768;
 
-  if (!prefersReducedMotion) {
+  // 关键 UI 立即初始化（不影响首屏渲染的滚动条/回到顶部）
+  initReadingProgress();
+  initBackToTop();
+
+  // 重效果延后到 idle 时间窗，避免抢占主线程
+  const startHeavy = () => {
+    if (prefersReducedMotion) return;
     initBgGradient();
     if (!isMobile) {
       initParticles();
       initCursorGlow();
     }
+  };
+  if (typeof window.requestIdleCallback === 'function') {
+    window.requestIdleCallback(startHeavy, { timeout: 800 });
+  } else {
+    setTimeout(startHeavy, 150);
   }
-
-  initReadingProgress();
-  initBackToTop();
 }

@@ -1,0 +1,107 @@
+<?xml version="1.0" encoding="utf-8"?>
+<rss version="2.0" xmlns:atom="http://www.w3.org/2005/Atom">
+    <channel>
+        <title>Kiran's Blog</title>
+        <link>https://www.jossecho.com/en/</link>
+        <description>Indie Developer · Writer · Lifelong Learner</description>
+        <lastBuildDate>Thu, 16 Jul 2026 12:27:48 GMT</lastBuildDate>
+        <docs>https://validator.w3.org/feed/docs/rss2.html</docs>
+        <generator>custom-build-rss</generator>
+        <language>en-US</language>
+        <copyright>Copyright (c) 2026-present, Kiran</copyright>
+        <atom:link href="https://www.jossecho.com/en/feed.rss" rel="self" type="application/rss+xml"/>
+        <item>
+            <title><![CDATA[Local LLM Deployment — From PC to Self-Hosted Server, Five Paths Side by Side]]></title>
+            <link>https://www.jossecho.com/en/posts/local-llm-deployment</link>
+            <guid isPermaLink="false">https://www.jossecho.com/en/posts/local-llm-deployment</guid>
+            <pubDate>Thu, 16 Jul 2026 00:00:00 GMT</pubDate>
+            <description><![CDATA[Five typical paths for running models on your own hardware — desktop apps to production inference frameworks, matched to your situation.]]></description>
+            <author>Kiran</author>
+            <category>AI</category>
+            <category>Ollama</category>
+            <category>vLLM</category>
+            <category>llama.cpp</category>
+            <category>Deployment</category>
+        </item>
+        <item>
+            <title><![CDATA[OpenClaw vs Hermes — Two Approaches to AI Agent Design]]></title>
+            <link>https://www.jossecho.com/en/posts/openclaw-vs-hermes</link>
+            <guid isPermaLink="false">https://www.jossecho.com/en/posts/openclaw-vs-hermes</guid>
+            <pubDate>Thu, 16 Jul 2026 00:00:00 GMT</pubDate>
+            <description><![CDATA[One reaches outward, one reflects inward — two AI Agent paths and their trade-offs across ten dimensions.]]></description>
+            <author>Kiran</author>
+            <category>AI</category>
+            <category>Agent</category>
+            <category>OpenClaw</category>
+            <category>Hermes</category>
+            <category>Framework Comparison</category>
+        </item>
+        <item>
+            <title><![CDATA[Adding a Spec Layer for AI — My OpenSpec Experience]]></title>
+            <link>https://www.jossecho.com/en/posts/openspec-review</link>
+            <guid isPermaLink="false">https://www.jossecho.com/en/posts/openspec-review</guid>
+            <pubDate>Fri, 26 Jun 2026 00:00:00 GMT</pubDate>
+            <description><![CDATA[AI coding is powerful, but requirements only live in chat history. OpenSpec adds a lightweight spec layer between you and AI — align first, then build. Here's my hands-on experience.]]></description>
+            <author>Kiran</author>
+            <category>AI</category>
+            <category>Engineering</category>
+            <category>OpenSpec</category>
+            <category>Dev Tools</category>
+        </item>
+        <item>
+            <title><![CDATA[Yangzhou Coffee Shop Work Guide]]></title>
+            <link>https://www.jossecho.com/en/posts/yangzhou-cafe</link>
+            <guid isPermaLink="false">https://www.jossecho.com/en/posts/yangzhou-cafe</guid>
+            <pubDate>Mon, 22 Jun 2026 00:00:00 GMT</pubDate>
+            <description><![CDATA[Tested multiple coffee shops in Yangzhou for WiFi, outlets, noise, and coffee quality. A location guide for remote workers.]]></description>
+            <author>Kiran</author>
+            <category>Coffee</category>
+            <category>Yangzhou</category>
+            <category>Remote Work</category>
+        </item>
+        <item>
+            <title><![CDATA[Rewriting My CLI Tool in Rust]]></title>
+            <link>https://www.jossecho.com/en/posts/rust-cli</link>
+            <guid isPermaLink="false">https://www.jossecho.com/en/posts/rust-cli</guid>
+            <pubDate>Fri, 12 Jun 2026 00:00:00 GMT</pubDate>
+            <description><![CDATA[Why I rewrote a Python CLI tool in Rust, startup time dropped from 800ms to 12ms, single file 4.2MB with zero dependencies.]]></description>
+            <author>Kiran</author>
+            <category>Rust</category>
+            <category>CLI</category>
+            <category>Performance</category>
+        </item>
+        <item>
+            <title><![CDATA[My Notes System Evolution]]></title>
+            <link>https://www.jossecho.com/en/posts/notes-evolution</link>
+            <guid isPermaLink="false">https://www.jossecho.com/en/posts/notes-evolution</guid>
+            <pubDate>Mon, 25 May 2026 00:00:00 GMT</pubDate>
+            <description><![CDATA[From Apple Notes to Notion to Obsidian, then to my own system. The process of tinkering with note tools is itself a form of thinking.]]></description>
+            <author>Kiran</author>
+            <category>Notes</category>
+            <category>Obsidian</category>
+            <category>Knowledge Management</category>
+        </item>
+        <item>
+            <title><![CDATA[Why I Let AI Manage My Memory]]></title>
+            <link>https://www.jossecho.com/en/posts/ai-memory</link>
+            <guid isPermaLink="false">https://www.jossecho.com/en/posts/ai-memory</guid>
+            <pubDate>Mon, 18 May 2026 00:00:00 GMT</pubDate>
+            <description><![CDATA[Built a three-layer memory system for AI — long-term memory, short-term memory, semantic search. Not just a tech experiment, it's a reflection on "continuity".]]></description>
+            <author>Kiran</author>
+            <category>AI</category>
+            <category>Memory System</category>
+            <category>Vector Search</category>
+        </item>
+        <item>
+            <title><![CDATA[Building a Personal Server from Scratch]]></title>
+            <link>https://www.jossecho.com/en/posts/personal-server</link>
+            <guid isPermaLink="false">https://www.jossecho.com/en/posts/personal-server</guid>
+            <pubDate>Tue, 28 Apr 2026 00:00:00 GMT</pubDate>
+            <description><![CDATA[The whole process from buying a domain, choosing a VPS, configuring Nginx, installing SSL to deploying the first service. Suitable for beginners.]]></description>
+            <author>Kiran</author>
+            <category>Server</category>
+            <category>Nginx</category>
+            <category>DevOps</category>
+        </item>
+    </channel>
+</rss>

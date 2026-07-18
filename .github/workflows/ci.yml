@@ -1,0 +1,41 @@
+# CI: lint + build 校验，push 和 PR 时跑
+name: CI
+
+on:
+  push:
+    branches: [main]
+  pull_request:
+    branches: [main]
+
+permissions:
+  contents: read
+
+jobs:
+  lint-and-build:
+    name: Lint & Build
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+
+      - uses: actions/setup-node@v4
+        with:
+          node-version: '20'
+          cache: 'npm'
+
+      - run: npm ci
+
+      - name: Lint
+        run: npm run lint
+
+      - name: Build (sitemap + RSS + OG)
+        run: npm run build
+
+      - name: Verify build artifacts
+        shell: bash
+        run: |
+          test -f docs/.vitepress/dist/index.html
+          test -f docs/.vitepress/dist/sitemap.xml
+          test -f docs/.vitepress/dist/feed.rss
+          test -f docs/.vitepress/dist/en/feed.rss
+          test -f docs/.vitepress/dist/og.png
+          test -f docs/.vitepress/dist/og-en.png

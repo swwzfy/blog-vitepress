@@ -2,18 +2,33 @@
   "name": "blog-vitepress",
   "version": "1.0.0",
   "description": "Kiran's Blog",
+  "private": true,
+  "engines": {
+    "node": ">=18"
+  },
   "scripts": {
+    "predev": "node scripts/dev-fresh.js",
     "dev": "vitepress dev docs",
     "build": "vitepress build docs",
-    "preview": "vitepress preview docs"
+    "preview": "vitepress preview docs",
+    "og": "node .agents/scripts/make-og.js",
+    "lint": "eslint .",
+    "lint:fix": "eslint . --fix"
   },
   "keywords": [],
   "author": "Kiran",
   "license": "ISC",
   "devDependencies": {
+    "@eslint/js": "10.0.1",
+    "eslint": "10.7.0",
+    "eslint-config-prettier": "10.1.8",
+    "eslint-plugin-vue": "10.9.2",
+    "feed": "6.0.0",
+    "globals": "17.7.0",
+    "gray-matter": "4.0.3",
     "sitemap": "9.0.1",
-    "vitepress": "1.6.4",
-    "vitepress-plugin-rss": "0.4.4"
+    "typescript-eslint": "8.64.0",
+    "vitepress": "1.6.4"
   },
   "dependencies": {
     "@giscus/vue": "3.1.1"

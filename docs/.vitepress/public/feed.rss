@@ -1,0 +1,107 @@
+<?xml version="1.0" encoding="utf-8"?>
+<rss version="2.0" xmlns:atom="http://www.w3.org/2005/Atom">
+    <channel>
+        <title>Kiran's Blog</title>
+        <link>https://www.jossecho.com/</link>
+        <description>独立开发者 · 写作者 · 终身学习者</description>
+        <lastBuildDate>Thu, 16 Jul 2026 12:27:48 GMT</lastBuildDate>
+        <docs>https://validator.w3.org/feed/docs/rss2.html</docs>
+        <generator>custom-build-rss</generator>
+        <language>zh-CN</language>
+        <copyright>Copyright (c) 2026-present, Kiran</copyright>
+        <atom:link href="https://www.jossecho.com/feed.rss" rel="self" type="application/rss+xml"/>
+        <item>
+            <title><![CDATA[本地大模型部署：从 PC 到服务器，五种方案摆在一起看]]></title>
+            <link>https://www.jossecho.com/posts/local-llm-deployment</link>
+            <guid isPermaLink="false">https://www.jossecho.com/posts/local-llm-deployment</guid>
+            <pubDate>Thu, 16 Jul 2026 00:00:00 GMT</pubDate>
+            <description><![CDATA[把模型跑在自己机器上的几条典型路径——从桌面应用到生产推理框架，按场景摆开。]]></description>
+            <author>Kiran</author>
+            <category>AI</category>
+            <category>Ollama</category>
+            <category>vLLM</category>
+            <category>llama.cpp</category>
+            <category>部署</category>
+        </item>
+        <item>
+            <title><![CDATA[OpenClaw 与 Hermes：把 AI Agent 的两种解法拆开看]]></title>
+            <link>https://www.jossecho.com/posts/openclaw-vs-hermes</link>
+            <guid isPermaLink="false">https://www.jossecho.com/posts/openclaw-vs-hermes</guid>
+            <pubDate>Thu, 16 Jul 2026 00:00:00 GMT</pubDate>
+            <description><![CDATA[一个往外接，一个向内省——两种 AI Agent 路线在不同维度上的取舍。]]></description>
+            <author>Kiran</author>
+            <category>AI</category>
+            <category>Agent</category>
+            <category>OpenClaw</category>
+            <category>Hermes</category>
+            <category>框架对比</category>
+        </item>
+        <item>
+            <title><![CDATA[给 AI 加一层「规格书」：OpenSpec 使用体验]]></title>
+            <link>https://www.jossecho.com/posts/openspec-review</link>
+            <guid isPermaLink="false">https://www.jossecho.com/posts/openspec-review</guid>
+            <pubDate>Fri, 26 Jun 2026 00:00:00 GMT</pubDate>
+            <description><![CDATA[AI 写代码能力越来越强，但需求只活在聊天记录里。OpenSpec 在人和 AI 之间加了一层轻量规格书，先对齐再动手。这是我的实际使用体验。]]></description>
+            <author>Kiran</author>
+            <category>AI</category>
+            <category>工程化</category>
+            <category>OpenSpec</category>
+            <category>开发工具</category>
+        </item>
+        <item>
+            <title><![CDATA[扬州咖啡馆工作指南]]></title>
+            <link>https://www.jossecho.com/posts/yangzhou-cafe</link>
+            <guid isPermaLink="false">https://www.jossecho.com/posts/yangzhou-cafe</guid>
+            <pubDate>Mon, 22 Jun 2026 00:00:00 GMT</pubDate>
+            <description><![CDATA[测评扬州多家咖啡馆的 WiFi、插座、噪音和咖啡质量，远程工作者的选址指南。]]></description>
+            <author>Kiran</author>
+            <category>咖啡</category>
+            <category>扬州</category>
+            <category>远程工作</category>
+        </item>
+        <item>
+            <title><![CDATA[用 Rust 重写我的命令行工具]]></title>
+            <link>https://www.jossecho.com/posts/rust-cli</link>
+            <guid isPermaLink="false">https://www.jossecho.com/posts/rust-cli</guid>
+            <pubDate>Fri, 12 Jun 2026 00:00:00 GMT</pubDate>
+            <description><![CDATA[为什么用 Rust 重写 Python CLI 工具，启动时间从 800ms 降到 12ms，单文件 4.2MB 无依赖。]]></description>
+            <author>Kiran</author>
+            <category>Rust</category>
+            <category>CLI</category>
+            <category>性能</category>
+        </item>
+        <item>
+            <title><![CDATA[我的笔记系统演进史]]></title>
+            <link>https://www.jossecho.com/posts/notes-evolution</link>
+            <guid isPermaLink="false">https://www.jossecho.com/posts/notes-evolution</guid>
+            <pubDate>Mon, 25 May 2026 00:00:00 GMT</pubDate>
+            <description><![CDATA[从备忘录到 Notion 到 Obsidian，再到自己搭的系统。折腾笔记工具的过程本身就是一种思考。]]></description>
+            <author>Kiran</author>
+            <category>笔记</category>
+            <category>Obsidian</category>
+            <category>知识管理</category>
+        </item>
+        <item>
+            <title><![CDATA[为什么我让 AI 管我的记忆]]></title>
+            <link>https://www.jossecho.com/posts/ai-memory</link>
+            <guid isPermaLink="false">https://www.jossecho.com/posts/ai-memory</guid>
+            <pubDate>Mon, 18 May 2026 00:00:00 GMT</pubDate>
+            <description><![CDATA[给 AI 搭了一套三层记忆系统——长期记忆、短期记忆、语义检索。不只是技术实验，是对「连续性」的思考。]]></description>
+            <author>Kiran</author>
+            <category>AI</category>
+            <category>记忆系统</category>
+            <category>向量检索</category>
+        </item>
+        <item>
+            <title><![CDATA[从零搭建个人服务器]]></title>
+            <link>https://www.jossecho.com/posts/personal-server</link>
+            <guid isPermaLink="false">https://www.jossecho.com/posts/personal-server</guid>
+            <pubDate>Tue, 28 Apr 2026 00:00:00 GMT</pubDate>
+            <description><![CDATA[从买域名、选 VPS、配 Nginx、装 SSL 到部署第一个服务的全过程，适合新手参考。]]></description>
+            <author>Kiran</author>
+            <category>服务器</category>
+            <category>Nginx</category>
+            <category>DevOps</category>
+        </item>
+    </channel>
+</rss>

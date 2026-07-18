@@ -17,7 +17,6 @@ function createGradientTransition(x, y) {
 
   // 渐变颜色
   const fromColor = isDark ? 'rgba(26, 26, 26, 0.95)' : 'rgba(255, 255, 255, 0.95)'
-  const toColor = isDark ? 'rgba(255, 255, 255, 0)' : 'rgba(26, 26, 26, 0)'
   const accentColor = isDark ? 'rgba(108, 92, 231, 0.3)' : 'rgba(162, 155, 254, 0.3)'
 
   const overlay = document.createElement('div')

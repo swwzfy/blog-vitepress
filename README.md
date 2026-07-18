@@ -30,12 +30,14 @@ docs/
 ├── projects.md              # 中文项目展示
 ├── friends.md               # 中文友链
 ├── posts/                   # 中文文章目录
-│   ├── rust-cli.md
-│   ├── indie-dev-first-year.md
-│   ├── notes-evolution.md
 │   ├── ai-memory.md
-│   ├── shanghai-cafe.md
-│   └── personal-server.md
+│   ├── local-llm-deployment.md
+│   ├── notes-evolution.md
+│   ├── openclaw-vs-hermes.md
+│   ├── openspec-review.md
+│   ├── personal-server.md
+│   ├── rust-cli.md
+│   └── yangzhou-cafe.md
 └── en/                      # 英文版本（镜像结构）
     ├── index.md
     ├── about.md
@@ -110,15 +112,16 @@ description: 文章描述，用于 SEO
 ## 常用命令
 
 ```bash
-npm run dev      # 本地开发 http://localhost:5173
-npm run build    # 构建静态文件
+npm run dev      # 本地开发（predev 自动 kill 旧 :5173 进程，跳到 :5173）
+npm run build    # 构建静态文件 + sitemap + 双语 RSS
 npm run preview  # 预览构建结果
+npm run og       # 重生成 OG 图（参数见 .agents/scripts/make-og.js）
 ```
 
 ## 插件
 
 - **sitemap** — 自动生成 `sitemap.xml`
-- **rss** — 自动生成 `feed.rss`
+- **rss** — 自写 `scripts/build-rss.js`（替代 `vitepress-plugin-rss`，输出中英两份 `feed.rss` 与 `en/feed.rss`）
 
 ## 部署前
 

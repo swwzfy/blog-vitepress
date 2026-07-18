@@ -1,24 +1,9 @@
 <script setup lang="ts">
 import { computed } from 'vue'
-import { useData, withBase } from 'vitepress'
-
-interface Post {
-  title: string
-  url: string
-  date: string
-}
-
-const { lang } = useData()
-const isEn = computed(() => lang.value.startsWith('en'))
-
-const zhModules = import.meta.glob('../../posts/*.md', { eager: true })
-const enModules = import.meta.glob('../../en/posts/*.md', { eager: true })
-
-function formatDate(dateStr: string): string {
-  if (!dateStr) return ''
-  const d = new Date(dateStr)
-  return `${d.getFullYear()}-${String(d.getMonth() + 1).padStart(2, '0')}-${String(d.getDate()).padStart(2, '0')}`
-}
+import { zhPosts, enPosts } from '@/utils/posts'
+import { formatDate } from '@/utils/format'
+import { useLocale } from '@/composables/useLocale'
+import type { Post } from '@/utils/types'
 
 interface GroupedPosts {
   [year: string]: {
@@ -26,54 +11,54 @@ interface GroupedPosts {
   }
 }
 
-const sortedYears = computed<string[]>(() => {
-  return Object.keys(grouped.value).sort((a, b) => Number(b) - Number(a))
-})
-
-function sortedMonths(year: string): string[] {
-  return Object.keys(grouped.value[year]).sort((a, b) => Number(b) - Number(a))
-}
+const { isEn } = useLocale()
 
 const grouped = computed<GroupedPosts>(() => {
-  const list: Post[] = []
-  const modules = isEn.value ? enModules : zhModules
-
-  for (const [filePath, mod] of Object.entries(modules)) {
-    const data = (mod as any).__pageData
-    if (!data) continue
-    const relPath = filePath.replace(/^\.\.\/\.\.\//, '').replace(/\.md$/, '')
-    list.push({
-      title: data.title || '',
-      url: withBase('/' + relPath),
-      date: data.frontmatter?.date || ''
-    })
-  }
-
-  const sorted = list.sort((a, b) => new Date(b.date).getTime() - new Date(a.date).getTime())
-  const grouped: GroupedPosts = {}
+  const list = isEn.value ? enPosts : zhPosts
+  const sorted = [...list].sort((a, b) => new Date(b.date).getTime() - new Date(a.date).getTime())
+  const out: GroupedPosts = {}
 
   for (const post of sorted) {
     if (!post.date) continue
     const d = new Date(post.date)
     const year = String(d.getFullYear())
     const month = String(d.getMonth() + 1)
-    if (!grouped[year]) grouped[year] = {}
-    if (!grouped[year][month]) grouped[year][month] = []
-    grouped[year][month].push(post)
+    ;(out[year] ||= {})[month] ||= []
+    out[year][month].push(post)
   }
+  return out
+})
 
-  return grouped
+const sortedYears = computed<string[]>(() =>
+  Object.keys(grouped.value).sort((a, b) => Number(b) - Number(a))
+)
+
+const sortedMonths = computed<Record<string, string[]>>(() => {
+  const out: Record<string, string[]> = {}
+  for (const year of Object.keys(grouped.value)) {
+    out[year] = Object.keys(grouped.value[year]).sort((a, b) => Number(b) - Number(a))
+  }
+  return out
 })
 
 function monthLabel(m: string): string {
+  if (isEn.value) {
+    const idx = parseInt(m, 10) - 1
+    return MONTH_NAMES_EN[idx] || m
+  }
   return `${m}月`
 }
+
+const MONTH_NAMES_EN = [
+  'January', 'February', 'March', 'April', 'May', 'June',
+  'July', 'August', 'September', 'October', 'November', 'December'
+] as const
 </script>
 
 <template>
   <div v-for="year in sortedYears" :key="year" class="archive-year">
     <h2>{{ year }}</h2>
-    <div v-for="month in sortedMonths(year)" :key="month" class="archive-month">
+    <div v-for="month in sortedMonths[year]" :key="month" class="archive-month">
       <h3>{{ monthLabel(month) }}</h3>
       <ul class="archive-list">
         <li v-for="post in grouped[year][month]" :key="post.url">

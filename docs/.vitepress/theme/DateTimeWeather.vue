@@ -1,9 +1,8 @@
 <script setup lang="ts">
-import { ref, onMounted, computed } from 'vue'
-import { useData } from 'vitepress'
+import { ref, onMounted } from 'vue'
+import { useLocale } from '@/composables/useLocale'
 
-const { lang } = useData()
-const isEn = computed(() => lang.value.startsWith('en'))
+const { isEn } = useLocale()
 
 const now = ref(new Date())
 const weather = ref('')
@@ -70,7 +69,7 @@ const weatherCodeMap: Record<number, { zh: string; en: string }> = {
   86: { zh: '大阵雪', en: 'Heavy Snow Showers' },
   95: { zh: '雷暴', en: 'Thunderstorm' },
   96: { zh: '雷暴+小冰雹', en: 'Thunderstorm with Slight Hail' },
-  99: { zh: '雷暴+大冰雹', en: 'Thunderstorm with Heavy Hail' },
+  99: { zh: '雷暴+大冰雹', en: 'Thunderstorm with Heavy Hail' }
 }
 
 function getWeatherEmoji(code: number): string {
@@ -88,7 +87,7 @@ function getWeatherEmoji(code: number): string {
 async function fetchWeather() {
   try {
     const res = await fetch(
-      'https://api.open-meteo.com/v1/forecast?latitude=31.23&longitude=121.47&current=temperature_2m,weather_code'
+      'https://api.open-meteo.com/v1/forecast?latitude=32.39&longitude=119.40&current=temperature_2m,weather_code'
     )
     const data = await res.json()
     const { temperature_2m, weather_code } = data.current

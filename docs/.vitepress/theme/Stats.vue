@@ -1,27 +1,18 @@
 <script setup lang="ts">
 import { computed } from 'vue'
-import { useData } from 'vitepress'
+import { zhPosts, enPosts } from '@/utils/posts'
+import { useLocale } from '@/composables/useLocale'
 
-const { lang } = useData()
-const isEn = computed(() => lang.value.startsWith('en'))
-
-const postModules = import.meta.glob('../../posts/*.md', { eager: true })
+const { isEn } = useLocale()
 
 const stats = computed(() => {
-  let postCount = 0
+  const posts = isEn.value ? enPosts : zhPosts
   const tagSet = new Set<string>()
-
-  for (const [, mod] of Object.entries(postModules)) {
-    const data = (mod as any).__pageData
-    if (!data) continue
-
-    postCount++
-    const tags: string[] = data.frontmatter?.tags || []
-    tags.forEach(t => tagSet.add(t))
+  for (const post of posts) {
+    for (const tag of post.tags) tagSet.add(tag)
   }
-
   return {
-    posts: postCount,
+    posts: posts.length,
     tags: tagSet.size
   }
 })
@@ -87,7 +78,6 @@ const stats = computed(() => {
     gap: 24px;
     padding: 20px;
   }
-
   .stat-number {
     font-size: 28px;
   }
