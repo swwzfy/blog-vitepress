@@ -10,8 +10,8 @@
 /en/feed.rss
   Content-Type: application/rss+xml; charset=utf-8
 
-/feed.html
+/feed-preview.html
   Content-Type: text/html; charset=utf-8
 
-/en/feed.html
+/en/feed-preview.html
   Content-Type: text/html; charset=utf-8

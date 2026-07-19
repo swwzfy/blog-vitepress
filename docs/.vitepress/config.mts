@@ -82,7 +82,7 @@ export default defineConfig({
           server.middlewares.use((req, res, next) => {
             if (req.url === '/feed.rss' || req.url === '/en/feed.rss') {
               res.setHeader('Content-Type', 'application/rss+xml; charset=utf-8')
-            } else if (req.url === '/feed.html' || req.url === '/en/feed.html') {
+            } else if (req.url === '/feed-preview.html' || req.url === '/en/feed-preview.html') {
               res.setHeader('Content-Type', 'text/html; charset=utf-8')
             }
             next()
@@ -92,7 +92,7 @@ export default defineConfig({
           server.middlewares.use((req, res, next) => {
             if (req.url === '/feed.rss' || req.url === '/en/feed.rss') {
               res.setHeader('Content-Type', 'application/rss+xml; charset=utf-8')
-            } else if (req.url === '/feed.html' || req.url === '/en/feed.html') {
+            } else if (req.url === '/feed-preview.html' || req.url === '/en/feed-preview.html') {
               res.setHeader('Content-Type', 'text/html; charset=utf-8')
             }
             next()
@@ -154,7 +154,7 @@ export default defineConfig({
     const { dirname, relative } = await import('node:path')
     const PROJECT_ROOT_DOCS = resolve(siteConfig.outDir, '..', '..')
     const PUBLIC_DIR = resolve(PROJECT_ROOT_DOCS, 'public')
-    const files = ['feed.rss', 'en/feed.rss', 'feed.html', 'en/feed.html']
+    const files = ['feed.rss', 'en/feed.rss', 'feed-preview.html', 'en/feed-preview.html']
     for (const rel of files) {
       const srcPath = resolve(siteConfig.outDir, rel)
       const destPath = resolve(PUBLIC_DIR, rel)

@@ -189,8 +189,8 @@ watch(() => page.value.relativePath, update)
           </div>
 
           <div class="footer-aside">
-            <a v-if="isEn" href="/en/feed.rss">RSS</a>
-            <a v-else href="/feed.rss">RSS</a>
+            <a v-if="isEn" href="/en/feed.rss" target="_blank" rel="noopener">RSS</a>
+            <a v-else href="/feed.rss" target="_blank" rel="noopener">RSS</a>
             <span class="aside-dot">/</span>
             <a href="https://github.com/swwzfy" target="_blank" rel="noopener">GitHub</a>
             <span class="aside-dot">/</span>

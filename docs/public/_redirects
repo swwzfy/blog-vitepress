@@ -1,0 +1,7 @@
+# Cloudflare Pages / Netlify 路由规则
+# /feed.rss 与 /en/feed.rss：Cloudflare Pages 把 .rss 当作"未知扩展名"会 302 到
+# 同名 base 的 .html（即 /feed.html）。用 200 静态重写把这两个路径锁到原文件本身，
+# RSS 阅读器订阅时拿到真正的 application/rss+xml 而不是 HTML 预览页。
+
+/feed.rss /feed.rss 200
+/en/feed.rss /en/feed.rss 200

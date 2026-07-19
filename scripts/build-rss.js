@@ -96,7 +96,7 @@ async function buildRss(siteConfig) {
   const variants = [
     {
       out: 'feed.rss',
-      htmlOut: 'feed.html',
+      htmlOut: 'feed-preview.html',
       title: "Kiran's Blog",
       description: '独立开发者 · 写作者 · 终身学习者',
       language: 'zh-CN',
@@ -105,7 +105,7 @@ async function buildRss(siteConfig) {
     },
     {
       out: 'en/feed.rss',
-      htmlOut: 'en/feed.html',
+      htmlOut: 'en/feed-preview.html',
       title: "Kiran's Blog",
       description: 'Indie Developer · Writer · Lifelong Learner',
       language: 'en-US',
