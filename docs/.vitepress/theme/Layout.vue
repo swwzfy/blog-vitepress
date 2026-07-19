@@ -189,12 +189,17 @@ watch(() => page.value.relativePath, update)
           </div>
 
           <div class="footer-aside">
-            <a v-if="isEn" href="/en/feed.rss" target="_blank" rel="noopener">RSS</a>
-            <a v-else href="/feed.rss" target="_blank" rel="noopener">RSS</a>
-            <span class="aside-dot">/</span>
-            <a href="https://github.com/swwzfy" target="_blank" rel="noopener">GitHub</a>
-            <span class="aside-dot">/</span>
-            <a href="https://beian.miit.gov.cn/" target="_blank" rel="noopener">苏ICP备2026040107号-1</a>
+            <div class="footer-qrcode">
+              <img src="/joss-qrcode.jpg" alt="JOSS 实验室公众号二维码" loading="lazy" />
+            </div>
+            <div>
+              <a v-if="isEn" href="/en/feed.rss" target="_blank" rel="noopener">RSS</a>
+              <a v-else href="/feed.rss" target="_blank" rel="noopener">RSS</a>
+              <span class="aside-dot">/</span>
+              <a href="https://github.com/swwzfy" target="_blank" rel="noopener">GitHub</a>
+              <span class="aside-dot">/</span>
+              <a href="https://beian.miit.gov.cn/" target="_blank" rel="noopener">苏ICP备2026040107号-1</a>
+            </div>
           </div>
         </div>
       </footer>

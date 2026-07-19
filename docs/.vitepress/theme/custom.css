@@ -907,10 +907,35 @@
 .footer-aside {
   flex: 0 0 auto;
   display: flex;
-  align-items: center;
-  gap: 6px;
+  flex-direction: column;
+  align-items: flex-end;
+  gap: 12px;
   font-size: 13px;
   color: var(--vp-c-text-3);
+}
+
+.footer-qrcode {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.footer-qrcode img {
+  width: 80px;
+  height: 80px;
+  border-radius: 4px;
+  opacity: 0.8;
+  transition: opacity 0.2s ease;
+}
+
+.footer-qrcode img:hover {
+  opacity: 1;
+}
+
+.footer-aside > div:last-child {
+  display: flex;
+  align-items: center;
+  gap: 6px;
   white-space: nowrap;
 }
 

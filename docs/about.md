@@ -50,3 +50,9 @@ title: 关于
 - 🐙 [GitHub](https://github.com/swwzfy)
 - 💭 [知乎](https://www.zhihu.com/people/zi-fei-yu-53-37)
 - 📧 [Email](mailto:swwzfy@163.com)
+
+### 关注 JOSS 实验室
+
+扫描二维码关注微信公众号，获取最新的折腾笔记和 AI Agent 相关的思考。
+
+![JOSS 实验室公众号二维码](/joss-qrcode.jpg)
