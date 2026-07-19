@@ -123,9 +123,40 @@ npm run og       # 重生成 OG 图（参数见 .agents/scripts/make-og.js）
 - **sitemap** — 自动生成 `sitemap.xml`
 - **rss** — 自写 `scripts/build-rss.js`（替代 `vitepress-plugin-rss`，输出中英两份 `feed.rss` 与 `en/feed.rss`）
 
-## 部署前
+## RSS 订阅
+
+支持中英双语 RSS Feed，自动生成预览页面：
+
+- 中文 RSS: `https://your-domain/feed.rss` 和预览页 `https://your-domain/feed-preview.html`
+- 英文 RSS: `https://your-domain/en/feed.rss` 和预览页 `https://your-domain/en/feed-preview.html`
+
+RSS 逻辑由 `scripts/build-rss.js` 生成，包含完整的 HTML 预览和可视化 XSL 样式表。
+
+## 部署
+
+### 部署前
 
 修改 `config.mts` 中的 `hostname` 为真实域名：
 ```ts
 const hostname = 'https://your-domain.com'
 ```
+
+### 构建并部署
+
+```bash
+npm run build       # 生成静态文件到 docs/.vitepress/dist
+
+# 上传 docs/.vitepress/dist 到服务器
+# 使用 nginx / apache 指向该目录
+# 或上传到 CDN / 静态站点托管服务
+```
+
+### Netlify / Vercel 部署配置
+
+`_headers` 已配置正确的 Content-Type 和缓存策略，确保 RSS 和 HTML 文件以 UTF-8 编码传输。
+
+## 最近改进
+
+- ✅ 修复 RSS 预览页中文乱码（UTF-8 编码 + 正确的 HTTP 响应头）
+- ✅ 删除无用的设计参考图片和过时的 XSL 样式表
+- ✅ 项目结构整洁化，移除临时测试文件
