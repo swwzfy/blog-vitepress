@@ -9,6 +9,10 @@
   max-width: 100% !important;
 }
 
+.site-footer {
+  z-index: 100;
+}
+
 /* 隐藏 VitePress 默认 footer（用 #layout-bottom 自定义） */
 .VPFooter {
   display: none;
