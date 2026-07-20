@@ -145,11 +145,13 @@ const hostname = 'https://your-domain.com'
 
 ```bash
 npm run build       # 生成静态文件到 docs/.vitepress/dist
-
-# 上传 docs/.vitepress/dist 到服务器
-# 使用 nginx / apache 指向该目录
-# 或上传到 CDN / 静态站点托管服务
 ```
+
+**打包规则：不压缩，直接上传 `docs/.vitepress/dist` 目录**
+- 上传整个 `docs/.vitepress/dist` 文件夹到服务器
+- 使用 nginx / apache 指向该目录
+- 或上传到 CDN / 静态站点托管服务
+- 不需要压缩成 zip / tar.gz
 
 ### Netlify / Vercel 部署配置
 
