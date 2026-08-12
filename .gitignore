@@ -6,4 +6,7 @@ docs/.vitepress/cache/
 .playwright-mcp/
 .env
 .env.*
+# 根目录的临时图（微信下载、截图等不进版本）
+# 页面配图/logo 请放 docs/public/，本规则不命中子目录
 /*.png
+/*.jpg
