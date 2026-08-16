@@ -19,9 +19,16 @@ docs/
 │       ├── index.ts         # 主题入口
 │       ├── Layout.vue       # 自定义布局（文章头部、相关推荐、404）
 │       ├── Tags.vue         # 标签页组件
+│       ├── Archives.vue     # 归档页组件
+│       ├── Stats.vue        # 统计组件（文章数、字数等）
+│       ├── RecentPosts.vue  # 首页最近文章组件
+│       ├── DateTimeWeather.vue # 首页日期天气组件
 │       ├── useTags.ts       # 标签数据加载
+│       ├── theme-transition.js # 主题切换过渡
 │       ├── custom.css       # 自定义样式（配色、动画、光标）
-│       └── effects.js       # 粒子系统 + 鼠标光晕 + 自定义光标
+│       ├── effects.js       # 粒子系统 + 鼠标光晕 + 自定义光标
+│       ├── composables/     # 组合式函数（useLocale 等）
+│       └── utils/           # 工具函数（posts、types、format）
 ├── index.md                 # 中文首页
 ├── about.md                 # 中文关于页
 ├── archives.md              # 中文文章归档
@@ -31,11 +38,13 @@ docs/
 ├── friends.md               # 中文友链
 ├── posts/                   # 中文文章目录
 │   ├── ai-memory.md
+│   ├── deepseek-harness.md
 │   ├── local-llm-deployment.md
 │   ├── notes-evolution.md
 │   ├── openclaw-vs-hermes.md
 │   ├── openspec-review.md
 │   ├── personal-server.md
+│   ├── python-setup.md
 │   ├── rust-cli.md
 │   └── yangzhou-cafe.md
 └── en/                      # 英文版本（镜像结构）
