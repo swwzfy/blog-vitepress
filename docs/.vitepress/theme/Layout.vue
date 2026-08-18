@@ -83,7 +83,55 @@ function goBack() {
   else window.location.href = '/'
 }
 
-onMounted(update)
+// 客户端首次加载 live2d 柴犬看板娘。CDN 动态注入，不进 VitePress bundle。
+// webpack 拆包加载顺序：先 main (L2Dwidget.min.js) 再 manifest (L2Dwidget.0.min.js)，
+// 反序会报 webpackJsonp is not defined。
+// dialog.script 键名是 snake_case（tap_body），不是文档写的 'tap body'（带空格）。
+// 移动端 < 768 关闭。调试可在控制台 `window.__DISABLE_LIVE2D__ = true`。
+const L2D_AUTOLOAD = 'https://unpkg.com/live2d-widget@3.1.4/lib/L2Dwidget.min.js'
+const L2D_MANIFEST = 'https://unpkg.com/live2d-widget@3.1.4/lib/L2Dwidget.0.min.js'
+const L2D_MODEL = 'https://unpkg.com/live2d-widget-model-tororo@1.0.5/assets/tororo.model.json'
+let l2dLoaded = false
+
+function loadLive2d() {
+  if (l2dLoaded) return
+  l2dLoaded = true
+  const win = window as any
+  if (win.__DISABLE_LIVE2D__) return
+  if (win.innerWidth < 768) return
+
+  const main = document.createElement('script')
+  main.src = L2D_AUTOLOAD
+  main.async = false
+
+  const manifest = document.createElement('script')
+  manifest.src = L2D_MANIFEST
+  manifest.async = false
+  manifest.onload = () => {
+    if (!win.L2Dwidget) return
+    win.L2Dwidget.init({
+      model: { jsonPath: L2D_MODEL },
+      display: { position: 'left', width: 150, height: 200, hOffset: 0, vOffset: -20 },
+      mobile: { show: false },
+      react: { opacityDefault: 1, opacityOnhover: 0.3 },
+      dialog: {
+        enable: true,
+        hitokoto: false,
+        script: {
+          tap_body: ['干嘛呢。', '别戳了，我趴着呢。', '嗯？']
+        }
+      }
+    })
+  }
+
+  document.body.appendChild(main)
+  document.body.appendChild(manifest)
+}
+
+onMounted(() => {
+  update()
+  loadLive2d()
+})
 watch(() => page.value.relativePath, update)
 </script>
 

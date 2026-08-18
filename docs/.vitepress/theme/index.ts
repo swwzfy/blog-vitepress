@@ -19,10 +19,12 @@ export default {
     const Stats = (await import('./Stats.vue')).default
     const DateTimeWeather = (await import('./DateTimeWeather.vue')).default
     const Archives = (await import('./Archives.vue')).default
+    const LifeList = (await import('./components/LifeList.vue')).default
     app.component('Tags', Tags)
     app.component('RecentPosts', RecentPosts)
     app.component('Stats', Stats)
     app.component('DateTimeWeather', DateTimeWeather)
     app.component('Archives', Archives)
+    app.component('LifeList', LifeList)
   }
 }
