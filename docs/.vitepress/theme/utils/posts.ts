@@ -7,6 +7,7 @@ interface PageModule {
       date?: string
       description?: string
       tags?: string[]
+      draft?: boolean
     }
   }
 }
@@ -17,6 +18,7 @@ const enModules = import.meta.glob('../../../en/posts/*.md', { eager: true }) as
 function parsePost(filePath: string, mod: PageModule): Post | null {
   const data = mod.__pageData
   if (!data) return null
+  if (data.frontmatter?.draft === true) return null
   const relPath = filePath.replace(/^(?:\.\.\/)+/, '').replace(/\.md$/, '')
   return {
     title: data.title || '',

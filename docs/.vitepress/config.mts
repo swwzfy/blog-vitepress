@@ -17,6 +17,7 @@ export default defineConfig({
           { text: '首页', link: '/' },
           { text: '文章', link: '/archives' },
           { text: '项目', link: '/projects' },
+          { text: '生活', link: '/life' },
           { text: '标签', link: '/tags' },
           { text: '时间线', link: '/timeline' },
           { text: '友链', link: '/friends' },
@@ -53,6 +54,7 @@ export default defineConfig({
           { text: 'Home', link: '/en/' },
           { text: 'Articles', link: '/en/archives' },
           { text: 'Projects', link: '/en/projects' },
+          { text: 'Life', link: '/en/life' },
           { text: 'Tags', link: '/en/tags' },
           { text: 'Timeline', link: '/en/timeline' },
           { text: 'Friends', link: '/en/friends' },
@@ -163,6 +165,10 @@ export default defineConfig({
       console.log(`  mirrored ${rel} -> ${relative(PROJECT_ROOT_DOCS, destPath)}`)
     }
   },
+  // VitePress 不会自动排除 draft: true 的页面 —— 设 srcExclude 让它不进入路由表。
+  // 列表组件（Archives/Tags/LifeList 等）扫的是 src/posts/*.md，不走路由，
+  // 所以下面还要在 build-rss.js 里按 frontmatter.draft 再过滤一次。
+  srcExclude: ['**/posts/suzhou-hanshan-temple.md', '**/en/posts/suzhou-hanshan-temple.md'],
   themeConfig: {
     search: {
       provider: 'local'

@@ -31,9 +31,11 @@ function loadPosts(dir, urlPrefix) {
         description: data.description || '',
         date: data.date ? new Date(data.date) : new Date(),
         url: '/' + urlPrefix + '/' + slug,
-        tags: Array.isArray(data.tags) ? data.tags : []
+        tags: Array.isArray(data.tags) ? data.tags : [],
+        draft: data.draft === true
       }
     })
+    .filter(p => !p.draft) // draft 文章不进 RSS
     .sort((a, b) => b.date.getTime() - a.date.getTime())
     .slice(0, LIMIT)
 }
