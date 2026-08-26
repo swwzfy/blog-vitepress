@@ -10,3 +10,6 @@ docs/.vitepress/cache/
 # 页面配图/logo 请放 docs/public/，本规则不命中子目录
 /*.png
 /*.jpg
+
+# WorkBuddy 私有数据（身份/记忆/配置），不进版本
+.workbuddy/
