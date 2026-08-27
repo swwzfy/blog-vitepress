@@ -4,12 +4,26 @@
         <title>Kiran's Blog</title>
         <link>https://www.jossecho.com/</link>
         <description>独立开发者 · 写作者 · 终身学习者</description>
-        <lastBuildDate>Tue, 18 Aug 2026 13:34:17 GMT</lastBuildDate>
+        <lastBuildDate>Thu, 27 Aug 2026 02:32:44 GMT</lastBuildDate>
         <docs>https://validator.w3.org/feed/docs/rss2.html</docs>
         <generator>custom-build-rss</generator>
         <language>zh-CN</language>
         <copyright>Copyright (c) 2026-present, Kiran</copyright>
         <atom:link href="https://www.jossecho.com/feed.rss" rel="self" type="application/rss+xml"/>
+        <item>
+            <title><![CDATA[WorkBuddy：把 AI 从对话框变成工作台]]></title>
+            <link>https://www.jossecho.com/posts/workbuddy</link>
+            <guid isPermaLink="false">https://www.jossecho.com/posts/workbuddy</guid>
+            <pubDate>Thu, 27 Aug 2026 00:00:00 GMT</pubDate>
+            <description><![CDATA[用过很多 AI 工具之后，我发现自己真正缺的不是"更会聊天的模型"，而是能真正动手干活的助手。WorkBuddy 给我的感觉是——它把文件、命令行、浏览器和多模态生成都接到了同一个对话里。]]></description>
+            <content:encoded><![CDATA[<div><h1 id="workbuddy-把-ai-从对话框变成工作台" tabindex="-1">WorkBuddy：把 AI 从对话框变成工作台 <a class="header-anchor" href="#workbuddy-把-ai-从对话框变成工作台" aria-label="Permalink to &quot;WorkBuddy：把 AI 从对话框变成工作台&quot;">​</a></h1><p>我写过<a href="/posts/ai-memory.html">为什么让 AI 管我的记忆</a>和 <a href="/posts/deepseek-harness.html">DeepSeek Harness 的插件哲学</a>。这两篇背后其实是同一个执念：我想要的不是一个更聪明的聊天框，而是一个能替我把事情做完的工作台。</p><h2 id="对话式-ai-的天花板" tabindex="-1">对话式 AI 的天花板 <a class="header-anchor" href="#对话式-ai-的天花板" aria-label="Permalink to &quot;对话式 AI 的天花板&quot;">​</a></h2><p>大模型的上下文窗口再长，它本质上仍停在&quot;对话&quot;这一层。它能给你答案、给你代码、给你建议，但下一步——把代码写进文件、跑通、截图验证、部署上线——得你亲自来。</p><p>这就是我过去一年的真实状态：AI 负责&quot;想&quot;，我负责&quot;做&quot;。中间那道手工搬运的缝，消耗了我最多的精力。</p><h2 id="workbuddy-是什么" tabindex="-1">WorkBuddy 是什么 <a class="header-anchor" href="#workbuddy-是什么" aria-label="Permalink to &quot;WorkBuddy 是什么&quot;">​</a></h2><p>一句话：<strong>它是把文件系统、命令行、浏览器和多模态生成都接进同一个对话里的 AI 工作台</strong>。</p><p>它不是又一个聊天机器人。它的工作循环（agent loop）是：理解意图 → 选工具 → 执行动作 → 看结果 → 继续，直到任务完成。</p><p>换句话说，它能在你的项目目录里读写文件、跑命令、起本地服务预览、联网检索，最后把成稿直接放到博客的 <code>posts/</code> 下。</p><blockquote><p>这跟我在 <a href="/posts/deepseek-harness.html">DeepSeek Harness</a> 里看到的&quot;一切皆插件&quot;思路暗合——只不过 WorkBuddy 把&quot;读写文件&quot;&quot;跑命令&quot;&quot;生成图片&quot;这些能力做成了开箱即用的内置工具，而不是要你自己拼装的空架子。</p></blockquote><h2 id="我常用的几层能力" tabindex="-1">我常用的几层能力 <a class="header-anchor" href="#我常用的几层能力" aria-label="Permalink to &quot;我常用的几层能力&quot;">​</a></h2><table tabindex="0"><thead><tr><th>能力层</th><th>它能替我做什么</th><th>博客里的对应场景</th></tr></thead><tbody><tr><td>研究与写作</td><td>联网核实事实、整理资料、产出成稿</td><td>写技术文章、读后感</td></tr><tr><td>数据与分析</td><td>处理表格、画图、做可视化</td><td>项目数据复盘</td></tr><tr><td>构建</td><td>直接产出可运行的网站 / 小工具</td><td>给博客加 Live2D 看板娘</td></tr><tr><td>多模态</td><td>生成图片、视频、3D 模型</td><td>封面图、配图</td></tr><tr><td>系统访问</td><td>读写本地文件、跑命令、起预览服务</td><td>部署前的本地校验</td></tr><tr><td>专家 &amp; 连接器</td><td>100+ 领域专家、外部服务 / MCP</td><td>专业问题求助</td></tr><tr><td>技能 &amp; 自动化</td><td>把重复流程固化成技能、定时跑</td><td>周报、RSS 同步</td></tr></tbody></table><h2 id="一个真实的循环" tabindex="-1">一个真实的循环 <a class="header-anchor" href="#一个真实的循环" aria-label="Permalink to &quot;一个真实的循环&quot;">​</a></h2><p>比如今天这篇——它本身就是 WorkBuddy 写的。</p><p>流程大概是这样：</p><ol><li>我说&quot;根据现有博客内容，写一篇关于 WorkBuddy 的文章&quot;</li><li>它先读了 <code>config.mts</code>、几篇旧文、<code>posts.ts</code>，搞清我的写作格式和归档怎么自动收录</li><li>在 <code>docs/posts/</code> 下生成中文稿，再镜像一份到 <code>docs/en/posts/</code></li><li>我预览、改几处，它按反馈改</li></ol><p>注意第 2 步：它<strong>自己去看</strong>了我的 frontmatter 约定、标签风格、收录机制。这不是&quot;根据提示词猜&quot;，是它真的进到了文件系统里。</p><h2 id="它改变了什么" tabindex="-1">它改变了什么 <a class="header-anchor" href="#它改变了什么" aria-label="Permalink to &quot;它改变了什么&quot;">​</a></h2><p>不是&quot;写得更快&quot;——虽然确实更快。</p><p>真正改变的是<strong>可以委托的边界</strong>被推远了。以前&quot;写篇文章并发布&quot;要拆成十几个手动步骤；现在我能把它描述成一个目标，然后去泡杯咖啡。</p><p>但也要诚实：它还不是全自动的。长任务里 agent loop 偶尔会跑偏，生成的内容需要你把关，敏感操作（删文件、发邮件）它也会停下来问你。这反而是我信任它的原因——<strong>它有动手的能力，也有收手的克制</strong>。</p><h2 id="结语" tabindex="-1">结语 <a class="header-anchor" href="#结语" aria-label="Permalink to &quot;结语&quot;">​</a></h2><p>工具的价值不在于它多炫，而在于它能不能接住你真实的工作流。WorkBuddy 对我来说，是把&quot;想&quot;和&quot;做&quot;之间的那道缝，填上了一大半。</p><p>如果你也在找一个不只是聊天、能真正陪你把事做完的 AI，值得试试。</p></div></div>]]></content:encoded>
+            <author>Kiran</author>
+            <category>AI</category>
+            <category>工具</category>
+            <category>WorkBuddy</category>
+            <category>Agent</category>
+            <category>工作流</category>
+        </item>
         <item>
             <title><![CDATA[在 VitePress 博客集成 Live2D 看板娘]]></title>
             <link>https://www.jossecho.com/posts/vitepress-live2d-mascot</link>
