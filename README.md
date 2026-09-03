@@ -15,7 +15,7 @@
 docs/
 ├── .vitepress/
 │   ├── config.mts          # 站点配置（导航、i18n、插件、构建钩子）
-│   ├── secure-words.txt    # 敏感词列表（评论功能未上线，当前未被引用，保留备用）
+│   ├── secure-words.txt    # 敏感词列表模板（blog-api 部署时可复制到 api/data/ 启用过滤）
 │   ├── theme/
 │   │   ├── index.ts         # 主题入口（注册全局组件、加载特效）
 │   │   ├── Layout.vue        # 自定义布局（文章头部、相关推荐、404、页脚、live2D）
@@ -30,7 +30,7 @@ docs/
 │   │   ├── custom.css        # 自定义样式（配色、动画、光标）
 │   │   ├── effects.js        # 粒子系统 + 鼠标光晕 + 自定义光标
 │   │   ├── composables/      # 组合式函数（useLocale 等）
-│   │   ├── components/       # 页面级组件（LifeList.vue）
+│   │   ├── components/       # 页面级组件（LifeList / MemoList / FriendsApp）
 │   │   └── utils/            # 工具函数（posts、types、format）
 │   ├── public/               # 静态资源（favicon、og 图、feed、二维码等）
 │   └── dist/                 # 构建产物（部署用，不纳入版本管理）
@@ -40,8 +40,9 @@ docs/
 ├── tags.md                  # 中文标签页
 ├── timeline.md              # 中文时间线
 ├── projects.md              # 中文项目展示
-├── friends.md               # 中文友链
+├── friends.md               # 中文友链（FriendsApp：自助申请 + 后台审核）
 ├── life.md                  # 中文生活页
+├── memos.md                 # 中文动态页（MemoList，依赖 blog-api）
 ├── posts/                   # 中文文章目录
 │   ├── ai-memory.md
 │   ├── deepseek-harness.md
@@ -62,6 +63,7 @@ docs/
     ├── projects.md
     ├── friends.md
     ├── life.md
+    ├── memos.md
     └── posts/
 ```
 
@@ -105,7 +107,7 @@ CSS 变量定义在 `custom.css`：
 
 ## 国际化（i18n）
 
-使用 VitePress 原生 locales 配置，支持中英文切换。导航项：首页 / 文章 / 项目 / 生活 / 标签 / 时间线 / 友链 / 关于（英文对应 `/en/*`）。
+使用 VitePress 原生 locales 配置，支持中英文切换。导航项：首页 / 文章 / 项目 / 生活 / 标签 / 时间线 / 动态 / 友链 / 关于（英文对应 `/en/*`）。
 
 ### 添加中文页面
 
@@ -151,7 +153,7 @@ npm run og       # 重生成 OG 图（依赖 .agents/scripts/make-og.js，该文
 ## 评论与敏感词
 
 - 评论组件依赖 `@giscus/vue` 已安装，但**评论功能当前已下线**（`Layout.vue` 中 `<Comment>` 已注释，未启用）。
-- `docs/.vitepress/secure-words.txt` 为**敏感词列表**，原计划用于评论过滤；因评论未上线，当前未被引用，保留备用。
+- `docs/.vitepress/secure-words.txt` 为**敏感词列表模板**（Waline 遗留格式）。blog-api 部署时可复制到 `api/data/secure-words.txt`，用于过滤动态内容与友链申请（详见下方 blog-api 一节）。
 
 ## RSS 订阅
 
@@ -185,6 +187,54 @@ npm run build       # 生成静态文件到 docs/.vitepress/dist
 
 > 当前为手动上传部署。如需「改完一键发布」，可后续增加 `rsync` / `scp` 脚本或 CI（如 GitHub Actions），尚未实现。
 
+## 动态内容与友链审核（blog-api 后端，可选）
+
+> 纯静态站点本身不需要后端。**只有当你想要下面的动态能力时才部署本后端**：
+> 动态页 `/memos` 由后台发布、即时展示（无需重新构建）；友链页支持访客自助申请，后台审核通过即刻上线。
+
+代码在仓库 `api/` 目录：Express + Node 内置 `node:sqlite`（**唯一依赖是 express，无原生模块**），数据库为单文件 `data/blog.db`。**要求 Node ≥ 24**。
+
+### 服务器一次性部署（宝塔）
+
+1. 软件商店安装 **Node 项目管理器**（Node 版本 ≥ 24）
+2. 上传 `api/` 目录到服务器 `/www/blog-api/`（**不要带上 node_modules**）
+3. 宝塔终端执行：`cd /www/blog-api && npm install --omit=dev`
+4. Node 项目管理器添加项目：目录 `/www/blog-api`、启动文件 `server.js`
+5. 在项目的**环境变量**里添加 `ADMIN_TOKEN`，填一个强随机串（管理后台登录用）；首次启动会自动导入现有静态友链（当前为 Leelaa）
+6. 验证进程监听在 `127.0.0.1:3000`（不要改成公网监听）
+
+### nginx 反向代理（宝塔）
+
+站点设置 → 反向代理 → **添加两条**：
+
+| 代理目录 | 目标 URL |
+|---|---|
+| `/api` | `http://127.0.0.1:3000` |
+| `/admin` | `http://127.0.0.1:3000` |
+
+> 代理目录必须限定，不能整站代理（否则静态文件全部失效）。
+
+### 使用
+
+- 发布动态 / 审核友链：访问 `https://www.jossecho.com/admin`，输入 `ADMIN_TOKEN` 登录
+- 首次启动自动导入 `SEED_FRIENDS`（Leelaa），之后新增友链全部走自助申请 + 审核
+- 敏感词过滤（可选）：把 `docs/.vitepress/secure-words.txt` 复制到服务器 `/www/blog-api/data/secure-words.txt`，以后直接编辑服务器上的这份文件（`#` 开头与空行忽略，词之间用逗号/空白分隔）
+- 本地开发：先 `cd api && npm install && ADMIN_TOKEN=xxx npm start`，再 `npm run dev`（已配置 `/api`、`/admin` dev 代理到 3000）
+
+### 数据备份（宝塔计划任务，每日）
+
+```bash
+mkdir -p /www/backup/blog-db
+cp /www/blog-api/data/blog.db /www/backup/blog-db/blog-$(date +%F).db
+find /www/backup/blog-db -mtime +30 -delete
+```
+
+### 安全注意
+
+- `ADMIN_TOKEN` 只放服务器环境变量，**不要提交进仓库**
+- 3000 端口仅监听 `127.0.0.1`，安全组 / 宝塔防火墙都不放行
+- 友链申请已做 IP 限频（同 IP 每 10 分钟最多 2 次）
+
 ### Netlify / Vercel 部署配置
 
 `_headers` 已配置正确的 Content-Type 和缓存策略，确保 RSS 和 HTML 文件以 UTF-8 编码传输。
@@ -197,5 +247,7 @@ npm run build       # 生成静态文件到 docs/.vitepress/dist
 - ✅ 文章页自动阅读时长 / 字数统计 + 相关文章推荐
 - ✅ 自定义 404 页（星空动画）
 - ✅ 评论功能下线，保留组件代码与敏感词表备用
+- ✅ 新增动态页（`/memos`）与 `MemoList.vue` 组件：后台发布即时展示，无需重新构建（依赖 blog-api）
+- ✅ 友链页改为自助申请 + 后台审核（`/admin`），通过即刻上线（依赖 blog-api）
 - ✅ 修复 RSS 预览页中文乱码（UTF-8 编码 + 正确的 HTTP 响应头）
 - ✅ 项目结构整洁化，移除临时测试文件

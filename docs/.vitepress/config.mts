@@ -20,6 +20,7 @@ export default defineConfig({
           { text: '生活', link: '/life' },
           { text: '标签', link: '/tags' },
           { text: '时间线', link: '/timeline' },
+          { text: '动态', link: '/memos' },
           { text: '友链', link: '/friends' },
           { text: '关于', link: '/about' }
         ],
@@ -57,6 +58,7 @@ export default defineConfig({
           { text: 'Life', link: '/en/life' },
           { text: 'Tags', link: '/en/tags' },
           { text: 'Timeline', link: '/en/timeline' },
+          { text: 'Memos', link: '/en/memos' },
           { text: 'Friends', link: '/en/friends' },
           { text: 'About', link: '/en/about' }
         ],
@@ -75,6 +77,13 @@ export default defineConfig({
     }
   },
   vite: {
+    // dev 模式把 /api 与 /admin 代理到本地 blog-api（npm run dev 前先起后端）
+    server: {
+      proxy: {
+        '/api': 'http://127.0.0.1:3000',
+        '/admin': 'http://127.0.0.1:3000'
+      }
+    },
     // 给 dev / preview 的 RSS 与 HTML 预览补 Content-Type charset。
     // 多数 reader 优先看 HTTP 头而不是 XML prolog，缺 charset 在中文 Windows 上会乱码。
     plugins: [

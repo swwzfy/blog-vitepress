@@ -20,11 +20,15 @@ export default {
     const DateTimeWeather = (await import('./DateTimeWeather.vue')).default
     const Archives = (await import('./Archives.vue')).default
     const LifeList = (await import('./components/LifeList.vue')).default
+    const MemoList = (await import('./components/MemoList.vue')).default
+    const FriendsApp = (await import('./components/FriendsApp.vue')).default
     app.component('Tags', Tags)
     app.component('RecentPosts', RecentPosts)
     app.component('Stats', Stats)
     app.component('DateTimeWeather', DateTimeWeather)
     app.component('Archives', Archives)
     app.component('LifeList', LifeList)
+    app.component('MemoList', MemoList)
+    app.component('FriendsApp', FriendsApp)
   }
 }

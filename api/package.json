@@ -1,0 +1,16 @@
+{
+  "name": "blog-api",
+  "version": "1.0.0",
+  "private": true,
+  "description": "Kiran's Blog 动态内容 + 友链审核 API（SQLite）",
+  "engines": {
+    "node": ">=24"
+  },
+  "main": "server.js",
+  "scripts": {
+    "start": "node server.js"
+  },
+  "dependencies": {
+    "express": "^4.21.2"
+  }
+}

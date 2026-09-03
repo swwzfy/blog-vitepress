@@ -4,8 +4,6 @@ title: 友链
 
 # 友情链接
 
-值得关注的人。
+值得关注的人。提交申请后经审核即可展示，无需等待重新部署。
 
-## Leelaa
-
-[leelaa.cn](https://leelaa.cn)
+<FriendsApp />
