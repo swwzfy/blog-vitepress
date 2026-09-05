@@ -157,8 +157,8 @@ npm run og       # 重生成 OG 图（依赖 .agents/scripts/make-og.js，该文
 
 支持中英双语 RSS Feed，自动生成预览页面：
 
-- 中文 RSS: `https://your-domain/feed.rss` 和预览页 `https://your-domain/feed-preview.html`
-- 英文 RSS: `https://your-domain/en/feed.rss` 和预览页 `https://your-domain/en/feed-preview.html`
+- 中文 RSS: `https://your-domain/feed.rss` 和预览页 `https://your-domain/feed.html`
+- 英文 RSS: `https://your-domain/en/feed.rss` 和预览页 `https://your-domain/en/feed.html`
 
 RSS 逻辑由 `scripts/build-rss.js` 生成，包含完整的 HTML 预览和可视化 XSL 样式表。
 
