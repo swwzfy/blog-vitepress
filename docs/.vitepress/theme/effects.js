@@ -34,14 +34,16 @@ function initParticles() {
   let mouseX = -1000, mouseY = -1000;
 
   // DPR 适配：物理像素 = CSS 像素 * dpr，避免 retina 上模糊。dpr 上限 2 防止 4K 屏过度膨胀。
+  // 粒子坐标一律用 CSS 像素（vw/vh），物理像素映射交给 setTransform；鼠标坐标也是 CSS 像素。
   const dpr = Math.min(window.devicePixelRatio || 1, 2)
+  let vw = 0, vh = 0;
   function resize() {
-    const w = window.innerWidth
-    const h = window.innerHeight
-    canvas.style.width = w + 'px'
-    canvas.style.height = h + 'px'
-    canvas.width = Math.floor(w * dpr)
-    canvas.height = Math.floor(h * dpr)
+    vw = window.innerWidth
+    vh = window.innerHeight
+    canvas.style.width = vw + 'px'
+    canvas.style.height = vh + 'px'
+    canvas.width = Math.floor(vw * dpr)
+    canvas.height = Math.floor(vh * dpr)
     ctx.setTransform(dpr, 0, 0, dpr, 0, 0)
   }
   resize();
@@ -50,8 +52,8 @@ function initParticles() {
   class Particle {
     constructor() { this.reset(); }
     reset() {
-      this.x = Math.random() * canvas.width;
-      this.y = Math.random() * canvas.height;
+      this.x = Math.random() * vw;
+      this.y = Math.random() * vh;
       this.size = Math.random() * 2 + 0.5;
       this.speedX = (Math.random() - 0.5) * 0.3;
       this.speedY = (Math.random() - 0.5) * 0.3;
@@ -67,7 +69,7 @@ function initParticles() {
         this.x += dx * 0.002;
         this.y += dy * 0.002;
       }
-      if (this.x < 0 || this.x > canvas.width || this.y < 0 || this.y > canvas.height) this.reset();
+      if (this.x < 0 || this.x > vw || this.y < 0 || this.y > vh) this.reset();
     }
     draw() {
       ctx.beginPath();
