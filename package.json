@@ -12,6 +12,7 @@
     "build": "vitepress build docs",
     "preview": "vitepress preview docs",
     "og": "node .agents/scripts/make-og.js",
+    "check:frontmatter": "node scripts/check-frontmatter.js",
     "lint": "eslint .",
     "lint:fix": "eslint . --fix"
   },
