@@ -46,7 +46,10 @@ function loadPosts(dir, urlPrefix) {
  * VitePress 1.6 default cleanUrls: false，路径是 <slug>.html。
  */
 function extractArticleHtml(distDir, slug) {
-  const htmlPath = path.join(distDir, slug + '.html')
+  const distRoot = path.resolve(distDir)
+  const htmlPath = path.resolve(distRoot, slug + '.html')
+  // slug 拼进读取路径前先做边界校验，杜绝 `..` 越出 dist 目录
+  if (!htmlPath.startsWith(distRoot + path.sep)) return ''
   if (!fs.existsSync(htmlPath)) return ''
   const raw = fs.readFileSync(htmlPath, 'utf-8')
   // vp-doc 是文章正文容器；用 main 闭合作为 vp-doc 结束标记（vp-doc 在 main 内先闭合）
@@ -95,6 +98,8 @@ function buildOne({ outDir, out, title, description, language, posts }) {
 }
 
 async function buildRss(siteConfig) {
+  // 所有写盘路径必须落在该根目录内
+  const outRoot = path.resolve(siteConfig.outDir)
   const variants = [
     {
       out: 'feed.rss',
@@ -124,7 +129,11 @@ async function buildRss(siteConfig) {
     }
     // 不再注入 XSL PI：浏览器对 application/rss+xml MIME 处理 XSL 不稳定，
     // 改用同目录的 .html 静态预览页（v.htmlOut）给浏览器订阅器以外的用户。
-    const rssPath = path.join(siteConfig.outDir, out)
+    // out/htmlOut 虽是构建期常量，写盘前仍做边界校验，拒绝越出 outDir 的路径
+    const rssPath = path.resolve(outRoot, out)
+    if (!rssPath.startsWith(outRoot + path.sep)) {
+      throw new Error(`refusing to write outside outDir: ${out}`)
+    }
     fs.mkdirSync(path.dirname(rssPath), { recursive: true })
     fs.writeFileSync(rssPath, xml, 'utf-8')
     console.log(`🎉 RSS generated ${out}`)
@@ -134,7 +143,10 @@ async function buildRss(siteConfig) {
 
     // HTML 预览：浏览器看到的纯 HTML，中文不会乱码
     const html = buildHtmlPreview(v)
-    const htmlPath = path.join(siteConfig.outDir, htmlOut)
+    const htmlPath = path.resolve(outRoot, htmlOut)
+    if (!htmlPath.startsWith(outRoot + path.sep)) {
+      throw new Error(`refusing to write outside outDir: ${htmlOut}`)
+    }
     fs.mkdirSync(path.dirname(htmlPath), { recursive: true })
     fs.writeFileSync(htmlPath, html, 'utf-8')
     console.log(`📄 HTML preview generated ${htmlOut}`)
