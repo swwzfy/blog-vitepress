@@ -111,7 +111,11 @@ export default defineConfig({
   head: [
     ['link', { rel: 'icon', type: 'image/svg+xml', href: '/favicon.svg' }],
     ['link', { rel: 'preconnect', href: 'https://fonts.googleapis.com' }],
-    ['link', { href: 'https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800;900&family=JetBrains+Mono:wght@400;500&display=swap', rel: 'stylesheet' }],
+    ['link', { rel: 'preconnect', href: 'https://cdn.jsdelivr.net' }],
+    // JetBrains Mono 供 DateTimeWeather 使用；Inter 全站无引用已移除（9 个字重纯死重）
+    ['link', { href: 'https://fonts.googleapis.com/css2?family=JetBrains+Mono:wght@400;500&display=swap', rel: 'stylesheet' }],
+    // 展示字：霞鹜文楷屏幕版，unicode-range 分片 + font-display: swap，浏览器只拉用到的字块
+    ['link', { href: 'https://cdn.jsdelivr.net/npm/lxgw-wenkai-screen-webfont@1.7.0/lxgwwenkaiscreen.css', rel: 'stylesheet' }],
     ['meta', { property: 'og:type', content: 'website' }],
     ['meta', { property: 'og:title', content: "Kiran's Blog" }],
     ['meta', { property: 'og:description', content: '独立开发者 · 写作者 · 终身学习者' }],

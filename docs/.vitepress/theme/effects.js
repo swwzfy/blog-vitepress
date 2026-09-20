@@ -179,8 +179,8 @@ function initCursorGlow() {
 
     glowX += (mouseX - glowX) * 0.08;
     glowY += (mouseY - glowY) * 0.08;
-    glow.style.left = glowX + 'px';
-    glow.style.top = glowY + 'px';
+    // transform 合成层动画，不走 left/top 布局重排
+    glow.style.transform = `translate(${glowX}px, ${glowY}px) translate(-50%, -50%)`;
 
     requestAnimationFrame(animate);
   }

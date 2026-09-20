@@ -11,8 +11,5 @@ docs/.vitepress/cache/
 /*.png
 /*.jpg
 
-# WorkBuddy 私有数据（身份/记忆/配置），不进版本
-.workbuddy/
-
 # Mimosa 安全扫描钩子的本地数据
 .mimosa/

@@ -88,9 +88,10 @@ function goBack() {
 // 反序会报 webpackJsonp is not defined。
 // dialog.script 键名是 snake_case（tap_body），不是文档写的 'tap body'（带空格）。
 // 移动端 < 768 关闭。调试可在控制台 `window.__DISABLE_LIVE2D__ = true`。
-const L2D_AUTOLOAD = 'https://unpkg.com/live2d-widget@3.1.4/lib/L2Dwidget.min.js'
-const L2D_MANIFEST = 'https://unpkg.com/live2d-widget@3.1.4/lib/L2Dwidget.0.min.js'
-const L2D_MODEL = 'https://unpkg.com/live2d-widget-model-tororo@1.0.5/assets/tororo.model.json'
+// CDN 用 jsDelivr：unpkg 国内可达性差，柴犬经常加载不出来。
+const L2D_AUTOLOAD = 'https://cdn.jsdelivr.net/npm/live2d-widget@3.1.4/lib/L2Dwidget.min.js'
+const L2D_MANIFEST = 'https://cdn.jsdelivr.net/npm/live2d-widget@3.1.4/lib/L2Dwidget.0.min.js'
+const L2D_MODEL = 'https://cdn.jsdelivr.net/npm/live2d-widget-model-tororo@1.0.5/assets/tororo.model.json'
 let l2dLoaded = false
 
 function loadLive2d() {

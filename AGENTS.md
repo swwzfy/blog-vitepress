@@ -1,6 +1,6 @@
 # AGENTS.md
 
-> Behavioral guidelines adapted from [swwzfy/andrej-karpathy-skills](https://github.com/swwzfy/andrej-karpathy-skills) — Andrej Karpathy's distilled observations on common LLM coding mistakes. Approved by Sir (2026-08-26) as project-level enforcement of disciplined engineering, paired with the cross-project memory at `~/.workbuddy/MEMORY.md`.
+> Behavioral guidelines adapted from [swwzfy/andrej-karpathy-skills](https://github.com/swwzfy/andrej-karpathy-skills) — Andrej Karpathy's distilled observations on common LLM coding mistakes. Approved by Sir (2026-08-26) as project-level enforcement of disciplined engineering.
 >
 > This is the personal blog of Kiran (`jossecho.com`), a VitePress site with Chinese/English i18n, built to `docs/.vitepress/dist` and deployed manually to an Alibaba Cloud (Aliyun) nginx server. Keep changes surgical and the build reproducible.
 

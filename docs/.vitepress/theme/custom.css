@@ -3,6 +3,8 @@
    ============================================ */
 :root {
   --vp-layout-max-width: 1440px;
+  /* 展示字：hero/标题/品牌位用霞鹜文楷；正文保持系统栈（阅读性能优先） */
+  --font-display: 'LXGW WenKai Screen', 'Noto Serif SC', serif;
 }
 
 .VPDoc:not(.has-aside) .content {
@@ -61,23 +63,11 @@
   height: 100%;
   z-index: 0;
   pointer-events: none;
+  /* 静态氛围层。原版对全屏元素做 background-position + hue-rotate 动画：
+     逐帧全屏重绘耗性能，且 hue-rotate 会周期性把品牌紫漂成其他颜色，
+     破坏色彩纪律 —— 改为静态，紫粉双色收紧 */
   background: radial-gradient(ellipse 80% 50% at 20% 40%, rgba(108, 92, 231, 0.15), transparent),
-    radial-gradient(ellipse 60% 40% at 80% 60%, rgba(253, 121, 168, 0.1), transparent),
-    radial-gradient(ellipse 50% 60% at 50% 20%, rgba(0, 206, 201, 0.08), transparent);
-  animation: bgFlow 15s ease-in-out infinite;
-  will-change: filter;
-}
-
-@keyframes bgFlow {
-  0%,
-  100% {
-    background-position: 0% 50%;
-    filter: hue-rotate(0deg);
-  }
-  50% {
-    background-position: 100% 50%;
-    filter: hue-rotate(30deg);
-  }
+    radial-gradient(ellipse 60% 40% at 80% 60%, rgba(253, 121, 168, 0.1), transparent);
 }
 
 /* ============================================
@@ -96,7 +86,7 @@
   transition: opacity 0.5s;
   mix-blend-mode: screen;
   filter: blur(25px);
-  will-change: left, top, opacity;
+  will-change: transform, opacity;
 }
 
 .dark .cursor-glow {
@@ -177,6 +167,53 @@
   background-clip: text;
 }
 
+/* ============================================
+   展示字应用位：只在展示位换文楷，正文不动
+   ============================================ */
+.VPHero .name,
+.VPHero .tagline,
+.vp-doc h1,
+.vp-doc h2,
+.vp-doc h3,
+.VPFeature .title,
+.footer-brand,
+.digit,
+.error-title {
+  font-family: var(--font-display);
+}
+
+/* ============================================
+   首屏入场编排：hero 五组错峰上浮。
+   fill-mode 用 backwards —— 只在 delay 期间显示 from 帧，
+   结束后回归基础样式不钉死 transform，不影响 VPFeature hover 位移。
+   ============================================ */
+@media (prefers-reduced-motion: no-preference) {
+  .VPHero .name,
+  .VPHero .text,
+  .VPHero .tagline,
+  .VPHero .actions,
+  .VPFeatures .VPFeature {
+    animation: hero-in 0.6s cubic-bezier(0.16, 1, 0.3, 1) backwards;
+  }
+
+  .VPHero .name { animation-delay: 0ms; }
+  .VPHero .text { animation-delay: 80ms; }
+  .VPHero .tagline { animation-delay: 160ms; }
+  .VPHero .actions { animation-delay: 240ms; }
+
+  /* VitePress 特性卡外层包着 .item，错峰打在 .item 上 */
+  .VPFeatures .item:nth-child(1) .VPFeature { animation-delay: 320ms; }
+  .VPFeatures .item:nth-child(2) .VPFeature { animation-delay: 400ms; }
+  .VPFeatures .item:nth-child(3) .VPFeature { animation-delay: 480ms; }
+}
+
+@keyframes hero-in {
+  from {
+    opacity: 0;
+    transform: translateY(16px);
+  }
+}
+
 .VPButton.brand {
   background: linear-gradient(135deg, var(--vp-c-brand-1), var(--vp-c-brand-2), var(--vp-c-brand-3));
   border: none;
@@ -201,10 +238,11 @@
   box-shadow: 0 20px 60px var(--vp-c-brand-soft);
 }
 
-/* 链接颜色 - 浅色模式 (WCAG AA 合规) */
+/* 链接颜色 - 浅色模式 (WCAG AA 合规)
+   保守去通用化：主紫加深提对比，粉色仅作渐变端点不再平均出现 */
 :root {
-  --vp-c-brand-1: #6c5ce7;
-  --vp-c-brand-2: #6f63ea;
+  --vp-c-brand-1: #5b4dd1;
+  --vp-c-brand-2: #6c5ce7;
   --vp-c-brand-3: #c04f74;
 }
 
@@ -254,12 +292,7 @@
    可访问性: 减少动画偏好
    ============================================ */
 @media (prefers-reduced-motion: reduce) {
-  /* 禁用背景渐变动画 */
-  .bg-gradient {
-    animation: none;
-  }
-
-  /* 隐藏粒子和光晕效果 */
+  /* 隐藏粒子和光晕效果（背景渐变已是静态，无需处理） */
   #particle-canvas,
   .cursor-glow {
     display: none;
