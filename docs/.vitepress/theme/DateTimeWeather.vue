@@ -153,7 +153,7 @@ onMounted(() => {
   font-size: 32px;
   font-weight: 800;
   color: var(--vp-c-text-1);
-  font-family: 'JetBrains Mono', monospace;
+  font-family: 'JetBrains Mono', 'Noto Sans SC', 'Source Han Mono', monospace;
   letter-spacing: 2px;
 }
 

@@ -15,8 +15,9 @@ const isArticle = computed(() => !!frontmatter.value.date)
 const wordCount = ref(0)
 const readingTime = ref(0)
 
-/** 阅读时长缓存，避免重复扫文 */
+/** 阅读时长缓存，避免重复扫文；上限 100 条防止 SPA 内无限增长 */
 const readTimeCache = new Map<string, { words: number; minutes: number }>()
+const READ_TIME_CACHE_MAX = 100
 
 function computeReadingTime() {
   nextTick(() => {
@@ -34,6 +35,12 @@ function computeReadingTime() {
     const english = (text.match(/[a-zA-Z]+/g) || []).length
     const words = chinese + english
     const minutes = Math.max(1, Math.ceil(words / 300))
+    if (readTimeCache.size >= READ_TIME_CACHE_MAX) {
+      // 最久未访问的 20% 清理，避免一次性大扫除
+      const keys = [...readTimeCache.keys()]
+      const evictCount = Math.floor(READ_TIME_CACHE_MAX * 0.2)
+      for (let i = 0; i < evictCount; i++) readTimeCache.delete(keys[i])
+    }
     readTimeCache.set(path, { words, minutes })
     wordCount.value = words
     readingTime.value = minutes
@@ -72,6 +79,8 @@ function findRelated() {
 
 function update() {
   if (!isArticle.value) return
+  wordCount.value = 0
+  readingTime.value = 0
   computeReadingTime()
   findRelated()
 }

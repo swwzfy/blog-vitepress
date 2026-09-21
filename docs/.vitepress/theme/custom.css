@@ -4,7 +4,13 @@
 :root {
   --vp-layout-max-width: 1440px;
   /* 展示字：hero/标题/品牌位用霞鹜文楷；正文保持系统栈（阅读性能优先） */
-  --font-display: 'LXGW WenKai Screen', 'Noto Serif SC', serif;
+  --font-display: 'LXGW WenKai Screen', 'Noto Serif SC', 'Songti SC', 'SimSun', 'Noto Serif', serif;
+  /* 正文基础栈：中英混排优先，CJK 回退到系统宋体 */
+  --font-body: 'Inter', 'PingFang SC', 'Microsoft YaHei', 'Noto Sans SC', sans-serif;
+}
+
+body {
+  font-family: var(--font-body);
 }
 
 .VPDoc:not(.has-aside) .content {

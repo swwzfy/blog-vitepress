@@ -13,3 +13,6 @@ docs/.vitepress/cache/
 
 # Mimosa 安全扫描钩子的本地数据
 .mimosa/
+
+# Git 内部备份目录
+.git-corrupted-backup/

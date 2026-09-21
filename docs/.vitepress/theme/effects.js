@@ -85,7 +85,7 @@ function initParticles() {
   const LINE_DIST = 120;
   function drawLines() {
     const cellSize = LINE_DIST;
-    const cols = Math.ceil(canvas.width / cellSize) + 1;
+    const cols = Math.ceil(vw / cellSize) + 1;
     const grid = new Map();
     particles.forEach((p, i) => {
       const cx = Math.floor(p.x / cellSize);
