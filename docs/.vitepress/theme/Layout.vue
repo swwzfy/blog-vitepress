@@ -36,7 +36,7 @@ function computeReadingTime() {
     const words = chinese + english
     const minutes = Math.max(1, Math.ceil(words / 300))
     if (readTimeCache.size >= READ_TIME_CACHE_MAX) {
-      // 最久未访问的 20% 清理，避免一次性大扫除
+      // Map 按插入序淘汰最早写入的 20%（FIFO，重复访问不续命；当前文章量级下够用）
       const keys = [...readTimeCache.keys()]
       const evictCount = Math.floor(READ_TIME_CACHE_MAX * 0.2)
       for (let i = 0; i < evictCount; i++) readTimeCache.delete(keys[i])

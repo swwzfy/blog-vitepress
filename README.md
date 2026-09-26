@@ -6,7 +6,7 @@
 
 - **框架**: VitePress 1.6.4
 - **语言**: TypeScript / Vue 3
-- **字体**: Inter（正文） + JetBrains Mono（代码）
+- **字体**: 霞鹜文楷 Screen（标题展示字）+ JetBrains Mono（首页时钟），正文走系统字体栈
 - **部署**: 静态站点，`npm run build` 输出到 `docs/.vitepress/dist`
 
 ## 项目结构

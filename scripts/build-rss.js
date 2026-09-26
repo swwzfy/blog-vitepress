@@ -52,10 +52,27 @@ function extractArticleHtml(distDir, slug) {
   if (!htmlPath.startsWith(distRoot + path.sep)) return ''
   if (!fs.existsSync(htmlPath)) return ''
   const raw = fs.readFileSync(htmlPath, 'utf-8')
-  // vp-doc 是文章正文容器；用 main 闭合作为 vp-doc 结束标记（vp-doc 在 main 内先闭合）
-  const m = raw.match(/<div[^>]*\bvp-doc\b[^>]*>([\s\S]*?)<\/main>/)
-  if (!m) return ''
-  return m[1]
+  // 从 vp-doc 开标签起对 <div>/</div> 计数，取到 vp-doc 自身的闭合标签为止。
+  // 不能拿 </main> 当右边界：正文里出现字面量 </main> 会让 lazy 匹配提前截断，
+  // 还会把 vp-doc 闭合后残留的 </div> 一起带进 <content:encoded>。
+  // 正文里的 < 已被 markdown 渲染器转义成实体（&lt;），不会干扰计数。
+  const open = raw.match(/<div[^>]*\bvp-doc\b[^>]*>/)
+  if (!open) return ''
+  const start = raw.indexOf(open[0]) + open[0].length
+  let depth = 1
+  let end = -1
+  const tagRe = /<\/?div\b[^>]*>/g
+  tagRe.lastIndex = start
+  let t
+  while ((t = tagRe.exec(raw))) {
+    depth += t[0][1] === '/' ? -1 : 1
+    if (depth === 0) {
+      end = t.index
+      break
+    }
+  }
+  if (end < 0) return ''
+  return raw.slice(start, end)
     // 剥掉 RSS 阅读器用不到的 VitePress 内部 span（如 vpi-* 图标）
     .replace(/<span[^>]*class="vpi-[^"]*"[^>]*>\s*<\/span>/g, '')
     .trim()
@@ -122,11 +139,8 @@ async function buildRss(siteConfig) {
   ]
 
   for (const v of variants) {
-    const { xml, count, out, htmlOut } = {
-      ...buildOne({ ...v, outDir: siteConfig.outDir }),
-      out: v.out,
-      htmlOut: v.htmlOut
-    }
+    const { xml, count, out } = buildOne({ ...v, outDir: siteConfig.outDir })
+    const { htmlOut } = v
     // 不再注入 XSL PI：浏览器对 application/rss+xml MIME 处理 XSL 不稳定，
     // 改用同目录的 .html 静态预览页（v.htmlOut）给浏览器订阅器以外的用户。
     // out/htmlOut 虽是构建期常量，写盘前仍做边界校验，拒绝越出 outDir 的路径
