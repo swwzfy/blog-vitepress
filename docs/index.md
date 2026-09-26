@@ -26,33 +26,8 @@ features:
 <Stats />
 <RecentPosts />
 
-<Teleport to=".VPHero .container" defer>
-  <DateTimeWeather />
+<Teleport to=".VPFeatures .items" defer>
+  <div class="item datetime-weather-item">
+    <DateTimeWeather />
+  </div>
 </Teleport>
-
-<style>
-.VPHero .container {
-  display: flex;
-  align-items: center;
-  gap: 40px;
-}
-.VPHero .main {
-  flex: 1;
-  min-width: 0;
-}
-.datetime-weather {
-  width: 280px;
-  flex-shrink: 0;
-  margin-top: -20px;
-  order: 1;
-}
-@media (max-width: 768px) {
-  .VPHero .container {
-    flex-direction: column;
-    gap: 16px;
-  }
-  .datetime-weather {
-    width: 100%;
-  }
-}
-</style>

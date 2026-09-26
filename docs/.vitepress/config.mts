@@ -174,6 +174,7 @@ export default defineConfig({
   // 所以下面还要在 build-rss.js 里按 frontmatter.draft 再过滤一次。
   srcExclude: ['**/posts/suzhou-hanshan-temple.md', '**/en/posts/suzhou-hanshan-temple.md'],
   themeConfig: {
+    logo: '/logo.svg',
     search: {
       provider: 'local'
     },

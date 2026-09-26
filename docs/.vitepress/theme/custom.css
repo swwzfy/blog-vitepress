@@ -5,8 +5,8 @@
   --vp-layout-max-width: 1440px;
   /* 展示字：hero/标题/品牌位用霞鹜文楷；正文保持系统栈（阅读性能优先） */
   --font-display: 'LXGW WenKai Screen', 'Noto Serif SC', 'Songti SC', 'SimSun', 'Noto Serif', serif;
-  /* 正文基础栈：中英混排优先，CJK 回退到系统宋体 */
-  --font-body: 'Inter', 'PingFang SC', 'Microsoft YaHei', 'Noto Sans SC', sans-serif;
+  /* 正文基础栈：系统 sans。Inter 已决定不加载 webfont（config.mts），勿回加引用 */
+  --font-body: 'PingFang SC', 'Microsoft YaHei', 'Noto Sans SC', sans-serif;
 }
 
 body {
@@ -242,6 +242,30 @@ body {
   transform: translateY(-4px);
   border-color: var(--vp-c-brand-1);
   box-shadow: 0 20px 60px var(--vp-c-brand-soft);
+}
+
+/* ============================================
+   首页特性区：日期天气卡混入为第四张卡
+   VPFeatures 的 .item 宽度是 scoped 样式，Teleport 注入的节点吃不到，
+   这里全量接管：<768 整行堆叠，768-959 两列（2×2），≥960 四列一行；
+   order: -1 让时钟卡排在三张特性卡之前
+   ============================================ */
+.datetime-weather-item {
+  order: -1;
+  padding: 8px;
+  width: 100%;
+}
+
+@media (min-width: 768px) {
+  .VPFeatures .items:has(.datetime-weather-item) .item {
+    width: calc(100% / 2);
+  }
+}
+
+@media (min-width: 960px) {
+  .VPFeatures .items:has(.datetime-weather-item) .item {
+    width: calc(100% / 4);
+  }
 }
 
 /* 链接颜色 - 浅色模式 (WCAG AA 合规)

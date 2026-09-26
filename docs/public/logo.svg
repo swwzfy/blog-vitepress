@@ -1,0 +1,37 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 48 48">
+  <title>Kiran</title>
+  <!-- Kiran · 梵语「光芒」：K 的两笔斜画化作两道光线，交接处镶嵌菱形光核（与右上角 ✦ 星点同一几何语言）。
+       徽章沿用 favicon 的三段渐变，白字在亮暗两种模式下对比一致 -->
+  <defs>
+    <linearGradient id="badge" x1="0%" y1="0%" x2="100%" y2="100%">
+      <stop offset="0%" stop-color="#6c5ce7"/>
+      <stop offset="50%" stop-color="#a29bfe"/>
+      <stop offset="100%" stop-color="#fd79a8"/>
+    </linearGradient>
+    <!-- 光晕：真实径向淡出，边缘无硬边 -->
+    <radialGradient id="bloom" cx="0.5" cy="0.5" r="0.5">
+      <stop offset="0" stop-color="#ffffff" stop-opacity="0.95"/>
+      <stop offset="0.45" stop-color="#ffffff" stop-opacity="0.35"/>
+      <stop offset="1" stop-color="#ffffff" stop-opacity="0"/>
+    </radialGradient>
+    <!-- 光核：径向高光 + 整体半透明（磨砂玻璃感），左上提亮、右下压深 -->
+    <radialGradient id="core" cx="0.35" cy="0.3" r="0.9">
+      <stop offset="0" stop-color="#c9bfff" stop-opacity="0.9"/>
+      <stop offset="0.5" stop-color="#8d7bf0" stop-opacity="0.72"/>
+      <stop offset="1" stop-color="#e0579c" stop-opacity="0.68"/>
+    </radialGradient>
+  </defs>
+  <rect width="48" height="48" rx="11" fill="url(#badge)"/>
+  <!-- 光源柔晕（垫底） -->
+  <circle cx="16.8" cy="24" r="8.5" fill="url(#bloom)"/>
+  <!-- 竖笔 -->
+  <rect x="12" y="11" width="5" height="26" rx="2.5" fill="#ffffff"/>
+  <!-- 两道光线 -->
+  <line x1="19.5" y1="21.5" x2="34" y2="10" stroke="#ffffff" stroke-width="4.5" stroke-linecap="round"/>
+  <line x1="19.5" y1="26.5" x2="34" y2="38" stroke="#ffffff" stroke-width="4.5" stroke-linecap="round"/>
+  <!-- 菱形光核：白描边圈隔开白色笔画，嵌在 K 交接处 -->
+  <rect x="13.35" y="20.55" width="6.9" height="6.9" rx="1.4" transform="rotate(45 16.8 24)" fill="url(#core)" stroke="#ffffff" stroke-width="1.1"/>
+  <!-- ✦ 星点：四角星散落在上光线右上侧，偏离延长线避免"拖尾"观感 -->
+  <path d="M 38.5 3.5 Q 38.5 6.5 41.5 6.5 Q 38.5 6.5 38.5 9.5 Q 38.5 6.5 35.5 6.5 Q 38.5 6.5 38.5 3.5 Z" fill="#ffffff"/>
+  <path d="M 42.5 8.8 Q 42.5 10.5 44.2 10.5 Q 42.5 10.5 42.5 12.2 Q 42.5 10.5 40.8 10.5 Q 42.5 10.5 42.5 8.8 Z" fill="#ffffff"/>
+</svg>
