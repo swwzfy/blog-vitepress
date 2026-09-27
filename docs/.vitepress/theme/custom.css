@@ -224,9 +224,8 @@ body::after {
   .VPHero .text,
   .VPHero .tagline,
   .VPHero .actions,
-  .VPFeatures .VPFeature,
-  .VPFeatures .datetime-weather,
-  .VPFeatures .bento-card {
+  .home-bento .bento-card,
+  .home-bento .datetime-weather {
     animation: hero-in 0.6s cubic-bezier(0.16, 1, 0.3, 1) backwards;
   }
 
@@ -235,14 +234,12 @@ body::after {
   .VPHero .tagline { animation-delay: 160ms; }
   .VPHero .actions { animation-delay: 240ms; }
 
-  /* 五张卡错峰。Teleport 注入卡 append 在 .items 末尾，DOM 序 ≠ 显示序（时钟卡 order:-1）：
-     DOM 1-3 是静态三卡（技术/写作/生活），4 是时钟卡，5 是订阅卡；
-     delay 按显示序递增：时钟 320 → 技术 400 → 写作 480 → 生活 560 → 订阅 640 */
-  .VPFeatures .item:nth-child(4) .datetime-weather { animation-delay: 320ms; }
-  .VPFeatures .item:nth-child(1) .VPFeature { animation-delay: 400ms; }
-  .VPFeatures .item:nth-child(2) .VPFeature { animation-delay: 480ms; }
-  .VPFeatures .item:nth-child(3) .VPFeature { animation-delay: 560ms; }
-  .VPFeatures .item:nth-child(5) .bento-card { animation-delay: 640ms; }
+  /* 五张卡错峰；HomeBento 的 DOM 序即显示序：时钟 320 → 技术 400 → 写作 480 → 生活 560 → 订阅 640 */
+  .home-bento .item:nth-child(1) .datetime-weather { animation-delay: 320ms; }
+  .home-bento .item:nth-child(2) .bento-card { animation-delay: 400ms; }
+  .home-bento .item:nth-child(3) .bento-card { animation-delay: 480ms; }
+  .home-bento .item:nth-child(4) .bento-card { animation-delay: 560ms; }
+  .home-bento .item:nth-child(5) .bento-card { animation-delay: 640ms; }
 }
 
 @keyframes hero-in {
@@ -309,46 +306,60 @@ body::after {
 }
 
 /* ============================================
-   首页特性区：bento 不等宽网格（中文首页）
-   Teleport 注入两张卡：时钟天气（跨 2 列，视觉锚点）+ 订阅卡（跨 2 列）。
-   VPFeatures 的 .item 宽度是 scoped 样式，Teleport 注入的节点吃不到，
-   这里全量接管：<768 整行堆叠，768-959 两列（时钟卡独占一行），≥960 四列，
-   时钟卡与订阅卡各跨 2 列；order: -1 让时钟卡排最前。
-   时钟卡 item 同时是 spotlight 宽度容器（container query，供组件内适配宽卡）。
-   英文首页时钟卡在 hero 侧（无 .item 包裹），不命中 :has 锚点，不受影响。
+   首页 Bento 网格（HomeBento.vue 静态渲染）
+   不再注入 VPFeatures（Teleport 在 SSG+hydration 下会错位），
+   自带 flex 网格：<768 整行堆叠，768-959 两列，≥960 四列，
+   .bento-item-wide 跨 2 列。DOM 序即显示序。
    ============================================ */
-.datetime-weather-item {
-  order: -1;
-  padding: 8px;
-  width: 100%;
-  container-type: inline-size;
+.home-bento {
+  padding: 0 24px;
 }
 
-.bento-subscribe-item {
-  padding: 8px;
-  width: 100%;
-}
-
-@media (min-width: 768px) {
-  .VPFeatures .items:has(.datetime-weather-item) .item {
-    width: calc(100% / 2);
-  }
-
-  /* 跨列卡要与上面的 :has(...) .item（特异性 0,4,0）抗衡，必须同特异性且声明在后 */
-  .VPFeatures .items:has(.datetime-weather-item) .datetime-weather-item {
-    width: 100%;
+@media (min-width: 640px) {
+  .home-bento {
+    padding: 0 48px;
   }
 }
 
 @media (min-width: 960px) {
-  .VPFeatures .items:has(.datetime-weather-item) .item {
+  .home-bento {
+    padding: 0 64px;
+  }
+}
+
+.home-bento .container {
+  margin: 0 auto;
+  max-width: 1152px;
+}
+
+.home-bento .items {
+  display: flex;
+  flex-wrap: wrap;
+  margin: -8px;
+}
+
+.home-bento .item {
+  padding: 8px;
+  width: 100%;
+}
+
+/* 时钟卡是容器查询的尺寸源：宽卡横向 / 窄卡纵向（DateTimeWeather 内部 @container） */
+.home-bento .bento-clock-item {
+  container-type: inline-size;
+}
+
+@media (min-width: 768px) {
+  .home-bento .item {
+    width: calc(100% / 2);
+  }
+}
+
+@media (min-width: 960px) {
+  .home-bento .item {
     width: calc(100% / 4);
   }
 
-  /* DOM 序 1-3 是静态三卡（技术/写作/生活），第 3 张「生活」跨 2 列，与订阅卡凑满第二行 */
-  .VPFeatures .items:has(.datetime-weather-item) .item:nth-child(3),
-  .VPFeatures .items:has(.datetime-weather-item) .datetime-weather-item,
-  .VPFeatures .items:has(.datetime-weather-item) .bento-subscribe-item {
+  .home-bento .bento-item-wide {
     width: 50%;
   }
 }
@@ -379,15 +390,22 @@ body::after {
   margin-bottom: 16px;
 }
 
-.bento-title {
+/* .vp-doc 前缀压制全局排版污染：HomeBento 渲染在 markdown Content（.vp-doc）内，
+   h3 装饰竖线 / p margin / a 下划线都会压过单类规则（特异性教训见 about 页） */
+.vp-doc .bento-title {
   font-size: 16px;
   font-weight: 600;
   color: var(--vp-c-text-1);
   line-height: 24px;
+  padding-left: 0;
   margin: 0 0 8px;
 }
 
-.bento-desc {
+.vp-doc .bento-title::before {
+  display: none;
+}
+
+.vp-doc .bento-desc {
   font-size: 14px;
   color: var(--vp-c-text-2);
   line-height: 1.7;
@@ -403,13 +421,13 @@ body::after {
   font-weight: 500;
 }
 
-.bento-links a {
+.vp-doc .bento-links a {
   color: var(--vp-c-text-2);
   text-decoration: none;
   transition: color 0.2s;
 }
 
-.bento-links a:hover {
+.vp-doc .bento-links a:hover {
   color: var(--vp-c-brand-1);
 }
 

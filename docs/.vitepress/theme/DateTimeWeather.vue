@@ -4,7 +4,9 @@ import { useLocale } from '@/composables/useLocale'
 
 const { isEn } = useLocale()
 
-const now = ref(new Date())
+// 时钟数据源。SSR/水合期保持 null：时间随时钟流逝，静态渲染（SSG 时刻）与访问时刻
+// 必然不一致，直接渲染会 hydration mismatch 导致水合失败 —— 先出稳定占位，onMounted 再起真实时钟
+const now = ref<Date | null>(null)
 const weather = ref('')
 
 function updateTime() {
@@ -12,6 +14,7 @@ function updateTime() {
 }
 
 function formatDate() {
+  if (!now.value) return isEn.value ? '-- · -- · ----' : '---- · -- · --'
   const d = now.value
   const weekdays = isEn.value
     ? ['Sunday', 'Monday', 'Tuesday', 'Wednesday', 'Thursday', 'Friday', 'Saturday']
@@ -24,12 +27,13 @@ function formatDate() {
 }
 
 // 时/分/秒拆开渲染：秒缩小退后，避免整串等宽大字太压场
-const hh = computed(() => String(now.value.getHours()).padStart(2, '0'))
-const mm = computed(() => String(now.value.getMinutes()).padStart(2, '0'))
-const ss = computed(() => String(now.value.getSeconds()).padStart(2, '0'))
+const hh = computed(() => (now.value ? String(now.value.getHours()).padStart(2, '0') : '--'))
+const mm = computed(() => (now.value ? String(now.value.getMinutes()).padStart(2, '0') : '--'))
+const ss = computed(() => (now.value ? String(now.value.getSeconds()).padStart(2, '0') : '--'))
 
 // 时段 emoji 跟 getGreeting 同档位，给图标盒用（呼应 VPFeature 的 icon 槽）
 function greetingEmoji() {
+  if (!now.value) return '🕒'
   const h = now.value.getHours()
   if (h < 6) return '🌙'
   if (h < 12) return '☀️'
@@ -38,6 +42,7 @@ function greetingEmoji() {
 }
 
 function getGreeting() {
+  if (!now.value) return isEn.value ? 'Hello' : '你好'
   const h = now.value.getHours()
   if (isEn.value) {
     if (h < 6) return 'Good Night'
@@ -139,7 +144,7 @@ onUnmounted(() => {
 </template>
 
 <style scoped>
-/* 作为特性区第四张卡：撑满网格单元，圆角/内边距对齐 VPFeature（12px / 24px）。
+/* 首页 Bento 的时钟卡（HomeBento 第一格）：撑满网格单元，圆角/内边距对齐 bento 卡（12px / 24px）。
    底色 = 品牌渐变 + 两个静态氛围光斑（粉紫双色呼应全站配色，纯背景层，无动画开销） */
 .datetime-weather {
   height: 100%;
@@ -238,8 +243,8 @@ onUnmounted(() => {
   }
 }
 
-/* bento 宽卡（中文首页跨 2 列，容器 ≥480px）：信息行转横向，时钟放大做视觉锚点。
-   用容器查询而非媒体查询 —— 英文首页时钟卡在 hero 侧（280px 窄卡，item 无容器），不受影响 */
+/* 宽卡（HomeBento 跨 2 列，容器 ≥480px）：信息行转横向，时钟放大做视觉锚点。
+   用容器查询而非媒体查询 —— 卡片实际宽度由网格断点决定，视口宽度判断不了容器 */
 @container (min-width: 480px) {
   .info-row {
     flex-direction: row;

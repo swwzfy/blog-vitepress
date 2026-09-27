@@ -9,8 +9,13 @@ export function initPageTransitions(router) {
   const reduced = () => window.matchMedia('(prefers-reduced-motion: reduce)').matches
 
   // —— 路由切换 cross-fade ——
+  // VitePress 初始加载也会走一遍路由生命周期；那次不是"页面间切换"，
+  // 包 VT 会把首屏渲染冻结进空快照 3s（兜底才放行），还会干扰 Teleport defer
+  // 的注入时序（时钟卡错位）—— 初始周期直接放行，只包真正的页间导航
   let resolveNav = null
+  let initialDone = false
   router.onBeforeRouteChange = () => {
+    if (!initialDone) return
     if (reduced()) return
     document.startViewTransition(
       () =>
@@ -22,6 +27,7 @@ export function initPageTransitions(router) {
     setTimeout(() => resolveNav?.(), 3000)
   }
   router.onAfterRouteChanged = () => {
+    initialDone = true
     const resolve = resolveNav
     resolveNav = null
     resolve?.()

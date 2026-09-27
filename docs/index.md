@@ -11,37 +11,9 @@ hero:
     - theme: alt
       text: 了解更多
       link: /about
-features:
-  - icon: ⚡
-    title: 技术
-    details: 全栈开发，喜欢折腾新工具。Rust、Python、TypeScript 都写。
-  - icon: ✍️
-    title: 写作
-    details: 记录思考过程，分享踩过的坑。写作是最好的学习方式。
-  - icon: 🌱
-    title: 生活
-    details: 咖啡爱好者，独立开发者，偶尔跑步。在扬州，用代码和文字构建自己的世界。
 ---
+
+<HomeBento />
 
 <Stats />
 <RecentPosts />
-
-<Teleport to=".VPFeatures .items" defer>
-  <div class="item datetime-weather-item">
-    <DateTimeWeather />
-  </div>
-  <div class="item bento-subscribe-item">
-    <div class="bento-card">
-      <div class="bento-icon">📮</div>
-      <h3 class="bento-title">订阅本站</h3>
-      <p class="bento-desc">RSS 全文输出，也欢迎在 GitHub、邮箱找到我。</p>
-      <div class="bento-links">
-        <a href="/feed.rss" target="_blank" rel="noopener">RSS</a>
-        <span class="bento-dot">·</span>
-        <a href="https://github.com/swwzfy" target="_blank" rel="noopener">GitHub</a>
-        <span class="bento-dot">·</span>
-        <a href="mailto:swwzfy@163.com">Email</a>
-      </div>
-    </div>
-  </div>
-</Teleport>
