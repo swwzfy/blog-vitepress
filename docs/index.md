@@ -30,4 +30,18 @@ features:
   <div class="item datetime-weather-item">
     <DateTimeWeather />
   </div>
+  <div class="item bento-subscribe-item">
+    <div class="bento-card">
+      <div class="bento-icon">📮</div>
+      <h3 class="bento-title">订阅本站</h3>
+      <p class="bento-desc">RSS 全文输出，也欢迎在 GitHub、邮箱找到我。</p>
+      <div class="bento-links">
+        <a href="/feed.rss" target="_blank" rel="noopener">RSS</a>
+        <span class="bento-dot">·</span>
+        <a href="https://github.com/swwzfy" target="_blank" rel="noopener">GitHub</a>
+        <span class="bento-dot">·</span>
+        <a href="mailto:swwzfy@163.com">Email</a>
+      </div>
+    </div>
+  </div>
 </Teleport>

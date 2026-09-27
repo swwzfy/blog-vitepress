@@ -26,33 +26,22 @@ features:
 <Stats />
 <RecentPosts />
 
-<Teleport to=".VPHero .container" defer>
-  <DateTimeWeather />
+<Teleport to=".VPFeatures .items" defer>
+  <div class="item datetime-weather-item">
+    <DateTimeWeather />
+  </div>
+  <div class="item bento-subscribe-item">
+    <div class="bento-card">
+      <div class="bento-icon">📮</div>
+      <h3 class="bento-title">Subscribe</h3>
+      <p class="bento-desc">Full-text RSS feed, or find me on GitHub and by email.</p>
+      <div class="bento-links">
+        <a href="/en/feed.rss" target="_blank" rel="noopener">RSS</a>
+        <span class="bento-dot">·</span>
+        <a href="https://github.com/swwzfy" target="_blank" rel="noopener">GitHub</a>
+        <span class="bento-dot">·</span>
+        <a href="mailto:swwzfy@163.com">Email</a>
+      </div>
+    </div>
+  </div>
 </Teleport>
-
-<style>
-.VPHero .container {
-  display: flex;
-  align-items: center;
-  gap: 40px;
-}
-.VPHero .main {
-  flex: 1;
-  min-width: 0;
-}
-.datetime-weather {
-  width: 280px;
-  flex-shrink: 0;
-  margin-top: -20px;
-  order: 1;
-}
-@media (max-width: 768px) {
-  .VPHero .container {
-    flex-direction: column;
-    gap: 16px;
-  }
-  .datetime-weather {
-    width: 100%;
-  }
-}
-</style>

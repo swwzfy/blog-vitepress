@@ -237,4 +237,19 @@ onUnmounted(() => {
     font-size: 28px;
   }
 }
+
+/* bento 宽卡（中文首页跨 2 列，容器 ≥480px）：信息行转横向，时钟放大做视觉锚点。
+   用容器查询而非媒体查询 —— 英文首页时钟卡在 hero 侧（280px 窄卡，item 无容器），不受影响 */
+@container (min-width: 480px) {
+  .info-row {
+    flex-direction: row;
+    align-items: center;
+    justify-content: space-between;
+    width: 100%;
+  }
+
+  .time {
+    font-size: 42px;
+  }
+}
 </style>

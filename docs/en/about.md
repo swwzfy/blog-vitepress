@@ -4,36 +4,66 @@ title: About
 
 # About
 
-## Kiran · joss echo
+<div class="about-hero">
+  <img class="about-avatar" src="/logo.svg" alt="" />
+  <div>
+    <h2 class="about-name">Kiran <span class="about-dot">·</span> joss echo</h2>
+    <p class="about-roles">Indie Developer · Writer</p>
+    <p class="about-tagline">Sanskrit for "light" — clean, simple, unconventional</p>
+  </div>
+</div>
 
-Indie Developer · Writer
+My name is **Kiran**, an indie developer based in Yangzhou, China.
 
-*Sanskrit for "light" — clean, simple, unconventional*
+In short: **I make a living with code, and record my thinking in words**. I write Rust, Python, and TypeScript; lately I've been tinkering with AI Agent projects. Occasional runner, coffee enthusiast.
 
----
+**JOSS** is my AI co-pilot, mainly running on OpenClaw. Notes also go out through the "JOSS Laboratory" WeChat official account.
 
-### ⚡ Tech
+<div class="about-cards">
+  <div class="about-card">
+    <div class="about-card-icon">⚡</div>
+    <h3 class="about-card-title">Tech</h3>
+    <p class="about-card-desc">Full-stack development, love tinkering with new tools. Rust, Python, TypeScript. Believe good tools amplify human capability.</p>
+  </div>
+  <div class="about-card">
+    <div class="about-card-icon">✍️</div>
+    <h3 class="about-card-title">Writing</h3>
+    <p class="about-card-desc">Documenting the thinking process, sharing lessons learned. Writing is the best way to learn — teaching is learning. Only write what I've actually used, never copy tutorials.</p>
+  </div>
+  <div class="about-card">
+    <div class="about-card-icon">🌱</div>
+    <h3 class="about-card-title">Life</h3>
+    <p class="about-card-desc">Coffee enthusiast, indie developer, occasional runner. In Yangzhou.</p>
+  </div>
+</div>
 
-Full-stack development, love tinkering with new tools. Rust, Python, TypeScript. Believe good tools amplify human capability.
+## Why do I write this blog?
 
-### ✍️ Writing
+It started because I kept stepping on the same pits — solve a problem once, forget it a month later, so I might as well write it down. Then I found writing is the best way to learn: if you can explain it clearly, you truly understand it.
 
-Documenting the thinking process, sharing lessons learned. Writing is the best way to learn — teaching is learning.
+- **Tech notes** — deployment experience, dev-tool pitfalls. First-hand impressions, never copied tutorials
+- **Tool thoughts** — AI Agents, framework comparisons, productivity systems: what I use and what I question
+- **Life observations** — everyday Yangzhou, places I've been, casual records. Irregular updates
 
-### 🌱 Life
+## A few words for you
 
-Coffee enthusiast, indie developer, occasional runner. In Yangzhou, building my own world with code and words.
+I don't chase trends; I write about what I've actually used and thought about. If you're an indie developer or into tinkering with tech, feel free to reach out.
 
----
-
-### Contact
-
-- 🐙 [GitHub](https://github.com/swwzfy)
-- 💭 [Zhihu](https://www.zhihu.com/people/zi-fei-yu-53-37)
-- 📧 [Email](mailto:swwzfy@163.com)
-
-### Follow JOSS Laboratory
-
-Scan the QR code to follow the WeChat official account for the latest notes and thoughts on AI Agents.
-
-![JOSS Laboratory QR Code](/joss-qrcode.jpg)
+<div class="about-contact">
+  <div class="about-card">
+    <h3 class="about-card-title">Contact</h3>
+    <p class="about-card-desc">Email is the most reliable; GitHub has all of my work-in-progress.</p>
+    <div class="about-links">
+      <a class="about-link" href="https://github.com/swwzfy" target="_blank" rel="noopener">🐙 GitHub</a>
+      <a class="about-link" href="https://www.zhihu.com/people/zi-fei-yu-53-37" target="_blank" rel="noopener">💭 Zhihu</a>
+      <a class="about-link" href="mailto:swwzfy@163.com">📧 Email</a>
+    </div>
+  </div>
+  <div class="about-card">
+    <h3 class="about-card-title">JOSS Laboratory</h3>
+    <div class="about-qrcode-row">
+      <img class="about-qrcode" src="/joss-qrcode.jpg" alt="JOSS Laboratory QR Code" />
+      <p class="about-qrcode-text">Scan to follow the WeChat official account for the latest notes and thoughts on AI Agents.</p>
+    </div>
+  </div>
+</div>

@@ -27,6 +27,21 @@ body {
 }
 
 /* ============================================
+   全局噪点纹理（胶片颗粒）
+   SVG feTurbulence 灰度噪声平铺，压掉背景渐变的色带；
+   3% 透明度固定层盖在全页之上，静态无动画零开销
+   ============================================ */
+body::after {
+  content: '';
+  position: fixed;
+  inset: 0;
+  z-index: 2000;
+  pointer-events: none;
+  opacity: 0.03;
+  background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 256 256'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.8' numOctaves='4' stitchTiles='stitch'/%3E%3CfeColorMatrix type='saturate' values='0'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23n)'/%3E%3C/svg%3E");
+}
+
+/* ============================================
    自定义滚动条
    ============================================ */
 ::-webkit-scrollbar {
@@ -167,10 +182,18 @@ body {
 }
 
 .VPHero .name {
+  font-size: clamp(2.75rem, 6vw, 4rem);
+  letter-spacing: -0.02em;
   background: linear-gradient(135deg, var(--vp-c-brand-1), var(--vp-c-brand-2), var(--vp-c-brand-3));
   -webkit-background-clip: text;
   -webkit-text-fill-color: transparent;
   background-clip: text;
+}
+
+/* 文章大标题：放大 + 紧字距（手机上从默认 39px 收到 32px，桌面抬到 41.6px） */
+.vp-doc h1 {
+  font-size: clamp(2rem, 3.5vw, 2.6rem);
+  letter-spacing: -0.02em;
 }
 
 /* ============================================
@@ -182,6 +205,9 @@ body {
 .vp-doc h2,
 .vp-doc h3,
 .VPFeature .title,
+.bento-title,
+.about-name,
+.about-card-title,
 .footer-brand,
 .digit,
 .error-title {
@@ -189,16 +215,18 @@ body {
 }
 
 /* ============================================
-   首屏入场编排：hero 五组错峰上浮。
+   首屏入场编排：hero 五组 + 特性卡错峰上浮。
    fill-mode 用 backwards —— 只在 delay 期间显示 from 帧，
-   结束后回归基础样式不钉死 transform，不影响 VPFeature hover 位移。
+   结束后回归基础样式不钉死 transform，不影响卡片 hover 效果。
    ============================================ */
 @media (prefers-reduced-motion: no-preference) {
   .VPHero .name,
   .VPHero .text,
   .VPHero .tagline,
   .VPHero .actions,
-  .VPFeatures .VPFeature {
+  .VPFeatures .VPFeature,
+  .VPFeatures .datetime-weather,
+  .VPFeatures .bento-card {
     animation: hero-in 0.6s cubic-bezier(0.16, 1, 0.3, 1) backwards;
   }
 
@@ -207,10 +235,14 @@ body {
   .VPHero .tagline { animation-delay: 160ms; }
   .VPHero .actions { animation-delay: 240ms; }
 
-  /* VitePress 特性卡外层包着 .item，错峰打在 .item 上 */
-  .VPFeatures .item:nth-child(1) .VPFeature { animation-delay: 320ms; }
-  .VPFeatures .item:nth-child(2) .VPFeature { animation-delay: 400ms; }
-  .VPFeatures .item:nth-child(3) .VPFeature { animation-delay: 480ms; }
+  /* 五张卡错峰。Teleport 注入卡 append 在 .items 末尾，DOM 序 ≠ 显示序（时钟卡 order:-1）：
+     DOM 1-3 是静态三卡（技术/写作/生活），4 是时钟卡，5 是订阅卡；
+     delay 按显示序递增：时钟 320 → 技术 400 → 写作 480 → 生活 560 → 订阅 640 */
+  .VPFeatures .item:nth-child(4) .datetime-weather { animation-delay: 320ms; }
+  .VPFeatures .item:nth-child(1) .VPFeature { animation-delay: 400ms; }
+  .VPFeatures .item:nth-child(2) .VPFeature { animation-delay: 480ms; }
+  .VPFeatures .item:nth-child(3) .VPFeature { animation-delay: 560ms; }
+  .VPFeatures .item:nth-child(5) .bento-card { animation-delay: 640ms; }
 }
 
 @keyframes hero-in {
@@ -232,26 +264,67 @@ body {
   box-shadow: 0 8px 30px var(--vp-c-brand-soft);
 }
 
-/* 文章卡片效果 */
+/* 文章卡片：hover 不再上浮，改为边框追光（spotlight）
+   鼠标位置由 effects.js 委托写入 --spot-x/--spot-y，光沿 1px 边框亮起 */
 .VPFeature {
-  transition: all 0.3s cubic-bezier(0.25, 0.46, 0.45, 0.94);
+  position: relative;
+  transition: border-color 0.3s, box-shadow 0.3s;
   border: 1px solid var(--vp-c-border);
 }
 
 .VPFeature:hover {
-  transform: translateY(-4px);
   border-color: var(--vp-c-brand-1);
-  box-shadow: 0 20px 60px var(--vp-c-brand-soft);
+  box-shadow: 0 8px 30px var(--vp-c-brand-soft);
+}
+
+/* 边框追光层：inset -1px + padding 1px + mask 挖空中部，只留边框一圈受光 */
+.VPFeature::after,
+.related-card::after,
+.bento-card::after,
+.about-card::after {
+  content: '';
+  position: absolute;
+  inset: -1px;
+  border-radius: inherit;
+  padding: 1px;
+  background: radial-gradient(
+    220px circle at var(--spot-x, 50%) var(--spot-y, 50%),
+    rgba(162, 155, 254, 0.6),
+    transparent 65%
+  );
+  -webkit-mask: linear-gradient(#000 0 0) content-box, linear-gradient(#000 0 0);
+  -webkit-mask-composite: xor;
+  mask: linear-gradient(#000 0 0) content-box, linear-gradient(#000 0 0);
+  mask-composite: exclude;
+  opacity: 0;
+  transition: opacity 0.4s;
+  pointer-events: none;
+}
+
+.VPFeature:hover::after,
+.related-card:hover::after,
+.bento-card:hover::after,
+.about-card:hover::after {
+  opacity: 1;
 }
 
 /* ============================================
-   首页特性区：日期天气卡混入为第四张卡
+   首页特性区：bento 不等宽网格（中文首页）
+   Teleport 注入两张卡：时钟天气（跨 2 列，视觉锚点）+ 订阅卡（跨 2 列）。
    VPFeatures 的 .item 宽度是 scoped 样式，Teleport 注入的节点吃不到，
-   这里全量接管：<768 整行堆叠，768-959 两列（2×2），≥960 四列一行；
-   order: -1 让时钟卡排在三张特性卡之前
+   这里全量接管：<768 整行堆叠，768-959 两列（时钟卡独占一行），≥960 四列，
+   时钟卡与订阅卡各跨 2 列；order: -1 让时钟卡排最前。
+   时钟卡 item 同时是 spotlight 宽度容器（container query，供组件内适配宽卡）。
+   英文首页时钟卡在 hero 侧（无 .item 包裹），不命中 :has 锚点，不受影响。
    ============================================ */
 .datetime-weather-item {
   order: -1;
+  padding: 8px;
+  width: 100%;
+  container-type: inline-size;
+}
+
+.bento-subscribe-item {
   padding: 8px;
   width: 100%;
 }
@@ -260,11 +333,282 @@ body {
   .VPFeatures .items:has(.datetime-weather-item) .item {
     width: calc(100% / 2);
   }
+
+  /* 跨列卡要与上面的 :has(...) .item（特异性 0,4,0）抗衡，必须同特异性且声明在后 */
+  .VPFeatures .items:has(.datetime-weather-item) .datetime-weather-item {
+    width: 100%;
+  }
 }
 
 @media (min-width: 960px) {
   .VPFeatures .items:has(.datetime-weather-item) .item {
     width: calc(100% / 4);
+  }
+
+  /* DOM 序 1-3 是静态三卡（技术/写作/生活），第 3 张「生活」跨 2 列，与订阅卡凑满第二行 */
+  .VPFeatures .items:has(.datetime-weather-item) .item:nth-child(3),
+  .VPFeatures .items:has(.datetime-weather-item) .datetime-weather-item,
+  .VPFeatures .items:has(.datetime-weather-item) .bento-subscribe-item {
+    width: 50%;
+  }
+}
+
+/* ============================================
+   bento 订阅卡：视觉对齐 VPFeature（bg-soft 底 / 1px 边 / 12px 圆角 / 24px 内边距）
+   ============================================ */
+.bento-card {
+  position: relative;
+  height: 100%;
+  display: flex;
+  flex-direction: column;
+  padding: 24px;
+  background: var(--vp-c-bg-soft);
+  border: 1px solid var(--vp-c-border);
+  border-radius: 12px;
+  transition: border-color 0.3s, box-shadow 0.3s;
+}
+
+.bento-card:hover {
+  border-color: var(--vp-c-brand-1);
+  box-shadow: 0 8px 30px var(--vp-c-brand-soft);
+}
+
+.bento-icon {
+  font-size: 24px;
+  line-height: 1;
+  margin-bottom: 16px;
+}
+
+.bento-title {
+  font-size: 16px;
+  font-weight: 600;
+  color: var(--vp-c-text-1);
+  line-height: 24px;
+  margin: 0 0 8px;
+}
+
+.bento-desc {
+  font-size: 14px;
+  color: var(--vp-c-text-2);
+  line-height: 1.7;
+  margin: 0 0 16px;
+}
+
+.bento-links {
+  margin-top: auto;
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  font-size: 13px;
+  font-weight: 500;
+}
+
+.bento-links a {
+  color: var(--vp-c-text-2);
+  text-decoration: none;
+  transition: color 0.2s;
+}
+
+.bento-links a:hover {
+  color: var(--vp-c-brand-1);
+}
+
+.bento-dot {
+  opacity: 0.4;
+}
+
+/* ============================================
+   关于页：名片 hero + 兴趣三卡 + 联系/二维码两卡
+   结构写在 about.md（HTML 容器 + markdown 正文混排）
+   ============================================ */
+
+/* —— 名片 hero：logo 盒 + 名字 + 身份 + 梵语 tagline，底色呼应时钟卡氛围 —— */
+.vp-doc .about-hero {
+  display: flex;
+  align-items: center;
+  gap: 20px;
+  padding: 24px 28px;
+  margin: 4px 0 28px;
+  background:
+    radial-gradient(160px 120px at 100% 0, rgba(253, 121, 168, 0.18), transparent),
+    radial-gradient(140px 100px at 0 100%, rgba(162, 155, 254, 0.2), transparent),
+    var(--vp-c-bg-soft);
+  border: 1px solid var(--vp-c-border);
+  border-radius: 12px;
+}
+
+/* .vp-doc 前缀提高特异性，压掉 .vp-doc img 的 margin: 24px auto（否则在 flex 里被水平居中） */
+.vp-doc .about-avatar {
+  width: 64px;
+  height: 64px;
+  flex-shrink: 0;
+  margin: 0;
+  padding: 10px;
+  background: var(--vp-c-bg);
+  border: 1px solid var(--vp-c-divider);
+  border-radius: 16px;
+}
+
+/* .about-name 是 h2，要压掉 vp-doc h2 的装饰竖线和左内边距 */
+.vp-doc .about-name {
+  padding-left: 0;
+  margin: 0 0 6px;
+  font-size: 26px;
+  font-weight: 700;
+  line-height: 1.3;
+  color: var(--vp-c-text-1);
+  letter-spacing: -0.01em;
+}
+
+.vp-doc .about-name::before {
+  display: none;
+}
+
+.about-dot {
+  color: var(--vp-c-brand-2);
+}
+
+.vp-doc .about-roles {
+  margin: 0 0 4px;
+  font-size: 14px;
+  color: var(--vp-c-text-2);
+}
+
+.vp-doc .about-tagline {
+  margin: 0;
+  font-size: 13px;
+  font-style: italic;
+  color: var(--vp-c-text-3);
+}
+
+/* —— 兴趣三卡（bento 小卡，同款 spotlight）—— */
+.about-cards {
+  display: grid;
+  grid-template-columns: repeat(3, 1fr);
+  gap: 16px;
+  margin: 24px 0;
+}
+
+.about-card {
+  position: relative;
+  padding: 20px;
+  background: var(--vp-c-bg-soft);
+  border: 1px solid var(--vp-c-border);
+  border-radius: 12px;
+  transition: border-color 0.3s, box-shadow 0.3s;
+}
+
+.about-card:hover {
+  border-color: var(--vp-c-brand-1);
+  box-shadow: 0 8px 30px var(--vp-c-brand-soft);
+}
+
+.about-card-icon {
+  font-size: 24px;
+  line-height: 1;
+  margin-bottom: 14px;
+}
+
+.vp-doc .about-card-title {
+  font-size: 15px;
+  font-weight: 600;
+  color: var(--vp-c-text-1);
+  /* 压掉 vp-doc h3 的装饰竖线，卡片语言与 bento 卡一致 */
+  padding-left: 0;
+  margin: 0 0 8px;
+}
+
+.vp-doc .about-card-title::before {
+  display: none;
+}
+
+.vp-doc .about-card-desc {
+  font-size: 14px;
+  color: var(--vp-c-text-2);
+  line-height: 1.7;
+  margin: 0;
+}
+
+/* —— 联系 + 二维码两卡 —— */
+.about-contact {
+  display: grid;
+  grid-template-columns: 1.2fr 1fr;
+  gap: 16px;
+  margin: 24px 0 8px;
+}
+
+.about-links {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 10px;
+  margin-top: 14px;
+}
+
+/* .vp-doc 前缀压掉 .vp-doc a 的下划线与链接色 */
+.vp-doc .about-link {
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  padding: 6px 14px;
+  background: var(--vp-c-bg);
+  border: 1px solid var(--vp-c-divider);
+  border-radius: 999px;
+  font-size: 13px;
+  font-weight: 500;
+  color: var(--vp-c-text-2);
+  text-decoration: none;
+  transition: border-color 0.2s, color 0.2s;
+}
+
+.vp-doc .about-link:hover {
+  border-color: var(--vp-c-brand-1);
+  color: var(--vp-c-brand-1);
+}
+
+.about-qrcode-row {
+  display: flex;
+  align-items: center;
+  gap: 16px;
+}
+
+.vp-doc .about-qrcode {
+  width: 96px;
+  height: 96px;
+  flex-shrink: 0;
+  margin: 0;
+  border-radius: 8px;
+}
+
+.vp-doc .about-qrcode-text {
+  font-size: 13px;
+  color: var(--vp-c-text-2);
+  line-height: 1.7;
+  margin: 0;
+}
+
+/* —— 响应式与减动效 —— */
+@media (max-width: 768px) {
+  .about-cards {
+    grid-template-columns: 1fr;
+  }
+
+  .about-contact {
+    grid-template-columns: 1fr;
+  }
+
+  .vp-doc .about-hero {
+    flex-direction: row;
+    padding: 20px;
+  }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .about-card {
+    transition: none;
+  }
+
+  .about-link {
+    transition: none;
   }
 }
 
@@ -302,21 +646,8 @@ body {
   }
 }
 
-/* 页面过渡 */
-.VPContent {
-  animation: fadeIn 0.5s ease;
-}
-
-@keyframes fadeIn {
-  from {
-    opacity: 0;
-    transform: translateY(20px);
-  }
-  to {
-    opacity: 1;
-    transform: translateY(0);
-  }
-}
+/* 页面过渡改由 View Transitions 接管（page-transitions.js），
+   原来的 .VPContent fadeIn 已退役 —— 内外双层淡入会糊 */
 
 /* ============================================
    可访问性: 减少动画偏好
@@ -328,17 +659,12 @@ body {
     display: none;
   }
 
-  /* 禁用页面过渡 */
-  .VPContent {
-    animation: none;
-  }
-
   /* 禁用打字机光标动画 */
   .typewriter::after {
     animation: none;
   }
 
-  /* 禁用按钮和卡片 hover 动画 */
+  /* 禁用按钮 hover 动画 */
   .VPButton.brand {
     transition: none;
   }
@@ -347,13 +673,17 @@ body {
     transform: none;
   }
 
-  .VPFeature {
-    transition: none;
-  }
+.VPFeature {
+  transition: none;
+}
 
-  .VPFeature:hover {
-    transform: none;
-  }
+/* spotlight 边框追光的淡入过渡 */
+.VPFeature::after,
+.related-card::after,
+.bento-card::after,
+.about-card::after {
+  transition: none;
+}
 }
 
 /* ============================================
@@ -815,6 +1145,7 @@ body {
 }
 
 .related-card {
+  position: relative;
   display: flex;
   flex-direction: column;
   gap: 4px;
@@ -822,13 +1153,12 @@ body {
   border: 1px solid var(--vp-c-border);
   border-radius: 8px;
   text-decoration: none;
-  transition: all 0.25s cubic-bezier(0.25, 0.46, 0.45, 0.94);
+  transition: border-color 0.25s, box-shadow 0.25s;
 }
 
 .related-card:hover {
   border-color: var(--vp-c-brand-1);
   box-shadow: 0 4px 16px var(--vp-c-brand-soft);
-  transform: translateY(-2px);
 }
 
 .related-date {
@@ -868,10 +1198,6 @@ body {
 
   .related-card {
     transition: none;
-  }
-
-  .related-card:hover {
-    transform: none;
   }
 }
 

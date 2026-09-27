@@ -204,6 +204,18 @@ function initReadingProgress() {
   updateProgress();
 }
 
+// 卡片 Spotlight：把指针相对坐标写进 --spot-x/--spot-y，供边框追光层用。
+// 委托到 document，Teleport 注入的动态卡片也能命中；非触摸设备无 hover 时不显示，无需分支
+function initSpotlight() {
+  document.addEventListener('pointermove', (e) => {
+    const card = e.target.closest?.('.VPFeature, .related-card, .bento-card, .about-card');
+    if (!card) return;
+    const rect = card.getBoundingClientRect();
+    card.style.setProperty('--spot-x', `${e.clientX - rect.left}px`);
+    card.style.setProperty('--spot-y', `${e.clientY - rect.top}px`);
+  });
+}
+
 // 回到顶部按钮
 function initBackToTop() {
   const btn = document.createElement('button');
@@ -233,9 +245,10 @@ if (typeof window !== 'undefined') {
   const prefersReducedMotion = window.matchMedia('(prefers-reduced-motion: reduce)').matches;
   const isMobile = window.innerWidth <= 768;
 
-  // 关键 UI 立即初始化（不影响首屏渲染的滚动条/回到顶部）
+  // 关键 UI 立即初始化（不影响首屏渲染的滚动条/回到顶部/spotlight）
   initReadingProgress();
   initBackToTop();
+  initSpotlight();
 
   // 重效果延后到 idle 时间窗，避免抢占主线程
   const startHeavy = () => {

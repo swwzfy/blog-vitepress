@@ -1,4 +1,5 @@
 import DefaultTheme from 'vitepress/theme'
+import { useRouter } from 'vitepress'
 import './custom.css'
 import { onMounted } from 'vue'
 import Layout from './Layout.vue'
@@ -7,10 +8,12 @@ export default {
   extends: DefaultTheme,
   Layout,
   setup() {
+    // useRouter 必须在 setup 同步上下文调用（inject），钩子挂载延后到 onMounted
+    const router = useRouter()
     onMounted(async () => {
       await import('./effects.js')
-      const { initThemeTransition } = await import('./theme-transition.js')
-      initThemeTransition()
+      const { initPageTransitions } = await import('./page-transitions.js')
+      initPageTransitions(router)
     })
   },
   async enhanceApp({ app }) {
