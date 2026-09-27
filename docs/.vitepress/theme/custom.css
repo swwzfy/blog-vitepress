@@ -240,6 +240,7 @@ body::after {
   .home-bento .item:nth-child(3) .bento-card { animation-delay: 480ms; }
   .home-bento .item:nth-child(4) .bento-card { animation-delay: 560ms; }
   .home-bento .item:nth-child(5) .bento-card { animation-delay: 640ms; }
+  .home-bento .item:nth-child(6) .bento-card { animation-delay: 720ms; }
 }
 
 @keyframes hero-in {
@@ -342,6 +343,22 @@ body::after {
 
   .home-bento .bento-item-wide {
     width: 50%;
+  }
+
+  /* 快捷指令通栏卡：6 张卡凑不满 4 列的整行，通栏单独成行；
+     指令行横向三列铺开（借鉴 Leelaa 底部命令网格的排布） */
+  .home-bento .bento-item-full {
+    width: 100%;
+  }
+
+  .home-bento .bento-item-full .cmd-list {
+    display: grid;
+    grid-template-columns: repeat(3, 1fr);
+    align-items: stretch;
+  }
+
+  .home-bento .bento-item-full .cmd-output {
+    grid-column: 1 / -1;
   }
 }
 
@@ -1366,3 +1383,223 @@ body::after {
     flex-wrap: wrap;
   }
 }
+
+/* ===== 时间线页 ===== */
+/* 结构：docs/timeline.md 里 <div class="timeline"> 包住 "h2 年份 + ul 条目" 的 markdown，
+   这里把 ul 渲染成竖向轨道（渐变线 + 光点），每个 li 一张卡片。 */
+
+/* 年份：渐变大字，压掉 vp-doc h2 的顶部分隔线与装饰竖线（同 about-name 的做法） */
+.vp-doc .timeline h2 {
+  border-top: none;
+  padding: 0;
+  margin: 44px 0 16px;
+  font-size: 30px;
+  letter-spacing: -0.02em;
+  background: linear-gradient(135deg, var(--vp-c-brand-1), var(--vp-c-brand-2), var(--vp-c-brand-3));
+  -webkit-background-clip: text;
+  -webkit-text-fill-color: transparent;
+  background-clip: text;
+}
+
+.vp-doc .timeline h2::before {
+  display: none;
+}
+
+.vp-doc .timeline h2:first-child {
+  margin-top: 8px;
+}
+
+/* 轨道：逐年份分段的竖向渐变线 */
+.vp-doc .timeline ul {
+  position: relative;
+  list-style: none;
+  margin: 0;
+  padding: 4px 0 0 34px;
+}
+
+.vp-doc .timeline ul::before {
+  content: '';
+  position: absolute;
+  left: 9px;
+  top: 12px;
+  bottom: 12px;
+  width: 2px;
+  border-radius: 2px;
+  background: linear-gradient(to bottom, var(--vp-c-brand-1), var(--vp-c-brand-3) 75%, transparent);
+  opacity: 0.4;
+}
+
+/* 条目卡片 */
+.vp-doc .timeline li {
+  position: relative;
+  margin: 0 0 14px;
+  padding: 14px 18px;
+  background: var(--vp-c-bg-soft);
+  border: 1px solid var(--vp-c-divider);
+  border-radius: 12px;
+  transition: border-color 0.3s, transform 0.3s, box-shadow 0.3s;
+}
+
+.vp-doc .timeline li:hover {
+  border-color: var(--vp-c-brand-2);
+  transform: translateY(-2px);
+  box-shadow: 0 8px 24px rgba(108, 92, 231, 0.12);
+}
+
+/* 轨道光点，hover 点亮 */
+.vp-doc .timeline li::before {
+  content: '';
+  position: absolute;
+  left: -30px;
+  top: 20px;
+  width: 12px;
+  height: 12px;
+  border-radius: 50%;
+  background: var(--vp-c-bg);
+  border: 3px solid var(--vp-c-brand-2);
+  transition: border-color 0.3s, box-shadow 0.3s;
+}
+
+.vp-doc .timeline li:hover::before {
+  border-color: var(--vp-c-brand-1);
+  box-shadow: 0 0 0 4px rgba(108, 92, 231, 0.15);
+}
+
+/* 条目标题行：strong（有月份时）渲染成胶囊 */
+.vp-doc .timeline li > p:first-child {
+  margin: 0 0 6px;
+  font-weight: 600;
+  font-size: 16px;
+  line-height: 1.5;
+  color: var(--vp-c-text-1);
+}
+
+.vp-doc .timeline li > p:first-child strong {
+  display: inline-block;
+  margin-right: 10px;
+  padding: 1px 10px 2px;
+  border-radius: 999px;
+  font-size: 13px;
+  font-weight: 500;
+  line-height: 1.6;
+  color: var(--vp-c-brand-1);
+  background: var(--vp-c-brand-soft);
+  vertical-align: 2px;
+}
+
+/* 描述行 */
+.vp-doc .timeline li > p + p {
+  margin: 0;
+  font-size: 14px;
+  line-height: 1.7;
+  color: var(--vp-c-text-2);
+}
+
+@media (max-width: 768px) {
+  .vp-doc .timeline h2 {
+    margin: 36px 0 12px;
+    font-size: 26px;
+  }
+  .vp-doc .timeline ul {
+    padding-left: 26px;
+  }
+  .vp-doc .timeline ul::before {
+    left: 7px;
+  }
+  .vp-doc .timeline li::before {
+    left: -24px;
+  }
+}
+
+/* ============================================
+   首页快捷指令卡（借鉴友链 Leelaa 的终端命令面板）：
+   每行一条"命令"，mono 字体 + $ 提示符，hover 整行右移、箭头点亮。
+   按钮行内是真实 button / a：随机文章用 router 跳转，串门是真链接可中键
+   ============================================ */
+.cmd-list {
+  margin-top: auto;
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+}
+
+.cmd-row {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  padding: 10px 14px;
+  background: var(--vp-c-bg);
+  border: 1px solid var(--vp-c-divider);
+  border-radius: 10px;
+  font: inherit;
+  text-align: left;
+  text-decoration: none;
+  cursor: pointer;
+  transition: border-color 0.25s, transform 0.25s, box-shadow 0.25s;
+}
+
+.cmd-row:hover {
+  border-color: var(--vp-c-brand-1);
+  transform: translateX(4px);
+  box-shadow: 0 4px 16px var(--vp-c-brand-soft);
+}
+
+.cmd-icon {
+  font-size: 18px;
+  line-height: 1;
+}
+
+.cmd-text {
+  flex: 1;
+  min-width: 0;
+  display: flex;
+  flex-direction: column;
+  gap: 2px;
+}
+
+.cmd-name {
+  font-size: 14px;
+  font-weight: 600;
+  color: var(--vp-c-text-1);
+}
+
+.vp-doc .cmd-code {
+  padding: 0;
+  background: transparent;
+  border-radius: 0;
+  font-family: 'JetBrains Mono', 'Noto Sans SC', 'Source Han Mono', monospace;
+  font-size: 12px;
+  line-height: 1.4;
+  color: var(--vp-c-brand-1);
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+
+.vp-doc .cmd-code::before {
+  content: '$ ';
+  opacity: 0.5;
+}
+
+.cmd-arrow {
+  color: var(--vp-c-text-3);
+  transition: transform 0.25s, color 0.25s;
+}
+
+.cmd-row:hover .cmd-arrow {
+  transform: translateX(3px);
+  color: var(--vp-c-brand-1);
+}
+
+/* 答案之书的"输出行"：终端回显风格 */
+.cmd-output {
+  padding: 8px 14px;
+  border-left: 2px solid var(--vp-c-brand-2);
+  background: var(--vp-c-bg);
+  border-radius: 0 8px 8px 0;
+  font-family: 'JetBrains Mono', 'Noto Sans SC', 'Source Han Mono', monospace;
+  font-size: 12.5px;
+  color: var(--vp-c-text-2);
+}
+
+

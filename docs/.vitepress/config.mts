@@ -8,6 +8,9 @@ export default defineConfig({
   title: "Kiran's Blog",
   description: '独立开发者 · 写作者 · 终身学习者',
   lang: 'zh-CN',
+  // 顶层开关：VPDocFooter 靠 page.lastUpdated 才渲染"最后更新"，
+  // themeConfig.lastUpdated 只是 label，缺这个开关时间戳永远不出数
+  lastUpdated: true,
   locales: {
     root: {
       label: '中文',
@@ -110,12 +113,16 @@ export default defineConfig({
   },
   head: [
     ['link', { rel: 'icon', type: 'image/svg+xml', href: '/favicon.svg' }],
-    ['link', { rel: 'preconnect', href: 'https://fonts.googleapis.com' }],
+    ['link', { rel: 'apple-touch-icon', href: '/apple-touch-icon.png' }],
     ['link', { rel: 'preconnect', href: 'https://cdn.jsdelivr.net' }],
-    // JetBrains Mono 供 DateTimeWeather 使用；Inter 全站无引用已移除（9 个字重纯死重）
-    ['link', { href: 'https://fonts.googleapis.com/css2?family=JetBrains+Mono:wght@400;500&display=swap', rel: 'stylesheet' }],
+    // JetBrains Mono 改 @fontsource 自托管（theme/index.ts 引入）：Google Fonts 大陆不可达，
+    // 样式表请求失败会拖慢首屏；Inter 全站无引用已移除（9 个字重纯死重）
     // 展示字：霞鹜文楷屏幕版，unicode-range 分片 + font-display: swap，浏览器只拉用到的字块
+    // 展示字：霞鹜文楷屏幕版，unicode-range 分片 + font-display: swap，浏览器只拉用到的字块。
+    // 整包 19.7MB 不宜进仓库与产物，保留 jsDelivr；不可达时降级系统字体（swap 兜底）
     ['link', { href: 'https://cdn.jsdelivr.net/npm/lxgw-wenkai-screen-webfont@1.7.0/lxgwwenkaiscreen.css', rel: 'stylesheet' }],
+    ['meta', { name: 'theme-color', content: '#ffffff', media: '(prefers-color-scheme: light)' }],
+    ['meta', { name: 'theme-color', content: '#1b1b1f', media: '(prefers-color-scheme: dark)' }],
     ['meta', { property: 'og:type', content: 'website' }],
     ['meta', { property: 'og:title', content: "Kiran's Blog" }],
     ['meta', { property: 'og:description', content: '独立开发者 · 写作者 · 终身学习者' }],
@@ -125,18 +132,26 @@ export default defineConfig({
     ['meta', { property: 'og:image:height', content: '630' }],
     ['meta', { name: 'twitter:image', content: hostname + '/og.png' }],
     ['meta', { name: 'twitter:card', content: 'summary_large_image' }],
-    // i18n SEO：每个语种首页互链，x-default 指向中文
-    ['link', { rel: 'alternate', hreflang: 'zh-CN', href: hostname + '/' }],
-    ['link', { rel: 'alternate', hreflang: 'en', href: hostname + '/en/' }],
-    ['link', { rel: 'alternate', hreflang: 'x-default', href: hostname + '/' }],
+    // i18n SEO 的 hreflang 改由 buildEnd 逐页注入（scripts/build-seo.js），
+    // 指向对应语种的同一页面，而不是全站一律指向首页
     ['meta', { name: 'twitter:title', content: "Kiran's Blog" }],
     ['meta', { name: 'twitter:description', content: '独立开发者 · 写作者 · 终身学习者' }],
     ['script', { async: '', src: '//busuanzi.ibruce.info/busuanzi/2.3/busuanzi.pure.mini.js' }]
   ],
   async buildEnd(siteConfig) {
+    const { createRequire } = await import('module')
+    const cwdRequire = createRequire(resolve(process.cwd(), 'index.js'))
+    const { buildRss } = cwdRequire('./scripts/build-rss.js')
+    const seo = cwdRequire('./scripts/build-seo.js')
+
+    // 逐页 frontmatter 元信息：sitemap 过滤 draft 与每页 head 注入共用一份。
+    // draft 页面若忘了加 srcExclude 仍会被构建进路由，这里从 sitemap 侧兜底排除。
+    const pageMeta = seo.loadPageMeta(siteConfig)
     const { SitemapStream, streamToPromise } = await import('sitemap')
     const sitemap = new SitemapStream({ hostname })
-    const pages = siteConfig.pages.map(page => {
+    const pages = siteConfig.pages
+      .filter(page => !pageMeta.get(page)?.draft)
+      .map(page => {
       // pages 是相对路径且以 .md 结尾（如 'posts/x.md'）；.html 分支防御未来变化。
       // URL 无后缀，与 RSS 里的链接惯例一致（nginx 侧做去后缀解析）
       const url = page.replace(/index\.(md|html)$/, '').replace(/\.(md|html)$/, '')
@@ -150,10 +165,10 @@ export default defineConfig({
     // RSS 双语：自写 build-rss.js 替代 vitepress-plugin-rss（0.4.4 locales bug）
     // esbuild 编译 config 后 import.meta.url 指向临时 .mjs，导致 '../scripts' 路径偏移。
     // 用 process.cwd() 拼绝对路径稳定；createRequire 把 cwd 包成 require 入口。
-    const { createRequire } = await import('module')
-    const cwdRequire = createRequire(resolve(process.cwd(), 'index.js'))
-    const { buildRss } = cwdRequire('./scripts/build-rss.js')
     await buildRss(siteConfig)
+
+    // 每页 og:title/description/url、canonical、article:*、og:locale、逐页 hreflang 注入
+    seo.injectSeo(siteConfig, pageMeta)
 
     // 把生成的 RSS / HTML 预览镜像一份到 docs/public/，dev mode 下 VitePress 默认会 serve public/
     // 解决 dev mode 访问 /feed.rss / /feed.html 报 404 的问题
@@ -178,7 +193,23 @@ export default defineConfig({
   themeConfig: {
     logo: '/logo.svg',
     search: {
-      provider: 'local'
+      provider: 'local',
+      options: {
+        // 本地搜索弹层默认英文兜底（源码 fallback 'Search'），中文 locale 需显式翻译；en 用默认
+        locales: {
+          root: {
+            translations: {
+              button: { buttonText: '搜索文档', buttonAriaLabel: '搜索文档' },
+              modal: {
+                displayDetails: '显示详细列表',
+                resetButton: { title: '清除查询条件' },
+                noResultsText: '未找到相关结果',
+                footer: { selectText: '选择', navigateText: '切换', closeText: '关闭' }
+              }
+            }
+          }
+        }
+      }
     },
     socialLinks: [
       { icon: 'rss', link: '/feed.rss', ariaLabel: 'RSS Feed' },

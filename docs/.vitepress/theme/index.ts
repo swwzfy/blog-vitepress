@@ -1,5 +1,8 @@
 import DefaultTheme from 'vitepress/theme'
 import { useRouter } from 'vitepress'
+// JetBrains Mono 自托管（400/500，仅首页时钟卡使用）；替代大陆不可达的 Google Fonts
+import '@fontsource/jetbrains-mono/400.css'
+import '@fontsource/jetbrains-mono/500.css'
 import './custom.css'
 import { onMounted } from 'vue'
 import Layout from './Layout.vue'

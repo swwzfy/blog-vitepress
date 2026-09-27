@@ -21,6 +21,7 @@ function walk(dir) {
 
 const files = walk('docs').filter(f => !f.includes('node_modules') && !f.includes('.vitepress'));
 let flagged = 0;
+let yamlErrors = 0;
 const posts = [];
 for (const f of files) {
   try {
@@ -38,10 +39,14 @@ for (const f of files) {
   } catch (e) {
     console.log('YAML ERROR:', f.split(path.sep).join('/'), '--', e.message.split('\n')[0]);
     flagged++;
+    yamlErrors++;
   }
 }
 console.log('---');
 console.log('total md:', files.length, 'flagged:', flagged);
+// YAML 解析错误会直接弄挂生产构建，退出码非 0 让 CI 拦下；
+// 缺 title/date 只是提醒（about/tags 等静态页合法地没有），不影响退出码。
+if (yamlErrors > 0) process.exit(1);
 console.log('--- posts:', posts.length);
 for (const p of posts.sort((a, b) => String(b.date).localeCompare(String(a.date)))) {
   console.log(p.lang, p.date, p.draft ? '[DRAFT]' : '      ', JSON.stringify(p.tags), p.rel);

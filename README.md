@@ -26,7 +26,7 @@ docs/
 │   │   ├── DateTimeWeather.vue # 首页日期天气组件
 │   │   ├── LifeList.vue      # 生活页列表组件（位于 components/ 下）
 │   │   ├── useTags.ts        # 标签数据加载
-│   │   ├── theme-transition.js # 主题切换过渡
+│   │   ├── page-transitions.js # 页面过渡（View Transitions）
 │   │   ├── custom.css        # 自定义样式（配色、动画、光标）
 │   │   ├── effects.js        # 粒子系统 + 鼠标光晕 + 自定义光标
 │   │   ├── composables/      # 组合式函数（useLocale 等）
@@ -42,17 +42,7 @@ docs/
 ├── projects.md              # 中文项目展示
 ├── friends.md               # 中文友链
 ├── life.md                  # 中文生活页
-├── posts/                   # 中文文章目录
-│   ├── ai-memory.md
-│   ├── deepseek-harness.md
-│   ├── local-llm-deployment.md
-│   ├── notes-evolution.md
-│   ├── openclaw-vs-hermes.md
-│   ├── openspec-review.md
-│   ├── personal-server.md
-│   ├── python-setup.md
-│   ├── rust-cli.md
-│   └── yangzhou-cafe.md
+├── posts/                   # 中文文章目录（18 篇，中英镜像；列表按 frontmatter 驱动，不在此逐一罗列）
 └── en/                      # 英文版本（镜像结构）
     ├── index.md
     ├── about.md
@@ -139,7 +129,7 @@ npm run dev      # 本地开发（predev 自动 kill 旧 :5173 进程）
 npm run build    # 构建静态文件 + sitemap + 双语 RSS
 npm run preview  # 预览构建结果
 npm run lint     # ESLint 检查
-npm run og       # 重生成 OG 图（依赖 .agents/scripts/make-og.js，该文件当前未包含在仓库中，命令暂不可用）
+npm run og       # 重生成 OG 图（.agents/scripts/make-og.js）
 ```
 
 ## 插件
@@ -160,7 +150,7 @@ npm run og       # 重生成 OG 图（依赖 .agents/scripts/make-og.js，该文
 - 中文 RSS: `https://your-domain/feed.rss` 和预览页 `https://your-domain/feed.html`
 - 英文 RSS: `https://your-domain/en/feed.rss` 和预览页 `https://your-domain/en/feed.html`
 
-RSS 逻辑由 `scripts/build-rss.js` 生成，包含完整的 HTML 预览和可视化 XSL 样式表。
+RSS 逻辑由 `scripts/build-rss.js` 生成，`feed.html` 为浏览器友好的订阅预览页。
 
 ## 部署
 

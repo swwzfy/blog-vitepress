@@ -56,6 +56,37 @@ function getGreeting() {
   return '晚上好'
 }
 
+// 公历固定节日倒计时（借鉴友链 Leelaa 首页的 STATUS 节日条；农历需查表换算，暂不覆盖）。
+// 跟随 now 的 computed：SSR 期 now 为 null 输出空串，水合后才有值，无 mismatch
+const FESTIVALS = [
+  { m: 1, d: 1, zh: '元旦', en: "New Year's Day", emoji: '🎊' },
+  { m: 2, d: 14, zh: '情人节', en: "Valentine's Day", emoji: '💝' },
+  { m: 5, d: 1, zh: '劳动节', en: 'Labour Day', emoji: '🛠️' },
+  { m: 6, d: 1, zh: '儿童节', en: "Children's Day", emoji: '🎈' },
+  { m: 10, d: 1, zh: '国庆节', en: 'National Day', emoji: '🇨🇳' },
+  { m: 12, d: 25, zh: '圣诞节', en: 'Christmas', emoji: '🎄' }
+]
+const festival = computed(() => {
+  if (!now.value) return ''
+  const t = now.value
+  const today = new Date(t.getFullYear(), t.getMonth(), t.getDate())
+  let next: { name: string; days: number; emoji: string } | null = null
+  for (let y = today.getFullYear(); y <= today.getFullYear() + 1; y++) {
+    for (const f of FESTIVALS) {
+      const days = Math.round((new Date(y, f.m - 1, f.d).getTime() - today.getTime()) / 86400000)
+      if (days >= 0 && (!next || days < next.days)) {
+        next = { name: isEn.value ? f.en : f.zh, days, emoji: f.emoji }
+      }
+    }
+  }
+  if (!next) return ''
+  return next.days === 0
+    ? `${next.emoji} ${isEn.value ? 'Today is ' : '今天是'}${next.name}`
+    : isEn.value
+      ? `${next.emoji} ${next.days}d to ${next.name}`
+      : `${next.emoji} 距${next.name}还有 ${next.days} 天`
+})
+
 const weatherCodeMap: Record<number, { zh: string; en: string }> = {
   0: { zh: '晴', en: 'Clear' },
   1: { zh: '大部晴朗', en: 'Mainly Clear' },
@@ -134,6 +165,7 @@ onUnmounted(() => {
     <div class="greeting-row">
       <span class="icon-box">{{ greetingEmoji() }}</span>
       <span class="greeting">{{ getGreeting() }}</span>
+      <span v-show="festival" class="festival-chip">{{ festival }}</span>
     </div>
     <div class="info-row">
       <span class="date">{{ formatDate() }}</span>
@@ -161,12 +193,24 @@ onUnmounted(() => {
   box-shadow: 0 4px 20px var(--vp-c-brand-soft);
 }
 
-/* 头部：时段 emoji 图标盒 + 问候语，结构对齐三张特性卡的 icon 槽 */
+/* 头部：时段 emoji 图标盒 + 问候语 + 节日倒计时，结构对齐三张特性卡的 icon 槽 */
 .greeting-row {
   display: flex;
   align-items: center;
+  flex-wrap: wrap;
   gap: 10px;
   margin-bottom: 14px;
+}
+
+/* 节日倒计时：样式与天气胶囊一致，靠 space-between 靠右 */
+.festival-chip {
+  margin-left: auto;
+  padding: 5px 12px;
+  background: var(--vp-c-bg-soft);
+  border: 1px solid var(--vp-c-divider);
+  border-radius: 999px;
+  font-size: 12px;
+  color: var(--vp-c-text-2);
 }
 
 .icon-box {
