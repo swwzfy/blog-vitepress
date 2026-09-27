@@ -310,28 +310,9 @@ body::after {
    不再注入 VPFeatures（Teleport 在 SSG+hydration 下会错位），
    自带 flex 网格：<768 整行堆叠，768-959 两列，≥960 四列，
    .bento-item-wide 跨 2 列。DOM 序即显示序。
+   水平留白由外层 VPHomeContent 的 container（max-width 1280 + padding 24/48/64）提供，
+   不再自备 —— 否则双重缩进，和 Stats / RecentPosts 对不齐
    ============================================ */
-.home-bento {
-  padding: 0 24px;
-}
-
-@media (min-width: 640px) {
-  .home-bento {
-    padding: 0 48px;
-  }
-}
-
-@media (min-width: 960px) {
-  .home-bento {
-    padding: 0 64px;
-  }
-}
-
-.home-bento .container {
-  margin: 0 auto;
-  max-width: 1152px;
-}
-
 .home-bento .items {
   display: flex;
   flex-wrap: wrap;

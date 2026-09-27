@@ -9,9 +9,9 @@ const { isEn } = useLocale()
        SSG 输出与水合 DOM 天然一致 —— Teleport 注入在 SSG+hydration 下会把
        虚拟 DOM（3 张静态卡）和真实 DOM（5 张卡）错位，刷新后技术卡被时钟内容顶掉。
        DOM 序即显示序，无需 order / :has 接管。 -->
+  <!-- 水平留白交给外层 VPHomeContent 的 container，与 Stats / RecentPosts 同宽对齐 -->
   <div class="home-bento">
-    <div class="container">
-      <div class="items">
+    <div class="items">
         <div class="item bento-item-wide bento-clock-item">
           <DateTimeWeather />
         </div>
@@ -60,5 +60,4 @@ const { isEn } = useLocale()
         </div>
       </div>
     </div>
-  </div>
 </template>
