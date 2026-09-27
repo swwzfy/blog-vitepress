@@ -444,7 +444,8 @@ body::after {
   align-items: center;
   gap: 20px;
   padding: 24px 28px;
-  margin: 4px 0 28px;
+  /* h1 自身无 margin，标题与内容的间隔全靠这里：对齐 vp-doc p 的 16px 节奏 */
+  margin: 16px 0 28px;
   background:
     radial-gradient(160px 120px at 100% 0, rgba(253, 121, 168, 0.18), transparent),
     radial-gradient(140px 100px at 0 100%, rgba(162, 155, 254, 0.2), transparent),
