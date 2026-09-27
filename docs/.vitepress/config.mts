@@ -137,8 +137,10 @@ export default defineConfig({
     const { SitemapStream, streamToPromise } = await import('sitemap')
     const sitemap = new SitemapStream({ hostname })
     const pages = siteConfig.pages.map(page => {
-      const url = page.replace(/index\.html$/, '').replace(/\.html$/, '')
-      return { url: url === 'index' ? '/' : `/${url}`, changefreq: 'weekly' }
+      // pages 是相对路径且以 .md 结尾（如 'posts/x.md'）；.html 分支防御未来变化。
+      // URL 无后缀，与 RSS 里的链接惯例一致（nginx 侧做去后缀解析）
+      const url = page.replace(/index\.(md|html)$/, '').replace(/\.(md|html)$/, '')
+      return { url: url === '' ? '/' : `/${url}`, changefreq: 'weekly' }
     })
     pages.forEach(page => sitemap.write(page))
     sitemap.end()
