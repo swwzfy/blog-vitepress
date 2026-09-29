@@ -995,6 +995,22 @@ body::after {
   opacity: 0.4;
 }
 
+/* 朗读按钮：与元信息同行同字号，hover 点亮成主题色 */
+.tts-btn {
+  background: none;
+  border: none;
+  padding: 0;
+  font: inherit;
+  font-size: 14px;
+  color: var(--vp-c-text-3);
+  cursor: pointer;
+  transition: color 0.2s;
+}
+
+.tts-btn:hover {
+  color: var(--vp-c-brand-1);
+}
+
 .article-tags {
   display: flex;
   flex-wrap: wrap;
@@ -1604,3 +1620,192 @@ body::after {
 }
 
 
+
+/* ============================================
+   友链页：卡片式友链 + 申请友链信息块
+   卡片 hover 与首页 post-card 同款手感（上浮 + 主题色描边）
+   ============================================ */
+.friend-cards {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(260px, 1fr));
+  gap: 16px;
+  margin: 16px 0 8px;
+}
+
+.vp-doc a.friend-card,
+.friend-card {
+  display: flex;
+  text-decoration: none;
+  align-items: center;
+  gap: 14px;
+  padding: 16px;
+  background: var(--vp-c-bg-soft);
+  border: 1px solid var(--vp-c-border);
+  border-radius: 12px;
+  transition: border-color 0.25s, transform 0.25s, box-shadow 0.25s;
+}
+
+.friend-card:hover {
+  border-color: var(--vp-c-brand-1);
+  transform: translateY(-2px);
+  box-shadow: 0 4px 16px var(--vp-c-brand-soft);
+}
+
+.friend-avatar {
+  width: 52px;
+  height: 52px;
+  border-radius: 50%;
+  flex-shrink: 0;
+  object-fit: cover;
+}
+
+.friend-info {
+  flex: 1;
+  min-width: 0;
+  display: flex;
+  flex-direction: column;
+  gap: 4px;
+}
+
+.friend-name {
+  font-size: 15px;
+  font-weight: 600;
+  color: var(--vp-c-text-1);
+}
+
+.friend-desc {
+  font-size: 13px;
+  line-height: 1.5;
+  color: var(--vp-c-text-2);
+  display: -webkit-box;
+  -webkit-line-clamp: 2;
+  -webkit-box-orient: vertical;
+  overflow: hidden;
+}
+
+.friend-arrow {
+  color: var(--vp-c-text-3);
+  transition: transform 0.25s, color 0.25s;
+}
+
+.friend-card:hover .friend-arrow {
+  transform: translateX(3px);
+  color: var(--vp-c-brand-1);
+}
+
+/* 申请友链：本站信息键值对，mono 小字键名 */
+.friend-apply {
+  margin: 16px 0;
+  padding: 16px 20px;
+  background: var(--vp-c-bg-soft);
+  border: 1px solid var(--vp-c-border);
+  border-radius: 12px;
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+}
+
+.friend-info-row {
+  display: flex;
+  align-items: baseline;
+  gap: 12px;
+  font-size: 14px;
+  line-height: 1.6;
+  color: var(--vp-c-text-2);
+  word-break: break-all;
+}
+
+.friend-key {
+  flex-shrink: 0;
+  min-width: 5.5em;
+  color: var(--vp-c-text-3);
+  font-family: 'JetBrains Mono', 'Noto Sans SC', 'Source Han Mono', monospace;
+  font-size: 12.5px;
+}
+
+@media (max-width: 768px) {
+  .friend-cards {
+    grid-template-columns: 1fr;
+  }
+}
+
+/* ============================================
+   友链页「圈子动态」（借鉴 Leelaa 的圈子页）：
+   构建期聚合的友链最新文章列表，行式布局同 cmd-row 手感
+   ============================================ */
+.friends-activity {
+  margin: 40px 0 8px;
+}
+
+.vp-doc .friends-activity-title {
+  margin: 0 0 4px;
+  padding-top: 0;
+  border-top: none;
+  font-size: 20px;
+  font-weight: 700;
+  color: var(--vp-c-text-1);
+}
+
+.friends-activity-desc {
+  margin: 0 0 16px;
+  font-size: 13.5px;
+  color: var(--vp-c-text-3);
+}
+
+.activity-row {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  padding: 12px 14px;
+  background: var(--vp-c-bg-soft);
+  border: 1px solid var(--vp-c-border);
+  border-radius: 10px;
+  text-decoration: none;
+  transition: border-color 0.25s, transform 0.25s, box-shadow 0.25s;
+}
+
+.activity-row + .activity-row {
+  margin-top: 10px;
+}
+
+.activity-row:hover {
+  border-color: var(--vp-c-brand-1);
+  transform: translateX(4px);
+  box-shadow: 0 4px 16px var(--vp-c-brand-soft);
+}
+
+.vp-doc a.activity-row {
+  text-decoration: none;
+}
+
+.activity-avatar {
+  width: 28px;
+  height: 28px;
+  border-radius: 50%;
+  flex-shrink: 0;
+  object-fit: cover;
+}
+
+.activity-main {
+  flex: 1;
+  min-width: 0;
+  display: flex;
+  flex-direction: column;
+  gap: 2px;
+}
+
+.vp-doc .activity-title {
+  font-size: 14px;
+  font-weight: 600;
+  color: var(--vp-c-text-1);
+  line-height: 1.5;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+
+.vp-doc .activity-meta {
+  font-size: 12.5px;
+  color: var(--vp-c-text-3);
+  font-family: 'JetBrains Mono', 'Noto Sans SC', 'Source Han Mono', monospace;
+}

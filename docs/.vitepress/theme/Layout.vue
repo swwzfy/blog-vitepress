@@ -85,6 +85,64 @@ function update() {
   findRelated()
 }
 
+// —— 文章朗读（借鉴友链 Leelaa 的 ToSpeech）——
+// 浏览器原生 speechSynthesis，无外部依赖。Chrome 对超长 utterance 会在十几秒后静音，
+// 按句子切块依次入队规避；generation 计数让"停止"能作废整个在途队列。
+const canSpeak = ref(false)
+const speaking = ref(false)
+let speechGeneration = 0
+
+function stopSpeech() {
+  speechGeneration++
+  window.speechSynthesis.cancel()
+  speaking.value = false
+}
+
+function toggleSpeech() {
+  if (speaking.value) {
+    stopSpeech()
+    return
+  }
+  const doc = document.querySelector('.vp-doc')
+  if (!doc) return
+  // 代码块不进语音：朗读出来是一串符号
+  const clone = doc.cloneNode(true) as HTMLElement
+  clone.querySelectorAll('pre').forEach(el => el.remove())
+  const text = (clone.textContent || '').replace(/\s+/g, ' ').trim()
+  if (!text) return
+
+  const sentences = text.split(/(?<=[。！？；.!?])\s*/)
+  const chunks: string[] = []
+  let current = ''
+  for (const s of sentences) {
+    if ((current + s).length > 180 && current) {
+      chunks.push(current)
+      current = s
+    } else {
+      current += s
+    }
+  }
+  if (current) chunks.push(current)
+
+  const voices = window.speechSynthesis.getVoices()
+  const lang = isEn.value ? 'en' : 'zh'
+  const voice = voices.find(v => v.lang.toLowerCase().startsWith(lang)) || null
+  const generation = speechGeneration
+  speaking.value = true
+  for (const chunk of chunks) {
+    const utter = new SpeechSynthesisUtterance(chunk)
+    if (voice) utter.voice = voice
+    utter.lang = isEn.value ? 'en-US' : 'zh-CN'
+    utter.onend = () => {
+      // 队列自然播完时复位；被 stopSpeech 打断时 generation 已变，跳过
+      if (generation === speechGeneration && !window.speechSynthesis.speaking) {
+        speaking.value = false
+      }
+    }
+    window.speechSynthesis.speak(utter)
+  }
+}
+
 /** 通用后退入口：history 可用就用，否则回首页。 */
 function goBack() {
   if (typeof window === 'undefined') return
@@ -138,11 +196,21 @@ function loadLive2d() {
   document.body.appendChild(manifest)
 }
 
+// 建站运行天数：以 git 首次提交日 2026-06-26 起算。SSR 期保持 null，
+// onMounted 再算 —— 时间是运行时事实，静态渲染期写死必然 hydration mismatch
+const FOUNDED_DATE = '2026-06-26'
+const uptimeDays = ref<number | null>(null)
+
 onMounted(() => {
   update()
   loadLive2d()
+  canSpeak.value = 'speechSynthesis' in window
+  uptimeDays.value = Math.max(1, Math.floor((Date.now() - new Date(FOUNDED_DATE).getTime()) / 86400000))
 })
-watch(() => page.value.relativePath, update)
+watch(() => page.value.relativePath, () => {
+  if (speaking.value) stopSpeech()
+  update()
+})
 </script>
 
 <template>
@@ -164,6 +232,12 @@ watch(() => page.value.relativePath, update)
           <span class="meta-words">{{ wordCount }} {{ t('words') }}</span>
           <span class="meta-dot">·</span>
           <span class="meta-views">👁 <span id="busuanzi_value_page_pv">-</span> {{ t('reads') }}</span>
+          <template v-if="canSpeak">
+            <span class="meta-dot">·</span>
+            <button class="tts-btn" type="button" @click="toggleSpeech">
+              {{ speaking ? `⏹ ${t('ttsStop')}` : `🔊 ${t('ttsPlay')}` }}
+            </button>
+          </template>
         </div>
         <div v-if="frontmatter.tags?.length" class="article-tags">
           <span v-for="tag in frontmatter.tags" :key="tag" class="tag">{{ tag }}</span>
@@ -243,6 +317,10 @@ watch(() => page.value.relativePath, update)
               <span id="busuanzi_container_site_uv">{{ t('visit') }} <span id="busuanzi_value_site_uv">-</span></span>
               <span class="stats-dot">·</span>
               <span id="busuanzi_container_site_pv">{{ t('views') }} <span id="busuanzi_value_site_pv">-</span></span>
+              <template v-if="uptimeDays !== null">
+                <span class="stats-dot">·</span>
+                <span>{{ isEn ? `${uptimeDays} days online` : `已运行 ${uptimeDays} 天` }}</span>
+              </template>
             </div>
           </div>
 

@@ -16,6 +16,32 @@ function randomPost() {
   router.go(p.url)
 }
 
+// 流浪星球（借鉴友链 Leelaa）：随机飞往一个精选的趣味网站。
+// 词池手动维护，选大陆可达的站点。用真 <a target="_blank"> 而非 window.open：
+// 点击时随机写入 href，交给浏览器原生新开标签，不被弹窗拦截器误伤
+const PLANETS = [
+  { url: 'https://zhongguose.com', zh: '中国色', en: 'Chinese Colors', desc: '传统色卡，取一个颜色写进 CSS', descEn: 'Traditional Chinese color palette' },
+  { url: 'https://www.window-swap.com', zh: 'WindowSwap', en: 'WindowSwap', desc: '看别人窗外的风景', descEn: 'Views from strangers\' windows' },
+  { url: 'https://asoftmurmur.com', zh: 'A Soft Murmur', en: 'A Soft Murmur', desc: '自己调配一段白噪音', descEn: 'Mix your own ambient noise' },
+  { url: 'https://www.zoomquilt.org', zh: 'Zoom Quilt', en: 'Zoom Quilt', desc: '一张可以无限放大的画', descEn: 'An endlessly zooming painting' },
+  { url: 'https://scaleofuniverse.com', zh: '宇宙的尺度', en: 'Scale of the Universe', desc: '从普朗克长度滑到整个宇宙', descEn: 'From Planck length to the universe' },
+  { url: 'https://ltfc.net', zh: '中华珍宝馆', en: 'Chinese Treasures', desc: '高清书法与国画', descEn: 'Hi-res calligraphy and paintings' },
+  { url: 'https://www.zdic.net', zh: '汉典', en: 'ZDIC', desc: '查一个字的来龙去脉', descEn: 'Look up a character\'s story' },
+  { url: 'https://ctext.org/zhs', zh: '中国哲学书电子化计划', en: 'CTEXT', desc: '古籍原文，随手读一段', descEn: 'Classical texts in the original' },
+  { url: 'https://patatap.com', zh: 'Patatap', en: 'Patatap', desc: '键盘敲出声音和动画', descEn: 'Keyboard becomes an instrument' },
+  { url: 'https://neal.fun', zh: 'Neal.fun', en: 'Neal.fun', desc: '一堆上头的小实验', descEn: 'A pile of addictive little experiments' }
+]
+
+// SSR/SSG 渲染期固定为首个站点，点击时才随机 —— 与时钟同一套 hydration 安全模式
+const wanderUrl = ref(PLANETS[0].url)
+function pickPlanet() {
+  const p = PLANETS[Math.floor(Math.random() * PLANETS.length)]
+  wanderUrl.value = p.url
+  feedback.value = isEn.value
+    ? `warping to ${p.en} — ${p.descEn}`
+    : `正在飞往「${p.zh}」—— ${p.desc}`
+}
+
 // 答案之书：心里默念一个问题，点一下翻一"页"。内置词池，不依赖外部 API
 const ANSWERS = [
   { zh: '去做吧，别想太多。', en: 'Do it. Stop overthinking.' },
@@ -33,10 +59,11 @@ const ANSWERS = [
   { zh: '去外面走十分钟。', en: 'Go take a ten-minute walk.' },
   { zh: '相信第一直觉。', en: 'Trust your first instinct.' }
 ]
-const answer = ref('')
+// 指令卡的回显行：答案之书与流浪星球共用一条终端输出
+const feedback = ref('')
 function askAnswer() {
   const a = ANSWERS[Math.floor(Math.random() * ANSWERS.length)]
-  answer.value = isEn.value ? a.en : a.zh
+  feedback.value = isEn.value ? a.en : a.zh
 }
 </script>
 
@@ -118,6 +145,14 @@ function askAnswer() {
                 </span>
                 <span class="cmd-arrow">→</span>
               </button>
+              <a class="cmd-row" :href="wanderUrl" target="_blank" rel="noopener" @click="pickPlanet">
+                <span class="cmd-icon">🪐</span>
+                <span class="cmd-text">
+                  <span class="cmd-name">{{ isEn ? 'Wander the planets' : '流浪星球' }}</span>
+                  <code class="cmd-code">kiran.wander()</code>
+                </span>
+                <span class="cmd-arrow">→</span>
+              </a>
               <a class="cmd-row" href="https://leelaa.cn" target="_blank" rel="noopener">
                 <span class="cmd-icon">🏡</span>
                 <span class="cmd-text">
@@ -126,7 +161,7 @@ function askAnswer() {
                 </span>
                 <span class="cmd-arrow">→</span>
               </a>
-              <div v-if="answer" class="cmd-output">↳ {{ answer }}</div>
+              <div v-if="feedback" class="cmd-output">↳ {{ feedback }}</div>
             </div>
           </div>
         </div>

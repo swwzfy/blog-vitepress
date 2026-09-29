@@ -1,8 +1,32 @@
 import { defineConfig } from 'vitepress'
-import { writeFileSync } from 'fs'
+import { writeFileSync, readFileSync, readdirSync } from 'fs'
 import { resolve } from 'path'
 
 const hostname = 'https://www.jossecho.com'
+
+// —— 构建期全站字数统计 ——
+// Node 侧直接扫 posts 目录，经 vite define 注入为编译期常量（不进客户端 bundle）。
+// 口径与 Layout.vue 阅读时长一致：中文字符数 + 英文单词数；draft 页不计入。
+function countWords(dir: string): number {
+  let total = 0
+  for (const name of readdirSync(dir)) {
+    if (!name.endsWith('.md')) continue
+    const raw = readFileSync(resolve(dir, name), 'utf-8')
+    const fmEnd = raw.indexOf('\n---', 3)
+    const frontmatter = fmEnd > 0 ? raw.slice(0, fmEnd) : ''
+    if (/^draft:\s*true\s*$/m.test(frontmatter)) continue
+    const body = fmEnd > 0 ? raw.slice(fmEnd + 4) : raw
+    const chinese = (body.match(/[一-鿿]/g) || []).length
+    const english = (body.match(/[a-zA-Z]+/g) || []).length
+    total += chinese + english
+  }
+  return total
+}
+
+const SITE_WORDS = {
+  zh: countWords(resolve(process.cwd(), 'docs/posts')),
+  en: countWords(resolve(process.cwd(), 'docs/en/posts'))
+}
 
 export default defineConfig({
   title: "Kiran's Blog",
@@ -78,9 +102,24 @@ export default defineConfig({
     }
   },
   vite: {
+    define: {
+      __SITE_WORDS__: JSON.stringify(SITE_WORDS)
+    },
     // 给 dev / preview 的 RSS 与 HTML 预览补 Content-Type charset。
     // 多数 reader 优先看 HTTP 头而不是 XML prolog，缺 charset 在中文 Windows 上会乱码。
     plugins: [
+      // 构建期聚合友链 RSS（借鉴 Leelaa 的「圈子」页）：
+      // FriendsLinks.vue eager import 生成的 friends-activity.json，
+      // 所以必须在编译开始前完成抓取 —— 挂在 vite buildStart 而不是 buildEnd。
+      // 抓取失败不阻塞构建（脚本内部保留旧缓存兜底）
+      {
+        name: 'friends-activity',
+        async buildStart() {
+          const { createRequire } = await import('module')
+          const cwdRequire = createRequire(resolve(process.cwd(), 'index.js'))
+          await cwdRequire('./scripts/build-friends-activity.js').refreshFriendsActivity()
+        }
+      },
       {
         name: 'rss-charset-headers',
         configureServer(server) {

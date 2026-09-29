@@ -22,6 +22,8 @@ const dict: LocaleDict = {
   minRead: { zh: '分钟阅读', en: 'min read' },
   words: { zh: '字', en: 'words' },
   reads: { zh: '次阅读', en: 'reads' },
+  ttsPlay: { zh: '朗读本文', en: 'Read aloud' },
+  ttsStop: { zh: '停止朗读', en: 'Stop reading' },
   footerDesc: {
     zh: '独立开发者 · 写作者 · 终身学习者',
     en: 'Indie Developer · Writer · Lifelong Learner'
