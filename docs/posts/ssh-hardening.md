@@ -1,7 +1,7 @@
 ---
 title: SSH 安全加固实战
 date: 2026-09-03
-tags: [服务器, SSH, 安全, DevOps]
+tags: [服务器运维, 安全]
 description: 一台暴露公网的服务器，SSH 是唯一的门。改端口、禁 root、配密钥、上 fail2ban，把暴力破解挡在门外。
 ---
 

@@ -1,7 +1,7 @@
 ---
 title: "Modernizing This Blog: Noise, Spotlight, View Transitions & Bento"
 date: 2026-09-27
-tags: [VitePress, Frontend, CSS, Motion]
+tags: [VitePress, Frontend]
 description: "A subtraction pass over three years of accumulated effects: film-grain noise, spotlight borders, native View Transitions, tighter display type, and a Bento home page. The traps were worth more than the effects — SPA navigation eating CSS transitions, :has specificity, and vp-doc global style pollution."
 ---
 

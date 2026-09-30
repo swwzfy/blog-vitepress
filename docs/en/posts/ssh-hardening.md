@@ -1,7 +1,7 @@
 ---
 title: Hardening SSH on a Fresh Server
 date: 2026-09-03
-tags: [Server, SSH, Security, DevOps]
+tags: [Server Ops, Security]
 description: "A server exposed to the public internet has one door: SSH. Change the port, disable root login, switch to key auth, and add fail2ban to keep brute-force bots out."
 ---
 

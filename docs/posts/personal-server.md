@@ -1,7 +1,7 @@
 ---
 title: 从零搭建个人服务器
 date: 2026-04-28
-tags: [服务器, Nginx, DevOps]
+tags: [服务器运维]
 description: 从买域名、选 VPS、配 Nginx、装 SSL 到部署第一个服务的全过程，适合新手参考。
 ---
 

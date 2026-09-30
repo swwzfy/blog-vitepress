@@ -1,7 +1,7 @@
 ---
 title: OpenClaw vs Hermes — Two Approaches to AI Agent Design
 date: 2026-07-16
-tags: [AI, Agent, OpenClaw, Hermes, Framework Comparison]
+tags: [AI, Agent]
 description: One reaches outward, one reflects inward — two AI Agent paths and their trade-offs across ten dimensions.
 ---
 

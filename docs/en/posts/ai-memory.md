@@ -1,7 +1,7 @@
 ---
 title: Why I Let AI Manage My Memory
 date: 2026-05-18
-tags: [AI, Memory System, Vector Search]
+tags: [AI, Knowledge Management]
 description: Built a three-layer memory system for AI — long-term memory, short-term memory, semantic search. Not just a tech experiment, it's a reflection on “continuity”.
 ---
 

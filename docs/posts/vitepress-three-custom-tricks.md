@@ -1,7 +1,7 @@
 ---
 title: 三个 VitePress 定制技巧
 date: 2026-09-12
-tags: [VitePress, 前端, Canvas, 性能]
+tags: [VitePress, 前端, 性能]
 description: 给 VitePress 加粒子背景、鼠标光晕和氛围渐变。效果本身很便宜，坑都藏在细节里——DPR、合成层，以及学会不做动画。
 ---
 

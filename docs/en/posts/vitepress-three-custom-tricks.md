@@ -1,7 +1,7 @@
 ---
 title: Three VitePress Customization Tricks
 date: 2026-09-12
-tags: [VitePress, Frontend, Canvas, Performance]
+tags: [VitePress, Frontend, Performance]
 description: "Adding a particle background, a cursor glow, and an ambient gradient to VitePress. The effects themselves are cheap — the traps hide in details: DPR, compositing layers, and learning not to animate."
 ---
 

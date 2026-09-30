@@ -1,7 +1,7 @@
 ---
 title: OpenClaw 与 Hermes：把 AI Agent 的两种解法拆开看
 date: 2026-07-16
-tags: [AI, Agent, OpenClaw, Hermes, 框架对比]
+tags: [AI, Agent]
 description: 一个往外接，一个向内省——两种 AI Agent 路线在不同维度上的取舍。
 ---
 

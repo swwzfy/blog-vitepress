@@ -1,7 +1,7 @@
 ---
 title: "Alibaba Cloud ECS: Instance Selection & ICP Filing"
 date: 2026-09-03
-tags: [Server, Alibaba Cloud, ICP Filing, DevOps]
+tags: [Server Ops]
 description: From instance selection, purchase, and ICP filing to going live — a full walkthrough of launching a personal server in mainland China, including the lesson learned from a filing rejection.
 ---
 

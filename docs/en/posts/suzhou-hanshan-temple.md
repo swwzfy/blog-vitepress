@@ -2,7 +2,7 @@
 title: A Visit to Hanshan Temple in Suzhou
 date: 2026-08-18
 draft: true
-tags: [Life, Suzhou, Temple, Travel]
+tags: [Life]
 description: Half a year of writing code tired out my eyes and my mind. I took a weekend drive to see Hanshan Temple in Suzhou.
 ---
 

@@ -1,7 +1,7 @@
 ---
 title: Local LLM Deployment — From PC to Self-Hosted Server, Five Paths Side by Side
 date: 2026-07-16
-tags: [AI, Ollama, vLLM, llama.cpp, Deployment]
+tags: [AI, Local LLMs]
 description: Five typical paths for running models on your own hardware — desktop apps to production inference frameworks, matched to your situation.
 ---
 

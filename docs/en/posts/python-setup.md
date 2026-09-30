@@ -1,7 +1,7 @@
 ---
 title: "Python Beginner's Guide: Environment Setup & First Project"
 date: 2026-08-12
-tags: [Python, Beginner, Package Management]
+tags: [Languages, Tools]
 description: "From installing the interpreter to running your first project. Compares uv, poetry, and pip. Covers Windows, macOS, and Linux. Every command is copy-paste ready."
 ---
 

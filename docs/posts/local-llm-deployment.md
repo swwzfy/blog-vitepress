@@ -1,7 +1,7 @@
 ---
 title: 本地大模型部署：从 PC 到服务器，五种方案摆在一起看
 date: 2026-07-16
-tags: [AI, Ollama, vLLM, llama.cpp, 部署]
+tags: [AI, 本地大模型]
 description: 把模型跑在自己机器上的几条典型路径——从桌面应用到生产推理框架，按场景摆开。
 ---
 

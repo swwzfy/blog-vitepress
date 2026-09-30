@@ -1,7 +1,7 @@
 ---
 title: Building a Personal Server from Scratch
 date: 2026-04-28
-tags: [Server, Nginx, DevOps]
+tags: [Server Ops]
 description: The whole process from buying a domain, choosing a VPS, configuring Nginx, installing SSL to deploying the first service. Suitable for beginners.
 ---
 

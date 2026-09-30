@@ -1,7 +1,7 @@
 ---
 title: Rewriting My CLI Tool in Rust
 date: 2026-06-12
-tags: [Rust, CLI, Performance]
+tags: [Languages, Tools, Performance]
 description: Why I rewrote a Python CLI tool in Rust, startup time dropped from 800ms to 12ms, single file 4.2MB with zero dependencies.
 ---
 

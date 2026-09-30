@@ -1,7 +1,7 @@
 ---
 title: 我的博客是怎么搭的
 date: 2026-09-20
-tags: [VitePress, 前端, 架构]
+tags: [VitePress, 前端]
 description: 一篇讲清楚这个博客的技术选型、主题定制方式、i18n 方案、RSS 自建原因，以及几个性能取舍背后的逻辑。
 ---
 
