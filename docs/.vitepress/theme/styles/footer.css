@@ -1,0 +1,166 @@
+/* ============================================
+   站点 Footer
+   ============================================ */
+.site-footer {
+  width: 100%;
+  padding: 64px 0 var(--space-6);
+  border-top: 1px solid var(--vp-c-divider);
+  background: var(--vp-c-bg-soft);
+  color: var(--vp-c-text-2);
+}
+
+/* —— 顶部风景图（右上角，紧贴 footer 右边） —— */
+.footer-landscape-wrap {
+  display: flex;
+  justify-content: flex-end;
+  pointer-events: none;
+  user-select: none;
+  margin-bottom: var(--space-5);
+}
+
+.footer-landscape {
+  display: block;
+  width: 360px;
+  max-width: 80%;
+  height: auto;
+  opacity: 0.7;
+  transition: opacity 0.3s ease;
+}
+
+.footer-landscape-light {
+  display: block;
+}
+.footer-landscape-dark {
+  display: none;
+}
+
+.dark .footer-landscape-light {
+  display: none;
+}
+.dark .footer-landscape-dark {
+  display: block;
+}
+
+/* —— 内容区 —— */
+.footer-inner {
+  max-width: var(--axis-page);
+  margin: 0 auto;
+  padding: 0 var(--space-5);
+  display: flex;
+  align-items: flex-end;
+  justify-content: space-between;
+  gap: var(--space-6);
+}
+
+.footer-main {
+  flex: 1 1 auto;
+  min-width: 0;
+}
+
+.footer-brand {
+  font-size: 22px;
+  font-weight: 700;
+  color: var(--vp-c-text-1);
+  letter-spacing: -0.01em;
+  margin-bottom: var(--space-2);
+}
+
+.footer-desc {
+  font-size: 14px;
+  color: var(--vp-c-text-2);
+  margin: 0 0 14px;
+  line-height: 1.6;
+}
+
+.footer-meta {
+  font-size: 13px;
+  color: var(--vp-c-text-3);
+  margin: 0 0 14px;
+  line-height: 1.7;
+}
+
+.site-stats {
+  font-size: 12px;
+  color: var(--vp-c-text-3);
+}
+
+.site-stats span {
+  white-space: nowrap;
+}
+
+.stats-dot {
+  margin: 0 var(--space-2);
+  opacity: 0.5;
+}
+
+/* —— 右侧 aside —— */
+.footer-aside {
+  flex: 0 0 auto;
+  display: flex;
+  flex-direction: column;
+  align-items: flex-end;
+  gap: var(--space-3);
+  font-size: 13px;
+  color: var(--vp-c-text-3);
+}
+
+.footer-qrcode {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.footer-qrcode img {
+  width: 80px;
+  height: 80px;
+  border-radius: var(--radius-xs);
+  opacity: 0.8;
+  transition: opacity 0.2s ease;
+}
+
+.footer-qrcode img:hover {
+  opacity: 1;
+}
+
+.footer-aside > div:last-child {
+  display: flex;
+  align-items: center;
+  gap: 6px;
+  white-space: nowrap;
+}
+
+.footer-aside a {
+  color: var(--vp-c-text-3);
+  text-decoration: none;
+  transition: color 0.2s ease;
+}
+
+.footer-aside a:hover {
+  color: var(--vp-c-brand-1);
+}
+
+.aside-dot {
+  opacity: 0.4;
+  user-select: none;
+}
+
+/* —— 移动端 —— */
+@media (max-width: 640px) {
+  .site-footer {
+    padding: var(--space-7) 0 var(--space-5);
+  }
+  .footer-inner {
+    padding: 0 20px;
+  }
+  .footer-landscape {
+    width: 240px;
+  }
+  .footer-inner {
+    flex-direction: column;
+    align-items: flex-start;
+    gap: 20px;
+  }
+  .footer-aside {
+    flex-wrap: wrap;
+  }
+}

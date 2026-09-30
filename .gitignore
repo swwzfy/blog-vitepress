@@ -16,3 +16,11 @@ docs/.vitepress/cache/
 
 # Git 内部备份目录
 .git-corrupted-backup/
+
+# 构建期由 config.mts 的 buildEnd 从 dist 回写的 RSS / HTML 镜像。
+# lastBuildDate 每次都变，入库只产生时间戳噪音；dev 下由 docs/public/ 提供访问，
+# 全新克隆跑一次 npm run build 即生成。
+docs/public/feed.rss
+docs/public/feed.html
+docs/public/en/feed.rss
+docs/public/en/feed.html

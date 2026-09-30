@@ -1,5 +1,6 @@
 ---
 title: Friends
+description: "Friends — sites I read often, plus how to apply for a link exchange."
 ---
 
 # Friends
@@ -17,7 +18,7 @@ Add my site first, then email <a href="mailto:swwzfy@163.com">swwzfy@163.com</a>
   <div class="friend-info-row"><span class="friend-key">URL</span><span>https://www.jossecho.com</span></div>
   <div class="friend-info-row"><span class="friend-key">Description</span><span>An indie developer's tinkering and thoughts</span></div>
   <div class="friend-info-row"><span class="friend-key">Avatar</span><span>https://www.jossecho.com/logo.svg</span></div>
-  <div class="friend-info-row"><span class="friend-key">RSS</span><span>https://www.jossecho.com/feed.rss</span></div>
+  <div class="friend-info-row"><span class="friend-key">RSS</span><span>https://www.jossecho.com/en/feed.rss</span></div>
 </div>
 
 A few ground rules:

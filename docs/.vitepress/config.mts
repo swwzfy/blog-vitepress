@@ -28,6 +28,44 @@ const SITE_WORDS = {
   en: countWords(resolve(process.cwd(), 'docs/en/posts'))
 }
 
+// —— 构建期排除草稿页 ——
+// VitePress 不认 frontmatter.draft，只能靠 srcExclude 挡在路由外。
+// 手写文件名会漏：新增草稿时没人记得同步，页面就直接上线，而且不进 sitemap /
+// 列表 / RSS，反而更难被发现。所以扫目录动态生成，判定口径与 countWords 一致。
+function draftExcludes(): string[] {
+  const patterns: string[] = []
+  const dirs: Array<[string, string]> = [['docs/posts', 'posts'], ['docs/en/posts', 'en/posts']]
+  for (const [dir, prefix] of dirs) {
+    const abs = resolve(process.cwd(), dir)
+    for (const name of readdirSync(abs)) {
+      if (!name.endsWith('.md')) continue
+      const raw = readFileSync(resolve(abs, name), 'utf-8')
+      const fmEnd = raw.indexOf('\n---', 3)
+      const frontmatter = fmEnd > 0 ? raw.slice(0, fmEnd) : ''
+      if (/^draft:\s*true\s*$/m.test(frontmatter)) patterns.push(`**/${prefix}/${name}`)
+    }
+  }
+  return patterns
+}
+
+// 社交链接：RSS 入口必须按语种分开 —— 英文站此前一律指向中文 /feed.rss，
+// 而 /en/feed.rss 早就由 buildRss 生成好了。github / email 两种语言一致，
+// 用工厂函数避免两处重复维护。
+// 注意放在 locale.themeConfig 里而不是顶层：顶层会同时作用于两个语种。
+function makeSocialLinks(rssHref: string) {
+  return [
+    { icon: 'rss', link: rssHref, ariaLabel: 'RSS Feed' },
+    { icon: 'github', link: 'https://github.com/swwzfy' },
+    {
+      icon: {
+        svg: '<svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect width="20" height="16" x="2" y="4" rx="2" fill="none"/><path d="m22 7-8.97 5.7a1.94 1.94 0 0 1-2.06 0L2 7" fill="none"/></svg>'
+      },
+      link: 'mailto:swwzfy@163.com',
+      ariaLabel: 'Email'
+    }
+  ]
+}
+
 export default defineConfig({
   title: "Kiran's Blog",
   description: '独立开发者 · 写作者 · 终身学习者',
@@ -60,7 +98,8 @@ export default defineConfig({
         docFooter: {
           prev: '上一篇',
           next: '下一篇'
-        }
+        },
+        socialLinks: makeSocialLinks('/feed.rss')
       }
     },
     en: {
@@ -97,7 +136,8 @@ export default defineConfig({
         docFooter: {
           prev: 'Previous',
           next: 'Next'
-        }
+        },
+        socialLinks: makeSocialLinks('/en/feed.rss')
       }
     }
   },
@@ -226,9 +266,10 @@ export default defineConfig({
     }
   },
   // VitePress 不会自动排除 draft: true 的页面 —— 设 srcExclude 让它不进入路由表。
+  // 原来的硬编码文件名会漏掉新增草稿，现在由 draftExcludes() 扫 frontmatter 生成。
   // 列表组件（Archives/Tags/LifeList 等）扫的是 src/posts/*.md，不走路由，
-  // 所以下面还要在 build-rss.js 里按 frontmatter.draft 再过滤一次。
-  srcExclude: ['**/posts/suzhou-hanshan-temple.md', '**/en/posts/suzhou-hanshan-temple.md'],
+  // 所以 build-rss.js 里还按 frontmatter.draft 再过滤一次。
+  srcExclude: draftExcludes(),
   themeConfig: {
     logo: '/logo.svg',
     search: {
@@ -241,7 +282,8 @@ export default defineConfig({
               button: { buttonText: '搜索文档', buttonAriaLabel: '搜索文档' },
               modal: {
                 displayDetails: '显示详细列表',
-                resetButton: { title: '清除查询条件' },
+                resetButtonTitle: '清除查询条件',
+                backButtonTitle: '关闭搜索',
                 noResultsText: '未找到相关结果',
                 footer: { selectText: '选择', navigateText: '切换', closeText: '关闭' }
               }
@@ -250,17 +292,7 @@ export default defineConfig({
         }
       }
     },
-    socialLinks: [
-      { icon: 'rss', link: '/feed.rss', ariaLabel: 'RSS Feed' },
-      { icon: 'github', link: 'https://github.com/swwzfy' },
-      {
-        icon: {
-          svg: '<svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect width="20" height="16" x="2" y="4" rx="2" fill="none"/><path d="m22 7-8.97 5.7a1.94 1.94 0 0 1-2.06 0L2 7" fill="none"/></svg>'
-        },
-        link: 'mailto:swwzfy@163.com',
-        ariaLabel: 'Email'
-      }
-    ]
+    // socialLinks 下放到各 locale：RSS 入口按语种不同，见 makeSocialLinks
     // footer 配置已移除：用 #layout-bottom 自定义
   }
 })

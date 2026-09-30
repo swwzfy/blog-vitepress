@@ -1,0 +1,100 @@
+/* ============================================
+   可访问性: 减少动画偏好
+   ============================================ */
+@media (prefers-reduced-motion: reduce) {
+  /* 隐藏粒子和光晕效果（背景渐变已是静态，无需处理） */
+  #particle-canvas,
+  .cursor-glow {
+    display: none;
+  }
+
+  /* 禁用打字机光标动画 */
+  .typewriter::after {
+    animation: none;
+  }
+
+  /* 禁用按钮 hover 动画 */
+  .VPButton.brand {
+    transition: none;
+  }
+
+  .VPButton.brand:hover {
+    transform: none;
+  }
+
+.VPFeature {
+  transition: none;
+}
+
+/* spotlight 边框追光的淡入过渡 */
+.VPFeature::after,
+.related-card::after,
+.bento-card::after,
+.about-card::after {
+  transition: none;
+}
+}
+
+/* ============================================
+   阅读进度条
+   ============================================ */
+.reading-progress {
+  position: fixed;
+  top: 0;
+  left: 0;
+  width: 0%;
+  height: 3px;
+  background: linear-gradient(90deg, var(--vp-c-brand-1), var(--vp-c-brand-2), var(--vp-c-brand-3));
+  z-index: 9999;
+  transition: width 0.1s linear;
+}
+
+/* ============================================
+   回到顶部按钮
+   ============================================ */
+.back-to-top {
+  position: fixed;
+  bottom: 2rem;
+  right: 2rem;
+  width: 44px;
+  height: 44px;
+  border-radius: var(--radius-circle);
+  background: var(--vp-c-brand-1);
+  color: var(--vp-c-white);
+  border: none;
+  cursor: pointer;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  opacity: 0;
+  visibility: hidden;
+  transform: translateY(10px);
+  transition: opacity 0.3s, visibility 0.3s, transform 0.3s;
+  z-index: 100;
+  box-shadow: var(--shadow-card);
+}
+
+.back-to-top.visible {
+  opacity: 1;
+  visibility: visible;
+  transform: translateY(0);
+}
+
+.back-to-top:hover {
+  background: var(--vp-c-brand-2);
+  transform: translateY(-2px);
+}
+
+.back-to-top svg {
+  width: 20px;
+  height: 20px;
+}
+
+@media (max-width: 768px) {
+  .back-to-top {
+    bottom: 1.5rem;
+    right: 1.5rem;
+    width: 40px;
+    height: 40px;
+  }
+}

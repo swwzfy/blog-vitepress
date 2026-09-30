@@ -6,7 +6,7 @@ import { useLocale } from '@/composables/useLocale'
 // 构建期在 config.mts 里扫稿统计、vite define 注入的字数常量
 declare const __SITE_WORDS__: { zh: number; en: number }
 
-const { isEn } = useLocale()
+const { isEn, t } = useLocale()
 
 const stats = computed(() => {
   const posts = isEn.value ? enPosts : zhPosts
@@ -42,23 +42,23 @@ const monthly = computed(() => {
   <div class="stats">
     <div class="stat-item">
       <span class="stat-number">{{ stats.posts }}</span>
-      <span class="stat-label">{{ isEn ? 'Posts' : '篇文章' }}</span>
+      <span class="stat-label">{{ t('statPosts') }}</span>
     </div>
     <div class="stat-divider"></div>
     <div class="stat-item">
       <span class="stat-number">{{ stats.tags }}</span>
-      <span class="stat-label">{{ isEn ? 'Tags' : '个标签' }}</span>
+      <span class="stat-label">{{ t('statTags') }}</span>
     </div>
     <div class="stat-divider"></div>
     <div class="stat-item">
       <span class="stat-number">{{ stats.words.toLocaleString() }}</span>
-      <span class="stat-label">{{ isEn ? 'Words' : '全站字数' }}</span>
+      <span class="stat-label">{{ t('statWords') }}</span>
     </div>
     <template v-if="monthly !== null">
       <div class="stat-divider"></div>
       <div class="stat-item">
         <span class="stat-number">+{{ monthly }}</span>
-        <span class="stat-label">{{ isEn ? 'This month' : '本月更新' }}</span>
+        <span class="stat-label">{{ t('statThisMonth') }}</span>
       </div>
     </template>
   </div>

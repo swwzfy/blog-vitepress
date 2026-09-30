@@ -1,11 +1,11 @@
 <script setup lang="ts">
 import { computed } from 'vue'
-import { zhPosts, enPosts } from '@/utils/posts'
+import { zhPosts, enPosts, byDateDesc } from '@/utils/posts'
 import { formatDate } from '@/utils/format'
 import { useLocale } from '@/composables/useLocale'
 import type { Post } from '@/utils/types'
 
-const { isEn } = useLocale()
+const { isEn, t } = useLocale()
 
 const LIFE_TAG_ZH = '生活'
 const LIFE_TAG_EN = 'Life'
@@ -15,12 +15,10 @@ const lifePosts = computed<Post[]>(() => {
   const targetTag = isEn.value ? LIFE_TAG_EN : LIFE_TAG_ZH
   return source
     .filter(post => post.tags.includes(targetTag))
-    .sort((a, b) => new Date(b.date).getTime() - new Date(a.date).getTime())
+    .sort(byDateDesc)
 })
 
-const emptyText = computed(() =>
-  isEn.value ? 'No life articles yet.' : '还没有生活类文章。'
-)
+const emptyText = computed(() => t('noLifePosts'))
 </script>
 
 <template>

@@ -1,7 +1,7 @@
 ---
 title: 给 AI 加一层「规格书」：OpenSpec 使用体验
 date: 2026-06-26
-tags: [AI, 工程化, OpenSpec, 开发工具]
+tags: [AI, 工程化, OpenSpec, 工具]
 description: AI 写代码能力越来越强，但需求只活在聊天记录里。OpenSpec 在人和 AI 之间加了一层轻量规格书，先对齐再动手。这是我的实际使用体验。
 ---
 

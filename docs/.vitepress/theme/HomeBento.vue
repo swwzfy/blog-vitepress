@@ -4,7 +4,7 @@ import { useRouter } from 'vitepress'
 import { useLocale } from '@/composables/useLocale'
 import { zhPosts, enPosts } from '@/utils/posts'
 
-const { isEn } = useLocale()
+const { isEn, t } = useLocale()
 const router = useRouter()
 
 // —— 快捷指令（借鉴友链 Leelaa 的终端命令面板）——
@@ -38,8 +38,8 @@ function pickPlanet() {
   const p = PLANETS[Math.floor(Math.random() * PLANETS.length)]
   wanderUrl.value = p.url
   feedback.value = isEn.value
-    ? `warping to ${p.en} — ${p.descEn}`
-    : `正在飞往「${p.zh}」—— ${p.desc}`
+    ? t('warpingTo', { name: p.en, desc: p.descEn })
+    : t('warpingTo', { name: p.zh, desc: p.desc })
 }
 
 // 答案之书：心里默念一个问题，点一下翻一"页"。内置词池，不依赖外部 API
@@ -81,37 +81,29 @@ function askAnswer() {
         <div class="item">
           <div class="bento-card">
             <div class="bento-icon">⚡</div>
-            <h3 class="bento-title">{{ isEn ? 'Tech' : '技术' }}</h3>
-            <p class="bento-desc">{{ isEn
-              ? 'Full-stack development, love tinkering with new tools. Rust, Python, TypeScript.'
-              : '全栈开发，喜欢折腾新工具。Rust、Python、TypeScript 都写。' }}</p>
+            <h3 class="bento-title">{{ t('bentoTech') }}</h3>
+            <p class="bento-desc">{{ t('bentoDescTech') }}</p>
           </div>
         </div>
         <div class="item">
           <div class="bento-card">
             <div class="bento-icon">✍️</div>
-            <h3 class="bento-title">{{ isEn ? 'Writing' : '写作' }}</h3>
-            <p class="bento-desc">{{ isEn
-              ? 'Documenting the thinking process, sharing lessons learned. Writing is the best way to learn.'
-              : '记录思考过程，分享踩过的坑。写作是最好的学习方式。' }}</p>
+            <h3 class="bento-title">{{ t('bentoWriting') }}</h3>
+            <p class="bento-desc">{{ t('bentoDescWriting') }}</p>
           </div>
         </div>
         <div class="item bento-item-wide">
           <div class="bento-card">
             <div class="bento-icon">🌱</div>
-            <h3 class="bento-title">{{ isEn ? 'Life' : '生活' }}</h3>
-            <p class="bento-desc">{{ isEn
-              ? 'Coffee enthusiast, indie developer, occasional runner. In Yangzhou, building my own world with code and words.'
-              : '咖啡爱好者，独立开发者，偶尔跑步。在扬州，用代码和文字构建自己的世界。' }}</p>
+            <h3 class="bento-title">{{ t('bentoLife') }}</h3>
+            <p class="bento-desc">{{ t('bentoDescLife') }}</p>
           </div>
         </div>
         <div class="item bento-item-wide">
           <div class="bento-card">
             <div class="bento-icon">📮</div>
-            <h3 class="bento-title">{{ isEn ? 'Subscribe' : '订阅本站' }}</h3>
-            <p class="bento-desc">{{ isEn
-              ? 'Full-text RSS feed, or find me on GitHub and by email.'
-              : 'RSS 全文输出，也欢迎在 GitHub、邮箱找到我。' }}</p>
+            <h3 class="bento-title">{{ t('bentoSubscribe') }}</h3>
+            <p class="bento-desc">{{ t('bentoDescSubscribe') }}</p>
             <div class="bento-links">
               <a :href="isEn ? '/en/feed.rss' : '/feed.rss'" target="_blank" rel="noopener">RSS</a>
               <span class="bento-dot">·</span>
@@ -124,15 +116,13 @@ function askAnswer() {
         <div class="item bento-item-full">
           <div class="bento-card cmd-card">
             <div class="bento-icon">⌨️</div>
-            <h3 class="bento-title">{{ isEn ? 'Quick Commands' : '快捷指令' }}</h3>
-            <p class="bento-desc">{{ isEn
-              ? 'Little toys on this site. Click a line to run it.'
-              : '站内的小玩具，点一行就运行。' }}</p>
+            <h3 class="bento-title">{{ t('bentoCommands') }}</h3>
+            <p class="bento-desc">{{ t('bentoDescCommands') }}</p>
             <div class="cmd-list">
               <button class="cmd-row" type="button" @click="randomPost">
                 <span class="cmd-icon">🎲</span>
                 <span class="cmd-text">
-                  <span class="cmd-name">{{ isEn ? 'Random post' : '随机逛一篇' }}</span>
+                  <span class="cmd-name">{{ t('cmdRandomPost') }}</span>
                   <code class="cmd-code">kiran.randomPost()</code>
                 </span>
                 <span class="cmd-arrow">→</span>
@@ -140,7 +130,7 @@ function askAnswer() {
               <button class="cmd-row" type="button" @click="askAnswer">
                 <span class="cmd-icon">📖</span>
                 <span class="cmd-text">
-                  <span class="cmd-name">{{ isEn ? 'Book of Answers' : '答案之书' }}</span>
+                  <span class="cmd-name">{{ t('cmdAnswer') }}</span>
                   <code class="cmd-code">kiran.answerAsk()</code>
                 </span>
                 <span class="cmd-arrow">→</span>
@@ -148,7 +138,7 @@ function askAnswer() {
               <a class="cmd-row" :href="wanderUrl" target="_blank" rel="noopener" @click="pickPlanet">
                 <span class="cmd-icon">🪐</span>
                 <span class="cmd-text">
-                  <span class="cmd-name">{{ isEn ? 'Wander the planets' : '流浪星球' }}</span>
+                  <span class="cmd-name">{{ t('cmdWander') }}</span>
                   <code class="cmd-code">kiran.wander()</code>
                 </span>
                 <span class="cmd-arrow">→</span>
@@ -156,7 +146,7 @@ function askAnswer() {
               <a class="cmd-row" href="https://leelaa.cn" target="_blank" rel="noopener">
                 <span class="cmd-icon">🏡</span>
                 <span class="cmd-text">
-                  <span class="cmd-name">{{ isEn ? 'Visit a friend' : '去串个门' }}</span>
+                  <span class="cmd-name">{{ t('cmdVisitFriend') }}</span>
                   <code class="cmd-code">kiran.friendRandom()</code>
                 </span>
                 <span class="cmd-arrow">→</span>

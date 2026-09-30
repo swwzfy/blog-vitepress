@@ -10,10 +10,14 @@
     "esModuleInterop": true,
     "lib": ["DOM", "ESNext"],
     "skipLibCheck": true,
-    "baseUrl": ".",
+    // 只做类型检查、不产出文件：缺这个开关 tsc 会直接往源码树里写
+    // config.mjs 与 theme/**/*.js（实测 14 个文件）
+    "noEmit": true,
+    // theme 下的 effects.js / page-transitions.js 是 .js，允许读取以便推断类型
+    "allowJs": true,
     "paths": {
       "@/*": ["./theme/*"]
     }
   },
-  "include": ["theme/**/*", "config.mts", "index.ts"]
+  "include": ["env.d.ts", "theme/**/*", "config.mts", "index.ts"]
 }

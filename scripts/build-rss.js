@@ -41,6 +41,19 @@ function loadPosts(dir, urlPrefix) {
 }
 
 /**
+ * RSS 全文里的站内引用要变成绝对地址：抽出来的是 dist 里的 HTML，站内链接是
+ * 根相对 + .html（VitePress cleanUrls: false），阅读器会拿自己的域名去解析
+ * /posts/x.html，必然 404；正文里的图片同理。站点 URL 约定是无后缀，这里也去掉。
+ * 以 // 开头的协议相对地址跳过，避免被误当成站内路径。
+ */
+function absolutize(html) {
+  return html.replace(/(\s(?:href|src))="(\/(?!\/)[^"]*)"/g, (_m, attr, url) => {
+    const [path, hash] = url.split('#')
+    return `${attr}="${HOSTNAME}${path.replace(/\.html$/, '')}${hash ? '#' + hash : ''}"`
+  })
+}
+
+/**
  * 从 dist/posts/<slug>.html 已经渲染好的页面里抽出 <main> 内 vp-doc 区域 HTML，
  * 作为 RSS `<content:encoded>`，让阅读器订阅能看到完整正文。
  * VitePress 1.6 default cleanUrls: false，路径是 <slug>.html。
@@ -72,10 +85,11 @@ function extractArticleHtml(distDir, slug) {
     }
   }
   if (end < 0) return ''
-  return raw.slice(start, end)
+  const inner = raw.slice(start, end)
     // 剥掉 RSS 阅读器用不到的 VitePress 内部 span（如 vpi-* 图标）
     .replace(/<span[^>]*class="vpi-[^"]*"[^>]*>\s*<\/span>/g, '')
     .trim()
+  return absolutize(inner)
 }
 
 function buildOne({ outDir, out, title, description, language, posts }) {

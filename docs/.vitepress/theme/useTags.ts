@@ -1,5 +1,5 @@
 import { ref } from 'vue'
-import { zhPosts, enPosts } from '@/utils/posts'
+import { zhPosts, enPosts, byDateDesc } from '@/utils/posts'
 import { useLocale } from '@/composables/useLocale'
 
 type TagMap = Record<string, { title: string; url: string; date: string }[]>
@@ -31,9 +31,7 @@ export function useTags() {
   Object.keys(tagMap)
     .sort((a, b) => tagMap[b].length - tagMap[a].length)
     .forEach(key => {
-      sorted[key] = tagMap[key].sort((a, b) =>
-        new Date(b.date).getTime() - new Date(a.date).getTime()
-      )
+      sorted[key] = tagMap[key].sort(byDateDesc)
     })
 
   tags.value = sorted

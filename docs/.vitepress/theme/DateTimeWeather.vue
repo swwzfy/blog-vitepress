@@ -2,7 +2,7 @@
 import { ref, computed, onMounted, onUnmounted } from 'vue'
 import { useLocale } from '@/composables/useLocale'
 
-const { isEn } = useLocale()
+const { isEn, t } = useLocale()
 
 // 时钟数据源。SSR/水合期保持 null：时间随时钟流逝，静态渲染（SSG 时刻）与访问时刻
 // 必然不一致，直接渲染会 hydration mismatch 导致水合失败 —— 先出稳定占位，onMounted 再起真实时钟
@@ -14,7 +14,7 @@ function updateTime() {
 }
 
 function formatDate() {
-  if (!now.value) return isEn.value ? '-- · -- · ----' : '---- · -- · --'
+  if (!now.value) return t('datePlaceholder')
   const d = now.value
   const weekdays = isEn.value
     ? ['Sunday', 'Monday', 'Tuesday', 'Wednesday', 'Thursday', 'Friday', 'Saturday']
@@ -42,18 +42,12 @@ function greetingEmoji() {
 }
 
 function getGreeting() {
-  if (!now.value) return isEn.value ? 'Hello' : '你好'
+  if (!now.value) return t('greetingHello')
   const h = now.value.getHours()
-  if (isEn.value) {
-    if (h < 6) return 'Good Night'
-    if (h < 12) return 'Good Morning'
-    if (h < 18) return 'Good Afternoon'
-    return 'Good Evening'
-  }
-  if (h < 6) return '夜深了'
-  if (h < 12) return '早上好'
-  if (h < 18) return '下午好'
-  return '晚上好'
+  if (h < 6) return t('greetingNight')
+  if (h < 12) return t('greetingMorning')
+  if (h < 18) return t('greetingAfternoon')
+  return t('greetingEvening')
 }
 
 // 公历固定节日倒计时（借鉴友链 Leelaa 首页的 STATUS 节日条；农历需查表换算，暂不覆盖）。
@@ -68,8 +62,8 @@ const FESTIVALS = [
 ]
 const festival = computed(() => {
   if (!now.value) return ''
-  const t = now.value
-  const today = new Date(t.getFullYear(), t.getMonth(), t.getDate())
+  const d = now.value
+  const today = new Date(d.getFullYear(), d.getMonth(), d.getDate())
   let next: { name: string; days: number; emoji: string } | null = null
   for (let y = today.getFullYear(); y <= today.getFullYear() + 1; y++) {
     for (const f of FESTIVALS) {
@@ -80,11 +74,10 @@ const festival = computed(() => {
     }
   }
   if (!next) return ''
-  return next.days === 0
-    ? `${next.emoji} ${isEn.value ? 'Today is ' : '今天是'}${next.name}`
-    : isEn.value
-      ? `${next.emoji} ${next.days}d to ${next.name}`
-      : `${next.emoji} 距${next.name}还有 ${next.days} 天`
+  const text = next.days === 0
+    ? t('todayIs', { name: next.name })
+    : t('countdownTo', { name: next.name, days: next.days })
+  return `${next.emoji} ${text}`
 })
 
 const weatherCodeMap: Record<number, { zh: string; en: string }> = {

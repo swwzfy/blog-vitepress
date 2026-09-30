@@ -13,6 +13,7 @@
     "preview": "vitepress preview docs",
     "og": "node .agents/scripts/make-og.js",
     "check:frontmatter": "node scripts/check-frontmatter.js",
+    "typecheck": "tsc -p docs/.vitepress/tsconfig.json",
     "lint": "eslint .",
     "lint:fix": "eslint . --fix"
   },
@@ -29,6 +30,7 @@
     "globals": "17.7.0",
     "gray-matter": "4.0.3",
     "sitemap": "9.0.1",
+    "typescript": "6.0.3",
     "typescript-eslint": "8.64.0",
     "vitepress": "1.6.4"
   },

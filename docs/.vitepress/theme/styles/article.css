@@ -1,0 +1,279 @@
+/* ============================================
+   文章头部（返回按钮 + 元信息 + 标签）
+   ============================================ */
+.article-header {
+  margin-bottom: var(--space-6);
+}
+
+.back-btn {
+  display: inline-flex;
+  align-items: center;
+  gap: var(--space-1);
+  background: none;
+  border: none;
+  color: var(--vp-c-text-3);
+  cursor: pointer;
+  font-size: 14px;
+  padding: var(--space-1) 0;
+  margin-bottom: var(--space-4);
+  transition: color 0.2s;
+}
+
+.back-btn:hover {
+  color: var(--vp-c-brand-1);
+}
+
+.back-btn svg {
+  flex-shrink: 0;
+}
+
+.article-meta {
+  display: flex;
+  align-items: center;
+  gap: var(--space-2);
+  font-size: 14px;
+  color: var(--vp-c-text-3);
+}
+
+.meta-dot {
+  opacity: 0.4;
+}
+
+/* 朗读按钮：与元信息同行同字号，hover 点亮成主题色 */
+.tts-btn {
+  background: none;
+  border: none;
+  padding: 0;
+  font: inherit;
+  font-size: 14px;
+  color: var(--vp-c-text-3);
+  cursor: pointer;
+  transition: color 0.2s;
+}
+
+.tts-btn:hover {
+  color: var(--vp-c-brand-1);
+}
+
+.article-tags {
+  display: flex;
+  flex-wrap: wrap;
+  gap: var(--space-2);
+  margin-top: var(--space-3);
+}
+
+.tag {
+  display: inline-block;
+  background: var(--vp-c-brand-soft);
+  color: var(--vp-c-brand-1);
+  border-radius: var(--radius-card);
+  padding: 2px var(--space-3);
+  font-size: 12px;
+  font-weight: 500;
+  transition: all 0.2s;
+  text-decoration: none;
+}
+
+.tag:hover {
+  background: var(--vp-c-brand-1);
+  color: var(--vp-c-white);
+}
+
+/* ============================================
+   文章正文排版增强
+   ============================================ */
+
+/* 引用块 */
+.vp-doc blockquote {
+  position: relative;
+  background: var(--vp-c-brand-soft);
+  border-left: none;
+  border-radius: 0 8px 8px 0;
+  padding: var(--space-4) 20px;
+  margin: 20px 0;
+}
+
+.vp-doc blockquote::before {
+  content: '';
+  position: absolute;
+  left: 0;
+  top: 0;
+  bottom: 0;
+  width: 3px;
+  background: linear-gradient(to bottom, var(--vp-c-brand-1), var(--vp-c-brand-2));
+  border-radius: 3px 0 0 3px;
+}
+
+/* 行内代码 */
+.vp-doc :not(pre) > code {
+  background: var(--vp-c-brand-soft);
+  color: var(--vp-c-brand-1);
+  border-radius: var(--radius-xs);
+  padding: 2px 6px;
+  font-size: 0.875em;
+  font-weight: 500;
+}
+
+/* 图片 */
+.vp-doc img {
+  border-radius: var(--radius-sm);
+  box-shadow: 0 4px 16px rgba(0, 0, 0, 0.06);
+  display: block;
+  margin: var(--space-5) auto;
+}
+
+.dark .vp-doc img {
+  box-shadow: 0 4px 16px rgba(0, 0, 0, 0.2);
+}
+
+/* 表格 */
+.vp-doc table {
+  border-radius: var(--radius-sm);
+  overflow: hidden;
+}
+
+.vp-doc tr:hover td {
+  background: var(--vp-c-brand-soft);
+}
+
+/* 分隔线 */
+.vp-doc hr {
+  border: none;
+  height: 2px;
+  background: linear-gradient(to right, transparent, var(--vp-c-brand-2), transparent);
+  margin: var(--space-6) auto;
+  max-width: 200px;
+}
+
+/* 标题装饰线 */
+.vp-doc h2 {
+  position: relative;
+  padding-left: var(--space-4);
+}
+
+.vp-doc h2::before {
+  content: '';
+  position: absolute;
+  left: 0;
+  top: 4px;
+  bottom: 4px;
+  width: 3px;
+  background: linear-gradient(to bottom, var(--vp-c-brand-1), var(--vp-c-brand-2));
+  border-radius: 3px;
+}
+
+.vp-doc h3 {
+  position: relative;
+  padding-left: var(--space-3);
+}
+
+.vp-doc h3::before {
+  content: '';
+  position: absolute;
+  left: 0;
+  top: 4px;
+  bottom: 4px;
+  width: 2px;
+  background: var(--vp-c-brand-2);
+  border-radius: 2px;
+}
+
+/* ============================================
+   代码块增强
+   ============================================ */
+.vp-doc [class*='language-'] > span.lang {
+  background: var(--vp-c-brand-soft);
+  color: var(--vp-c-brand-1);
+  border-radius: 0 0 8px 8px;
+  padding: var(--space-1) var(--space-3);
+  font-size: 12px;
+  font-weight: 500;
+}
+
+.vp-doc [class*='language-'] > button.copy {
+  transition: all 0.2s;
+}
+
+.vp-doc [class*='language-'] > button.copy:hover {
+  background: var(--vp-c-brand-soft);
+  border-radius: var(--radius-xs);
+}
+
+/* ============================================
+   相关文章推荐
+   ============================================ */
+.related-posts {
+  margin-top: var(--space-7);
+  padding-top: var(--space-5);
+  border-top: 1px solid var(--vp-c-divider);
+}
+
+.related-title {
+  font-size: 16px;
+  font-weight: 600;
+  color: var(--vp-c-text-1);
+  margin-bottom: var(--space-4);
+}
+
+.related-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(200px, 1fr));
+  gap: var(--space-3);
+}
+
+.related-card {
+  position: relative;
+  display: flex;
+  flex-direction: column;
+  gap: var(--space-1);
+  padding: 14px var(--space-4);
+  border: 1px solid var(--vp-c-border);
+  border-radius: var(--radius-sm);
+  text-decoration: none;
+  transition: border-color 0.25s, box-shadow 0.25s;
+}
+
+.related-card:hover {
+  border-color: var(--vp-c-brand-1);
+  box-shadow: 0 4px 16px var(--vp-c-brand-soft);
+}
+
+.related-date {
+  font-size: 12px;
+  color: var(--vp-c-text-3);
+}
+
+.related-name {
+  font-size: 14px;
+  font-weight: 500;
+  color: var(--vp-c-text-1);
+}
+
+/* ============================================
+   文章页响应式
+   ============================================ */
+@media (max-width: 768px) {
+  .article-meta {
+    flex-wrap: wrap;
+    gap: var(--space-1) var(--space-2);
+  }
+
+  .related-grid {
+    grid-template-columns: 1fr;
+  }
+}
+
+/* 减少动画时禁用文章页动画 */
+@media (prefers-reduced-motion: reduce) {
+  .back-btn {
+    transition: none;
+  }
+
+  .tag {
+    transition: none;
+  }
+
+  .related-card {
+    transition: none;
+  }
+}

@@ -36,6 +36,15 @@ function toPosts(modules: Record<string, PageModule>): Post[] {
 }
 
 /**
+ * 文章按日期倒序。Archives / RecentPosts / LifeList / useTags 以及 Layout 相关文章的
+ * 次级排序共用这一处实现 —— 同一条比较逻辑散落五份后很容易各自漂移。
+ * 泛型只约束 date 字段，所以 useTags 的轻量条目和 Layout 的 RelatedPost 也能用。
+ */
+export function byDateDesc<T extends { date: string }>(a: T, b: T): number {
+  return new Date(b.date).getTime() - new Date(a.date).getTime()
+}
+
+/**
  * 中英文 post 列表。eager glob 在构建期被内联，运行时是稳定对象。
  * 每次调用 usePosts 时不再重新扫描文件。
  */

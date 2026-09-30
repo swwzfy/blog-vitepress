@@ -265,3 +265,8 @@ if (typeof window !== 'undefined') {
     setTimeout(startHeavy, 150);
   }
 }
+
+// 本文件是动态 import() 加载的纯副作用模块。显式标成 ES 模块，
+// 否则 tsc 会报 TS2306「File is not a module」（影响 npm run typecheck）。
+export {}
+

@@ -1,6 +1,6 @@
 <script setup lang="ts">
 import { computed } from 'vue'
-import { zhPosts, enPosts } from '@/utils/posts'
+import { zhPosts, enPosts, byDateDesc } from '@/utils/posts'
 import { formatDate } from '@/utils/format'
 import { useLocale } from '@/composables/useLocale'
 import type { Post } from '@/utils/types'
@@ -15,7 +15,7 @@ const { isEn } = useLocale()
 
 const grouped = computed<GroupedPosts>(() => {
   const list = isEn.value ? enPosts : zhPosts
-  const sorted = [...list].sort((a, b) => new Date(b.date).getTime() - new Date(a.date).getTime())
+  const sorted = [...list].sort(byDateDesc)
   const out: GroupedPosts = {}
 
   for (const post of sorted) {

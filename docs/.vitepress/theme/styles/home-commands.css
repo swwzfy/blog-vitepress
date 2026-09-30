@@ -1,0 +1,92 @@
+/* ============================================
+   首页快捷指令卡（借鉴友链 Leelaa 的终端命令面板）：
+   每行一条"命令"，mono 字体 + $ 提示符，hover 整行右移、箭头点亮。
+   按钮行内是真实 button / a：随机文章用 router 跳转，串门是真链接可中键
+   ============================================ */
+.cmd-list {
+  margin-top: auto;
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+}
+
+.cmd-row {
+  display: flex;
+  align-items: center;
+  gap: var(--space-3);
+  padding: 10px 14px;
+  background: var(--vp-c-bg);
+  border: 1px solid var(--vp-c-divider);
+  border-radius: var(--radius-md);
+  font: inherit;
+  text-align: left;
+  text-decoration: none;
+  cursor: pointer;
+  transition: border-color 0.25s, transform 0.25s, box-shadow 0.25s;
+}
+
+.cmd-row:hover {
+  border-color: var(--vp-c-brand-1);
+  transform: translateX(4px);
+  box-shadow: 0 4px 16px var(--vp-c-brand-soft);
+}
+
+.cmd-icon {
+  font-size: 18px;
+  line-height: 1;
+}
+
+.cmd-text {
+  flex: 1;
+  min-width: 0;
+  display: flex;
+  flex-direction: column;
+  gap: 2px;
+}
+
+.cmd-name {
+  font-size: 14px;
+  font-weight: 600;
+  color: var(--vp-c-text-1);
+}
+
+.vp-doc .cmd-code {
+  padding: 0;
+  background: transparent;
+  border-radius: 0;
+  font-family: 'JetBrains Mono', 'Noto Sans SC', 'Source Han Mono', monospace;
+  font-size: 12px;
+  line-height: 1.4;
+  color: var(--vp-c-brand-1);
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+
+.vp-doc .cmd-code::before {
+  content: '$ ';
+  opacity: 0.5;
+}
+
+.cmd-arrow {
+  color: var(--vp-c-text-3);
+  transition: transform 0.25s, color 0.25s;
+}
+
+.cmd-row:hover .cmd-arrow {
+  transform: translateX(3px);
+  color: var(--vp-c-brand-1);
+}
+
+/* 答案之书的"输出行"：终端回显风格 */
+.cmd-output {
+  padding: var(--space-2) 14px;
+  border-left: 2px solid var(--vp-c-brand-2);
+  background: var(--vp-c-bg);
+  border-radius: 0 8px 8px 0;
+  font-family: 'JetBrains Mono', 'Noto Sans SC', 'Source Han Mono', monospace;
+  font-size: 12.5px;
+  color: var(--vp-c-text-2);
+}
+
+

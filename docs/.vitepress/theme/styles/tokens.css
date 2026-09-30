@@ -1,0 +1,59 @@
+/* ============================================
+   设计 token —— 全站数值的唯一来源
+   只定义变量，不放具体规则。自定义属性在计算值阶段解析，
+   所以本文件放在级联最前不影响任何结果。
+   ============================================ */
+:root {
+  /* —— 布局轴线 ——
+     其余轴线（hero 1152 / 正文 1104 / nav 1376）由 VitePress 框架自身决定，
+     要改走框架变量，不在这里另造 token。--vp-layout-max-width 与框架默认同值，
+     显式写出来是为了记录站点宽度口径。 */
+  --vp-layout-max-width: 1440px;
+  --axis-page: 1152px;
+
+  /* —— 字体栈 —— */
+  /* 展示字：hero/标题/品牌位用霞鹜文楷；正文保持系统栈（阅读性能优先） */
+  --font-display: 'LXGW WenKai Screen', 'Noto Serif SC', 'Songti SC', 'SimSun', 'Noto Serif', serif;
+  /* 正文基础栈：系统 sans。Inter 已决定不加载 webfont（config.mts），勿回加引用 */
+  --font-body: 'PingFang SC', 'Microsoft YaHei', 'Noto Sans SC', sans-serif;
+
+  /* —— 圆角梯度 —— */
+  --radius-xs: 4px;
+  --radius-sm: 8px;
+  --radius-md: 10px;
+  --radius-card: 12px;
+  --radius-lg: 16px;
+  --radius-pill: 999px;
+  --radius-circle: 50%;
+
+  /* —— 间距梯度（4px 基准）——
+     2/6/14/20px 是历史一次性取值，未纳入梯度，保持字面量。 */
+  --space-1: 4px;
+  --space-2: 8px;
+  --space-3: 12px;
+  --space-4: 16px;
+  --space-5: 24px;
+  --space-6: 32px;
+  --space-7: 48px;
+
+  /* —— 卡片辉光 —— */
+  --shadow-card: 0 4px 12px var(--vp-c-brand-soft);
+  --shadow-glow: 0 8px 30px var(--vp-c-brand-soft);
+
+  /* —— 品牌色（浅色模式，WCAG AA 合规）——
+     保守去通用化：主紫加深提对比，粉色仅作渐变端点不再平均出现。 */
+  --vp-c-brand-1: #5b4dd1;
+  --vp-c-brand-2: #6c5ce7;
+  --vp-c-brand-3: #c04f74;
+  /* brand-soft 是 brand 的低透明度底/辉光。只改 brand-1/2/3 而不改它，
+     20 多处引用（卡片底、按钮辉光、滚动条、tag hover）会沿用 VitePress 默认的靛蓝，
+     变成紫字配蓝底。 */
+  --vp-c-brand-soft: rgba(108, 92, 231, 0.14);
+}
+
+.dark {
+  --vp-c-brand-1: #7c6fef;
+  --vp-c-brand-2: #a29bfe;
+  --vp-c-brand-3: #fd79a8;
+  --vp-c-brand-soft: rgba(162, 155, 254, 0.16);
+}

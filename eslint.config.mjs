@@ -16,7 +16,6 @@ export default [
       'docs/.vitepress/dist/**',
       'docs/.vitepress/cache/**',
       'public/**',
-      'scripts/**/*.js',         // CJS run by node，自带 lint
       '.agents/**',
       '.claude/**'
     ]
@@ -51,7 +50,7 @@ export default [
     },
     rules: {
       // 项目偏好：warn 而非 error，避免 lint 阻塞 build
-      '@typescript-eslint/no-unused-vars': ['warn', { argsIgnorePattern: '^_' }],
+      '@typescript-eslint/no-unused-vars': ['warn', { argsIgnorePattern: '^_', caughtErrorsIgnorePattern: '^_' }],
       'no-unused-vars': 'off',
       // Vue 项目特例
       'vue/multi-word-component-names': 'off',
@@ -68,6 +67,19 @@ export default [
       // 业务灵活
       '@typescript-eslint/no-explicit-any': 'off',
       '@typescript-eslint/no-empty-function': 'off'
+    }
+  },
+
+  // scripts/ 是构建脚本，package.json 未声明 "type":"module"，用 require 是正确写法。
+  // 之前整个目录被 ignores 掉，等于最容易出错的构建代码没有 lint 覆盖。
+  {
+    files: ['scripts/**/*.js'],
+    languageOptions: {
+      sourceType: 'commonjs',
+      globals: { ...globals.node }
+    },
+    rules: {
+      '@typescript-eslint/no-require-imports': 'off'
     }
   },
 

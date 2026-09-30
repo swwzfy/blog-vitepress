@@ -1,5 +1,6 @@
 ---
 title: Projects
+description: "Some things I've built, including a Rust CLI toolkit with 12ms startup and single-file distribution."
 ---
 
 # Projects

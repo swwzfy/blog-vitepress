@@ -2,7 +2,7 @@
 title: 博客现代化改造：噪点、追光、View Transitions 与 Bento
 date: 2026-09-27
 tags: [VitePress, 前端, CSS, 动效]
-description: 给三年攒下的"效果存量"做一次减法：噪点纹理、边框追光、原生 View Transitions、大标题紧字距、Bento 首页。坑都比效果本身值钱——SPA 导航吃掉 CSS 过渡、:has 特异性、vp-doc 全局样式污染。
+description: 给三年攒下的「效果存量」做一次减法：噪点纹理、边框追光、原生 View Transitions、大标题紧字距、Bento 首页。坑都比效果本身值钱——SPA 导航吃掉 CSS 过渡、:has 特异性、vp-doc 全局样式污染。
 ---
 
 # 博客现代化改造：噪点、追光、View Transitions 与 Bento

@@ -2,7 +2,7 @@
 import DefaultTheme from 'vitepress/theme'
 import { useData } from 'vitepress'
 import { ref, computed, onMounted, watch, nextTick } from 'vue'
-import { zhPosts, enPosts } from '@/utils/posts'
+import { zhPosts, enPosts, byDateDesc } from '@/utils/posts'
 import { formatDate } from '@/utils/format'
 import { useLocale } from '@/composables/useLocale'
 
@@ -72,7 +72,7 @@ function findRelated() {
     .sort((a, b) => {
       const aScore = a.tags.filter(tg => currentTags.includes(tg)).length
       const bScore = b.tags.filter(tg => currentTags.includes(tg)).length
-      return bScore - aScore || new Date(b.date).getTime() - new Date(a.date).getTime()
+      return bScore - aScore || byDateDesc(a, b)
     })
     .slice(0, 3) as RelatedPost[]
 }
@@ -319,7 +319,7 @@ watch(() => page.value.relativePath, () => {
               <span id="busuanzi_container_site_pv">{{ t('views') }} <span id="busuanzi_value_site_pv">-</span></span>
               <template v-if="uptimeDays !== null">
                 <span class="stats-dot">·</span>
-                <span>{{ isEn ? `${uptimeDays} days online` : `已运行 ${uptimeDays} 天` }}</span>
+                <span>{{ t('uptime', { days: uptimeDays ?? 0 }) }}</span>
               </template>
             </div>
           </div>

@@ -26,7 +26,7 @@ interface ActivityItem {
   avatar: string
 }
 
-const { isEn } = useLocale()
+const { isEn, t } = useLocale()
 const friends = friendsData as Friend[]
 const activity = ((activityData as { items?: ActivityItem[] }).items || []) as ActivityItem[]
 </script>
@@ -44,13 +44,9 @@ const activity = ((activityData as { items?: ActivityItem[] }).items || []) as A
   </div>
 
   <div v-if="activity.length" class="friends-activity">
-    <h3 class="friends-activity-title">{{ isEn ? 'Latest from the Circle' : '圈子动态' }}</h3>
+    <h3 class="friends-activity-title">{{ t('circleTitle') }}</h3>
     <p class="friends-activity-desc">
-      {{
-        isEn
-          ? 'Recent posts from friend blogs, aggregated at build time.'
-          : '构建时聚合的朋友博客最新文章，去他们那里看看。'
-      }}
+      {{ t('circleDesc') }}
     </p>
     <a v-for="it in activity" :key="it.link" class="activity-row" :href="it.link" target="_blank" rel="noopener">
       <img v-if="it.avatar" class="activity-avatar" :src="it.avatar" alt="" loading="lazy" />

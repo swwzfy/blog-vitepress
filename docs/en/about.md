@@ -1,5 +1,6 @@
 ---
 title: About
+description: "About Kiran: indie developer and writer. What I build, what I write, and how to reach me."
 ---
 
 # About

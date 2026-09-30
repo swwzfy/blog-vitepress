@@ -1,7 +1,7 @@
 ---
 title: Adding a Spec Layer for AI — My OpenSpec Experience
 date: 2026-06-26
-tags: [AI, Engineering, OpenSpec, Dev Tools]
+tags: [AI, Engineering, OpenSpec, Tools]
 description: AI coding is powerful, but requirements only live in chat history. OpenSpec adds a lightweight spec layer between you and AI — align first, then build. Here's my hands-on experience.
 ---
 

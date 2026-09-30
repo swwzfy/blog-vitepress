@@ -1,17 +1,17 @@
 <script setup lang="ts">
 import { computed } from 'vue'
-import { zhPosts, enPosts } from '@/utils/posts'
+import { zhPosts, enPosts, byDateDesc } from '@/utils/posts'
 import { formatDate } from '@/utils/format'
 import { useLocale } from '@/composables/useLocale'
 
 const RECENT_LIMIT = 5
 
-const { isEn } = useLocale()
+const { isEn, t } = useLocale()
 
 const posts = computed(() => {
   const source = isEn.value ? enPosts : zhPosts
   return [...source]
-    .sort((a, b) => new Date(b.date).getTime() - new Date(a.date).getTime())
+    .sort(byDateDesc)
     .slice(0, RECENT_LIMIT)
 })
 </script>
@@ -20,7 +20,7 @@ const posts = computed(() => {
   <div class="recent-posts">
     <h2 class="section-title">
       <span class="title-icon">📝</span>
-      {{ isEn ? 'Recent Posts' : '最新文章' }}
+      {{ t('recentPosts') }}
     </h2>
     <div class="posts-list">
       <a v-for="post in posts" :key="post.url" :href="post.url" class="post-card">
