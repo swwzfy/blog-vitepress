@@ -62,6 +62,19 @@ For multi-step tasks, state a brief plan:
 
 Strong success criteria let you loop independently. Weak criteria ("make it work") require constant clarification.
 
+## 5. Path Boundaries in Build Scripts
+
+**Any filesystem path assembled from a filename or a config value must be boundary-checked before it is read or written.**
+
+```js
+const p = path.resolve(root, x)
+if (!p.startsWith(root + path.sep)) throw new Error(`refusing to write outside ${root}: ${x}`)
+```
+
+- Applies to build-time constants too, not only to external input - `scripts/build-rss.js` checks `out` / `htmlOut` even though they are literals.
+- Do not remove or weaken these guards. On 2026-09-07 a semgrep `security` rule (high) blocked 3 path-traversal findings in `scripts/build-rss.js` (lines 49 / 127 / 143 at that time); the guards in `extractArticleHtml()` and `buildRss()` are the fix, and a static rescan re-verified the file clean.
+- `.mimosa/` holds that scanner's local state (git-ignored, safe to delete, regenerated on the next hook run). It is runtime data, not project configuration - do not migrate or copy it into `.claude/` or here.
+
 ---
 
 **These guidelines are working if:** fewer unnecessary changes in diffs, fewer rewrites due to overcomplication, and clarifying questions come before implementation rather than after mistakes.
