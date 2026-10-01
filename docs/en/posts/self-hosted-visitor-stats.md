@@ -174,7 +174,7 @@ A 502 is half good news: the request had successfully traveled through the proxy
 $ curl http://127.0.0.1:8787/api/health
 ok
 
-$ curl 'https://www.jossecho.com/api/stats.json?url=/posts/xxx'
+$ curl 'https://example.com/api/stats.json?url=/posts/xxx'
 {"uv": 1, "pv": 3, "views": 1}
 ```
 
