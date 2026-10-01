@@ -89,6 +89,9 @@ const dict = {
   },
   noLifePosts: { zh: '还没有生活类文章。', en: 'No life articles yet.' },
 
+  // —— 归档页 ——
+  yearNav: { zh: '年份跳转', en: 'Jump to year' },
+
   // —— 电台页 ——
   radioPlay: { zh: '播放', en: 'Play' },
   radioPause: { zh: '暂停', en: 'Pause' },

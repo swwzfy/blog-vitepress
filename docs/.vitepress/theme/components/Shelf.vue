@@ -37,7 +37,9 @@ const sections = computed(() =>
 
 function stars(rating?: number): string {
   if (!rating) return ''
-  return '★'.repeat(rating) + '☆'.repeat(5 - rating)
+  // 数据手填无校验：clamp + 取整，防小数/越界值在 repeat 处抛错崩页
+  const r = Math.min(5, Math.max(1, Math.round(rating)))
+  return '★'.repeat(r) + '☆'.repeat(5 - r)
 }
 </script>
 

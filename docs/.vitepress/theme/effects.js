@@ -278,6 +278,12 @@ function initLightbox() {
   document.addEventListener('keydown', (e) => {
     if (e.key === 'Escape' && isOpen) close();
   });
+
+  // SPA 的前进/后退不产生 click（点链接开灯箱时点击本身就会关）：
+  // 路由换了遮罩还开着会把滚动锁死在新页面上，跟着 popstate 关掉
+  window.addEventListener('popstate', () => {
+    if (isOpen) close();
+  });
 }
 
 // 初始化（SSR 安全 + 可访问性检查）

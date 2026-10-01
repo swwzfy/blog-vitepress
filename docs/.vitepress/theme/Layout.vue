@@ -2,7 +2,7 @@
 import DefaultTheme from 'vitepress/theme'
 import { useData } from 'vitepress'
 import { ref, computed, onMounted, watch, nextTick } from 'vue'
-import { zhPosts, enPosts, byDateDesc } from '@/utils/posts'
+import { zhPosts, enPosts, byDateDesc, postRoutePath } from '@/utils/posts'
 import { formatDate } from '@/utils/format'
 import { useLocale } from '@/composables/useLocale'
 
@@ -66,7 +66,7 @@ function findRelated() {
   const source = isEn.value ? enPosts : zhPosts
   relatedPosts.value = source
     .filter(p => {
-      const relPath = p.url.replace(/^\//, '').replace(/\/$/, '')
+      const relPath = postRoutePath(p.url)
       return relPath !== currentPath && p.tags.some(tg => currentTags.includes(tg))
     })
     .sort((a, b) => {
@@ -93,7 +93,7 @@ const nextPost = ref<AdjacentPost | null>(null)
 function findAdjacent() {
   const currentPath = page.value.relativePath.replace(/\.md$/, '')
   const sorted = [...(isEn.value ? enPosts : zhPosts)].sort(byDateDesc)
-  const idx = sorted.findIndex(p => p.url.replace(/^\//, '').replace(/\/$/, '') === currentPath)
+  const idx = sorted.findIndex(p => postRoutePath(p.url) === currentPath)
   if (idx === -1) {
     prevPost.value = null
     nextPost.value = null

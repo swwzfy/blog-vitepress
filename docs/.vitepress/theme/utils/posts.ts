@@ -45,6 +45,14 @@ export function byDateDesc<T extends { date: string }>(a: T, b: T): number {
 }
 
 /**
+ * post url（/posts/x）→ 路由相对路径（posts/x），用于和 page.relativePath 对比。
+ * Layout 的相关文章与上一篇/下一篇共用。
+ */
+export function postRoutePath(url: string): string {
+  return url.replace(/^\//, '').replace(/\/$/, '')
+}
+
+/**
  * 中英文 post 列表。eager glob 在构建期被内联，运行时是稳定对象。
  * 每次调用 usePosts 时不再重新扫描文件。
  */

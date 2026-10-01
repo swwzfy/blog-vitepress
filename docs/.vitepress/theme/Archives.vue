@@ -11,7 +11,7 @@ interface GroupedPosts {
   }
 }
 
-const { isEn } = useLocale()
+const { isEn, t } = useLocale()
 
 const grouped = computed<GroupedPosts>(() => {
   const list = isEn.value ? enPosts : zhPosts
@@ -65,7 +65,7 @@ const MONTH_NAMES_EN = [
 </script>
 
 <template>
-  <nav class="year-nav" aria-label="年份跳转">
+  <nav class="year-nav" :aria-label="t('yearNav')">
     <a v-for="year in sortedYears" :key="year" class="year-pill" :href="`#year-${year}`">
       {{ year }}
       <span class="year-pill-count">{{ yearCounts[year] }}</span>
