@@ -1,24 +1,27 @@
 ---
 title: A Visit to Hanshan Temple in Suzhou
 date: 2026-08-18
-draft: true
 tags: [Life]
 description: Half a year of writing code tired out my eyes and my mind. I took a weekend drive to see Hanshan Temple in Suzhou.
 ---
 
 # A Visit to Hanshan Temple in Suzhou
 
-Half a year of writing code tired out my eyes and my mind. I took a weekend drive to see Hanshan Temple in Suzhou.
+Half a year of writing code tired out my eyes and my mind. So on a weekend I drove to Suzhou to see Hanshan Temple.
+
+I didn't know much about the temple beforehand. I had memorized *Night Mooring by Maple Bridge* in primary school, but back then I never wondered where Hanshan Temple actually was, let alone that one day I would drive two hours just to see it.
 
 <!-- more -->
 
-## From Yangzhou
+## The road to Suzhou
 
-One weekend morning I drove out of Yangzhou, getting on the highway at the Shugang Hub. S28 Qiyang Expressway to G4011 Yangli Expressway, then onto G42 Hurong Expressway heading east all the way to Suzhou.
+I left Yangzhou early on Saturday, getting on the highway at the Shugang Hub: S28 Qiyang Expressway to G4011 Yangli Expressway, then onto G42 Hurong Expressway heading east all the way to Suzhou. The GPS said two hours. The highway was emptier than I expected at eight on a Saturday morning; the only ones in more of a hurry than me were a few trucks.
 
-## Maple Bridge and *Night Mooring by Maple Bridge*
+## Maple Bridge
 
-Past the entrance, the first stop is Maple Bridge (Fengqiao). The bridge is a later restoration, but a stone tablet stands nearby inscribed with Zhang Ji's poem:
+Past the entrance, the first stop is Maple Bridge (Fengqiao).
+
+The bridge is a later restoration. Better to say that up front, so nobody stands at the end looking for the Tang dynasty the way I did. Beside the bridge stands a stone tablet inscribed with Zhang Ji's poem, its face polished shiny by a thousand hands:
 
 > 月落乌啼霜满天，江枫渔火对愁眠。
 > 姑苏城外寒山寺，夜半钟声到客船。
@@ -28,72 +31,55 @@ Past the entrance, the first stop is Maple Bridge (Fengqiao). The bridge is a la
 *Outside Gusu City, Hanshan Temple;*
 *Midnight, the bell sound reaches the traveler's boat.*
 
-Twelve hundred years ago, Zhang Ji — having failed the imperial exam — was sailing home. His boat stopped here for the night. He heard the bell from Hanshan Temple and wrote this poem. Twelve centuries later I stand on the same bridge, sun in my eyes, an old man beside me taking photos on his phone, river water drifting slowly underneath.
+Twelve hundred years ago, Zhang Ji — having failed the imperial exam — was sailing home. His boat stopped here for the night. He heard a bell in the distance and wrote these twenty-eight characters. Twelve centuries later I stood at the same spot, sun in my eyes, an old man beside me hunting for a photo angle, the river underneath still drifting slowly.
 
-The poem tablet is right by the bridge, polished shiny by a thousand hands. Next to it stands a statue of Zhang Ji, looking like a frail scholar. Tourists crowded in front of it to take turns posing. I waited until they cleared, then snapped one clean shot for myself.
+The statue of Zhang Ji stands next to the tablet, a frail scholar with lowered eyes. A crowd of tourists fought for the best posing spot in front of it. I waited for them to clear, then snapped one clean shot for myself.
 
-## The Main Hall
+## Inside the gate
 
-Past the gate is Hanshan Temple itself.
+A twenty-yuan ticket gets you past the unassuming gate; the main hall is behind it.
 
-The main hall, the Mahavira Hall, is unremarkable — like any Han Buddhist temple across the country. A few things stood out, though:
+The Mahavira Hall itself is like any Han Buddhist temple across the country. Three things actually stopped me.
 
-- Two ancient camphor trees in front of the hall, supposedly planted when the temple was founded. Fifteen hundred years old, if true.
-- The statues of Hanshan and Shide inside, unlike the stern bodhisattvas you usually see. Hanshan is bare-chested, laughing; Shide holds a broom like a janitor monk. The guide told me they're the "Two Immortals of Harmony," patron saints of family togetherness.
-- The bell tower in the rear courtyard has a replica ancient bell. Visitors can pay to strike it. I struck it three times, thirty yuan each.
+Two ancient camphor trees in front of the hall, supposedly planted the year the temple was founded — fifteen hundred years old, if true. It takes two people to reach around one trunk, and their canopy shades half the courtyard. Standing under them, the day got several degrees cooler.
 
-While striking the bell, I thought: this is interesting. In ancient times the bell was for the monks to mark the hours — one strike, the whole city could hear. Now it's for tourists to make wishes — three strikes for "family safety." Fifteen hundred years on, the bell is the same bell, but the listeners changed, and so did what they listen for.
+The statues of Hanshan and Shide inside, nothing like the stern bodhisattvas you usually see. Hanshan is bare-chested and laughing; Shide hugs a broom like a janitor monk who just finished sweeping. A guide with a little flag explained to her group that they're the "Two Immortals of Harmony," in charge of family togetherness. Everyone laughed, and the laugh sounded sincere.
+
+In the rear courtyard, a bell tower holds a replica ancient bell. Visitors can pay to strike it — five yuan for three strikes. I didn't strike it; I just stood below and looked.
+
+Looking up at it, I thought about this: in ancient times the bell marked the hours for the whole city — one strike, half the city could hear it. Now it grants wishes for tourists — five yuan, one line of "family safety." On New Year's Eve, they say, the bell is struck 108 times to ring out a year's troubles, a tradition going back more than forty years. Fifteen hundred years on, it's the same bell; the listeners have turned over again and again, and what they want to hear has changed with them.
 
 ## Hanshan Villa
 
-The temple has several villas scattered around it. The most worthwhile is Hanshan Villa.
+The temple has several side courtyards scattered around it. The most worthwhile is Hanshan Villa.
 
-Past the entrance is a long corridor, with the Diamond Sutra, the Heart Sutra, and poems by various historical figures carved into both walls. I walked slowly along the corridor, stopping to read the ones I liked.
+Past its entrance is a long corridor with the Diamond Sutra, the Heart Sutra, and poems by various historical figures carved into both walls. I walked along slowly, stopping at the ones I liked. These half-classical, half-vernacular verses line every wall — not great poetry, but the antique feel is real. They wear better than the "life is but a first meeting" quotes on social media.
 
 > 寒山寺里无寒山，拾得堂前问拾得。
 > 不知谁是寒山客，且向云中觅旧踪。
 
 (At Hanshan Temple there is no Hanshan; at Shide Hall one asks of Shide. Who is the traveler of Hanshan? Let us seek old traces among the clouds.)
 
-These half-classical, half-vernacular verses line every wall — not great poetry, but with an antique charm to them. Endures better than those "life is but a first meeting" quotes on social media.
+At the end of the corridor is a pond. Koi drifted slowly through the water. A child squatted at the edge throwing bread, the fish swarmed, and the kid laughed so hard she nearly fell over.
 
-At the end of the corridor is a pond. I sat by it for a while. Koi drifted slowly through the water. A child squatted at the edge, throwing bread to the fish. The koi swarmed; the child laughed so hard she nearly fell over.
-
-She probably knew nothing of Hanshan Temple, nor of Zhang Ji, nor of Hanshan and Shide. But the way she laughed was more alive than any character on a stone tablet.
+She knew nothing of Zhang Ji, nothing of Hanshan and Shide, and certainly nothing of "harmony." But the way she laughed was more alive than every poem tablet on the walls.
 
 ## Puming Pagoda
 
-The temple's pagoda is called Puming Pagoda, five stories. You can climb it.
+The temple's pagoda is called Puming Pagoda, five stories, a Tang-style wooden structure. The temple was first built as the "Miaoli Puming Stupa Courtyard" in the Tianjian era of the Liang dynasty — older by far than the name "Hanshan Temple." The pagoda itself has been destroyed and rebuilt many times; the one standing now was modeled on the Tang pagodas painted in the Dunhuang murals. Even the "Tang" is new.
 
-The stairs are narrow — only two or three people abreast. By the third floor I was winded, and stopped at a window to rest. Outside was the Suzhou skyline: skyscrapers of the new district crammed into the same frame as the temple's flying eaves.
+I didn't climb it. I walked a circle around it instead, along the cloister that rings the pagoda, a pond on the far side. The corridor walls are covered with *Night Mooring by Maple Bridge* transcribed by calligraphers across the dynasties, one hand different from the next — those twenty-eight characters greet you at every turn here.
 
-From the fifth floor I could see the entire temple complex — flying eaves, pagoda shadow, ponds, corridors, Maple Bridge further off, and the Grand Canal beyond it, with the occasional cargo boat passing on the water.
+On the way back, the last line of the poem came back to me. Where Zhang Ji moored his boat for the night was, most likely, somewhere along that canal I had walked beside in the morning.
 
-Standing there, the last two lines of Zhang Ji's poem came back to me: *"Outside Gusu City, Hanshan Temple; midnight, the bell sound reaches the traveler's boat."* — The boat he was on had almost certainly come down this very canal.
+## The road home
 
-## A Few Reflections
+Before the exit I passed a wall: every calligraphic rendering of *Night Mooring by Maple Bridge* lined up side by side, opening with a Song dynasty stele and closing with modern masters — Qi Gong, Shen Peng, Sha Menghai — a whole wall of it. Building an entire calligraphy wall around one poem is something that probably only happens in the Chinese-speaking world.
 
-### On Pilgrimage
+Everything I had seen that day — the bridge, the bell, the pagoda, the statues — was mostly new: rebuilt in the late Qing, repaired in the Republic era, renovated again in recent years. What's truly old is a piece of land and twenty-eight characters. But that's enough: a thousand years ago someone wrote about this place, and today people still line up to read what he wrote.
 
-Hanshan Temple is one of China's most "checked-in" temples. Over the course of a thousand years, what kind of people have come here?
+The people who came here over those twelve centuries all wanted different things: a failed scholar, monks copying sutras, an official drawing divination sticks, Qianlong on one of his six southern tours. During the war a soldier came too — whether hiding or patrolling, nobody knows. Now it was my turn: I raised my phone, took a photo, posted it. The reasons change; the fact of "having come once" doesn't. That much survived a thousand years.
 
-- Zhang Ji in the Tang dynasty, a failed scholar, who wrote this place into poetry.
-- Some monk in the Song dynasty, probably copying sutras in the library.
-- Some official in the Ming dynasty, who came here to draw divination sticks.
-- Emperor Qianlong of the Qing, who came every time he toured the south.
-- Some soldier during the War of Resistance — whether to hide or to patrol, who knows.
-- Me, now, holding up my phone, taking a photo, posting it to social media.
+Back at the parking lot I started the car. The GPS said two hours to Yangzhou, traffic clear all the way. On the highway the sky slowly went dark, and I thought about the bell I hadn't struck. If the sound could carry that far, Yangzhou should be able to hear it right now.
 
-Everyone who came here had a different reason. But everyone "came once." That, across a thousand years, is something.
-
-### On "Ancient"
-
-Hanshan Temple is called "a thousand-year-old monastery," but in fact most of the existing buildings were rebuilt in the late Qing, repaired in the Republic era, and renovated after Reform and Opening. What's "ancient" is just a piece of land, a legend, a few poems.
-
-But that's enough. Whether it's truly ancient doesn't matter. What matters is: someone walked here a thousand years ago, and the things they wrote are still being read today. That's enough.
-
-### On the Poem Tablets
-
-Poem tablets are everywhere in Hanshan Temple — Zhang Ji's poem carved more times than I could count. The most extreme is a wall by the exit: every calligraphic version of *Night Mooring by Maple Bridge* ever written, lined up side by side, from the earliest Song dynasty stele to modern masters — Qi Gong, Shen Peng, Sha Menghai — an entire wall of calligraphy.
-
-Building a whole calligraphy wall around a single poem — this kind of romance only exists in the Chinese-speaking world. Anywhere else, by now, they'd be selling "Maple Bridge Midnight Bell" themed ice cream.
+Of course it can't. I rolled down the window and listened for a while anyway.
