@@ -21,6 +21,7 @@ const posts = computed(() => {
     <h2 class="section-title">
       <span class="title-icon">📝</span>
       {{ t('recentPosts') }}
+      <a class="view-all" :href="isEn ? '/en/archives' : '/archives'">{{ t('viewAll') }} →</a>
     </h2>
     <div class="posts-list">
       <a v-for="post in posts" :key="post.url" :href="post.url" class="post-card">
@@ -56,6 +57,21 @@ const posts = computed(() => {
 
 .title-icon {
   font-size: 28px;
+}
+
+/* 标题行右侧的「全部文章 →」，压掉 .vp-doc a 的下划线/配色 */
+.view-all {
+  margin-left: auto;
+  font-size: 14px;
+  font-weight: 500;
+  color: var(--vp-c-text-3);
+  text-decoration: none;
+  transition: color 0.2s;
+}
+
+.view-all:hover {
+  color: var(--vp-c-brand-1);
+  text-decoration: none;
 }
 
 .posts-list {

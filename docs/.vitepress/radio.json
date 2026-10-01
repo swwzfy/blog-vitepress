@@ -1,0 +1,18 @@
+[
+  {
+    "title": "试麦：这个栏目打算聊什么",
+    "titleEn": "Sound check: what this show is about",
+    "date": "2026-09-26",
+    "desc": "第一期还没录。设备到了，词在脑子里，找一个安静的晚上就开录。先占个位，别订阅。",
+    "descEn": "Episode one is not recorded yet. The gear arrived, the words are in my head, I just need one quiet evening.",
+    "file": "/radio/ep01.mp3"
+  },
+  {
+    "title": "写代码时我听什么",
+    "titleEn": "What I listen to while coding",
+    "date": "2026-10-01",
+    "desc": "从后摇滚聊到白噪音，顺便说说为什么我写 Rust 的时候只听纯音乐。",
+    "descEn": "From post-rock to white noise, and why I only listen to instrumentals when writing Rust.",
+    "file": "/radio/ep02.mp3"
+  }
+]

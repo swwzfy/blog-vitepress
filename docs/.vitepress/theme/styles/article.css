@@ -120,6 +120,7 @@
   box-shadow: 0 4px 16px rgba(0, 0, 0, 0.06);
   display: block;
   margin: var(--space-5) auto;
+  cursor: zoom-in;
 }
 
 .dark .vp-doc img {
@@ -250,6 +251,54 @@
 }
 
 /* ============================================
+   上一篇 / 下一篇
+   ============================================ */
+.post-nav {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: var(--space-3);
+  margin-top: var(--space-5);
+}
+
+.post-nav-card {
+  position: relative;
+  display: flex;
+  flex-direction: column;
+  gap: var(--space-1);
+  padding: 14px var(--space-4);
+  border: 1px solid var(--vp-c-border);
+  border-radius: var(--radius-sm);
+  text-decoration: none;
+  transition: border-color 0.25s, box-shadow 0.25s;
+}
+
+.post-nav-card:hover {
+  border-color: var(--vp-c-brand-1);
+  box-shadow: 0 4px 16px var(--vp-c-brand-soft);
+}
+
+/* 缺位（最早/最新一篇）时占位对齐，不显示 */
+.post-nav-card.is-empty {
+  visibility: hidden;
+}
+
+.post-nav-card.next {
+  text-align: right;
+}
+
+.post-nav-label {
+  font-size: 12px;
+  color: var(--vp-c-text-3);
+}
+
+.post-nav-name {
+  font-size: 14px;
+  font-weight: 500;
+  color: var(--vp-c-text-1);
+  line-height: 1.5;
+}
+
+/* ============================================
    文章页响应式
    ============================================ */
 @media (max-width: 768px) {
@@ -260,6 +309,14 @@
 
   .related-grid {
     grid-template-columns: 1fr;
+  }
+
+  .post-nav {
+    grid-template-columns: 1fr;
+  }
+
+  .post-nav-card.is-empty {
+    display: none;
   }
 }
 
@@ -274,6 +331,10 @@
   }
 
   .related-card {
+    transition: none;
+  }
+
+  .post-nav-card {
     transition: none;
   }
 }

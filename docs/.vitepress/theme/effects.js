@@ -240,15 +240,56 @@ function initBackToTop() {
   toggleVisibility();
 }
 
+// 图片灯箱：点击 .vp-doc 里的图片全屏查看，整层任意点击 / Esc 关闭。
+// 委托到 document（SPA 换页监听不丢，VitePress 的 <a> 跳转不受影响）。
+// 打开期间锁 body 滚动，防止底下页面跟着滚。样式在 a11y.css。
+function initLightbox() {
+  const overlay = document.createElement('div');
+  overlay.className = 'lightbox';
+  overlay.setAttribute('role', 'dialog');
+  overlay.setAttribute('aria-modal', 'true');
+  overlay.setAttribute('aria-label', '图片预览');
+  const img = document.createElement('img');
+  overlay.appendChild(img);
+  document.body.appendChild(overlay);
+
+  let isOpen = false;
+
+  function close() {
+    isOpen = false;
+    overlay.classList.remove('open');
+    document.body.style.overflow = '';
+  }
+
+  document.addEventListener('click', (e) => {
+    if (isOpen) {
+      close();
+      return;
+    }
+    const photo = e.target.closest?.('.vp-doc img');
+    if (!photo) return;
+    img.src = photo.currentSrc || photo.src;
+    img.alt = photo.alt || '';
+    isOpen = true;
+    overlay.classList.add('open');
+    document.body.style.overflow = 'hidden';
+  });
+
+  document.addEventListener('keydown', (e) => {
+    if (e.key === 'Escape' && isOpen) close();
+  });
+}
+
 // 初始化（SSR 安全 + 可访问性检查）
 if (typeof window !== 'undefined') {
   const prefersReducedMotion = window.matchMedia('(prefers-reduced-motion: reduce)').matches;
   const isMobile = window.innerWidth <= 768;
 
-  // 关键 UI 立即初始化（不影响首屏渲染的滚动条/回到顶部/spotlight）
+  // 关键 UI 立即初始化（不影响首屏渲染的滚动条/回到顶部/spotlight/灯箱）
   initReadingProgress();
   initBackToTop();
   initSpotlight();
+  initLightbox();
 
   // 重效果延后到 idle 时间窗，避免抢占主线程
   const startHeavy = () => {

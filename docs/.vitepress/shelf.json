@@ -1,0 +1,49 @@
+{
+  "books": [
+    {
+      "title": "梅花易数",
+      "creator": "邵雍",
+      "status": { "zh": "在读", "en": "Reading" },
+      "comment": "万物皆可起卦。目前还停在认字的阶段，离掐指一算差得远，但这个看世界的坐标系本身就够有意思。",
+      "commentEn": "Everything can be turned into a hexagram. Still at the learning-the-vocabulary stage, but the coordinate system itself is fascinating."
+    },
+    {
+      "title": "周易",
+      "status": { "zh": "在读", "en": "Reading" },
+      "comment": "慢读，不求甚解。六十四卦是六十四种处境，隔几页就能对上一次当下。",
+      "commentEn": "Reading slowly, without forcing understanding. Sixty-four hexagrams are sixty-four situations, and every few pages one of them matches the present."
+    }
+  ],
+  "movies": [
+    {
+      "title": "师兄啊师兄",
+      "creator": "玄机科技",
+      "status": { "zh": "在看", "en": "Watching" },
+      "comment": "言归正传的原著，玄机的打斗。修仙界的苟系天花板——大师兄的稳健不是性格，是生存策略。",
+      "commentEn": "Yan Guizheng's novel, Xuanji's action scenes. The cultivation world's master of playing it safe — the senior brother's steadiness is not a personality trait, it's a survival strategy."
+    },
+    {
+      "title": "画江湖之不良人 第八季",
+      "creator": "若森数字",
+      "status": { "zh": "想看", "en": "Wishlist" },
+      "comment": "追了七季的老坑，十二年的恩怨还没清算完。第八季定档那天就是过年。",
+      "commentEn": "An old story seven seasons deep, its twelve-year feud still unsettled. The day season eight gets a release date will feel like New Year."
+    },
+    {
+      "title": "画江湖之岐王传",
+      "creator": "若森数字",
+      "status": { "zh": "想看", "en": "Wishlist" },
+      "comment": "不良人的衍生网络电影，讲岐王被囚十二年的故事。PV 已经出了，为了质量跳票。等。",
+      "commentEn": "A spin-off film about the Qig King's twelve imprisoned years. The PV is out, the release slipped for quality's sake. Waiting."
+    }
+  ],
+  "music": [
+    {
+      "title": "沈园外",
+      "creator": "阿YueYue / 戾格",
+      "status": { "zh": "在听", "en": "On repeat" },
+      "comment": "词写陆游和唐婉的沈园，把《钗头凤》的「错错错」唱成了流行旋律。越轻的编曲装越重的事。",
+      "commentEn": "The lyrics tell the Shen Garden story of Lu You and Tang Wan — the 'wrong, wrong, wrong' of Chai Tou Feng set to a pop melody. The lighter the arrangement, the heavier the past it carries."
+    }
+  ]
+}

@@ -78,27 +78,31 @@ function askAnswer() {
         <div class="item bento-item-wide bento-clock-item">
           <DateTimeWeather />
         </div>
-        <div class="item">
+        <!-- 三张导航卡：整卡可点，hover 右上角亮出 ↗ -->
+        <a class="item" :href="isEn ? '/en/projects' : '/projects'">
           <div class="bento-card">
+            <span class="bento-arrow" aria-hidden="true">↗</span>
             <div class="bento-icon">⚡</div>
             <h3 class="bento-title">{{ t('bentoTech') }}</h3>
             <p class="bento-desc">{{ t('bentoDescTech') }}</p>
           </div>
-        </div>
-        <div class="item">
+        </a>
+        <a class="item" :href="isEn ? '/en/archives' : '/archives'">
           <div class="bento-card">
+            <span class="bento-arrow" aria-hidden="true">↗</span>
             <div class="bento-icon">✍️</div>
             <h3 class="bento-title">{{ t('bentoWriting') }}</h3>
             <p class="bento-desc">{{ t('bentoDescWriting') }}</p>
           </div>
-        </div>
-        <div class="item bento-item-wide">
+        </a>
+        <a class="item bento-item-wide" :href="isEn ? '/en/life' : '/life'">
           <div class="bento-card">
+            <span class="bento-arrow" aria-hidden="true">↗</span>
             <div class="bento-icon">🌱</div>
             <h3 class="bento-title">{{ t('bentoLife') }}</h3>
             <p class="bento-desc">{{ t('bentoDescLife') }}</p>
           </div>
-        </div>
+        </a>
         <div class="item bento-item-wide">
           <div class="bento-card">
             <div class="bento-icon">📮</div>

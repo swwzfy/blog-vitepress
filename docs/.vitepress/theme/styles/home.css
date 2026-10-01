@@ -63,7 +63,8 @@
 .VPFeature::after,
 .related-card::after,
 .bento-card::after,
-.about-card::after {
+.about-card::after,
+.post-nav-card::after {
   content: '';
   position: absolute;
   inset: -1px;
@@ -86,7 +87,8 @@
 .VPFeature:hover::after,
 .related-card:hover::after,
 .bento-card:hover::after,
-.about-card:hover::after {
+.about-card:hover::after,
+.post-nav-card:hover::after {
   opacity: 1;
 }
 
@@ -167,6 +169,30 @@
   box-shadow: var(--shadow-glow);
 }
 
+/* 可点击 bento 卡（<a class="item">）：压制 .vp-doc a 的下划线/配色全局污染 */
+.vp-doc .home-bento a.item {
+  text-decoration: none;
+}
+
+/* 右上角 ↗：hover / 键盘聚焦时亮起，提示整卡可点 */
+.bento-arrow {
+  position: absolute;
+  top: var(--space-4);
+  right: var(--space-4);
+  font-size: 16px;
+  line-height: 1;
+  color: var(--vp-c-brand-1);
+  opacity: 0;
+  transform: translate(-4px, 4px);
+  transition: opacity 0.25s, transform 0.25s;
+}
+
+.vp-doc .home-bento a.item:hover .bento-arrow,
+.vp-doc .home-bento a.item:focus-visible .bento-arrow {
+  opacity: 1;
+  transform: translate(0, 0);
+}
+
 .bento-icon {
   font-size: 24px;
   line-height: 1;
@@ -216,4 +242,25 @@
 
 .bento-dot {
   opacity: 0.4;
+}
+
+/* ============================================
+   首页 hero 氛围层：两团品牌色光斑（静态，无动画）。
+   isolation 造独立堆叠上下文，::before 压到 hero 文字底下；
+   光斑尺寸控制在容器内，不产生横向滚动。
+   ============================================ */
+.VPHome .VPHero {
+  position: relative;
+  isolation: isolate;
+}
+
+.VPHome .VPHero::before {
+  content: '';
+  position: absolute;
+  inset: 0;
+  z-index: -1;
+  pointer-events: none;
+  background:
+    radial-gradient(ellipse 42% 52% at 12% 28%, var(--vp-c-brand-soft), transparent 70%),
+    radial-gradient(ellipse 36% 46% at 88% 72%, rgba(253, 121, 168, 0.09), transparent 72%);
 }

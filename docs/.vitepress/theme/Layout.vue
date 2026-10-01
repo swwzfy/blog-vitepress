@@ -77,12 +77,40 @@ function findRelated() {
     .slice(0, 3) as RelatedPost[]
 }
 
+interface AdjacentPost {
+  title: string
+  url: string
+}
+
+const prevPost = ref<AdjacentPost | null>(null)
+const nextPost = ref<AdjacentPost | null>(null)
+
+/**
+ * 上一篇/下一篇：按日期相邻取。列表按新→旧排列，后一位是更早的（上一篇），
+ * 前一位是更新的（下一篇）。VitePress 自带的 prev/next 依赖 sidebar 配置，
+ * 本站无 sidebar 永远不渲染，所以自己算。
+ */
+function findAdjacent() {
+  const currentPath = page.value.relativePath.replace(/\.md$/, '')
+  const sorted = [...(isEn.value ? enPosts : zhPosts)].sort(byDateDesc)
+  const idx = sorted.findIndex(p => p.url.replace(/^\//, '').replace(/\/$/, '') === currentPath)
+  if (idx === -1) {
+    prevPost.value = null
+    nextPost.value = null
+    return
+  }
+  prevPost.value =
+    idx + 1 < sorted.length ? { title: sorted[idx + 1].title, url: sorted[idx + 1].url } : null
+  nextPost.value = idx > 0 ? { title: sorted[idx - 1].title, url: sorted[idx - 1].url } : null
+}
+
 function update() {
   if (!isArticle.value) return
   wordCount.value = 0
   readingTime.value = 0
   computeReadingTime()
   findRelated()
+  findAdjacent()
 }
 
 // —— 文章朗读（借鉴友链 Leelaa 的 ToSpeech）——
@@ -254,6 +282,18 @@ watch(() => page.value.relativePath, () => {
             <span class="related-name">{{ post.title }}</span>
           </a>
         </div>
+      </div>
+      <div v-if="isArticle && (prevPost || nextPost)" class="post-nav">
+        <a v-if="prevPost" :href="prevPost.url" class="post-nav-card">
+          <span class="post-nav-label">← {{ t('prevPost') }}</span>
+          <span class="post-nav-name">{{ prevPost.title }}</span>
+        </a>
+        <div v-else class="post-nav-card is-empty" aria-hidden="true"></div>
+        <a v-if="nextPost" :href="nextPost.url" class="post-nav-card next">
+          <span class="post-nav-label">{{ t('nextPost') }} →</span>
+          <span class="post-nav-name">{{ nextPost.title }}</span>
+        </a>
+        <div v-else class="post-nav-card is-empty" aria-hidden="true"></div>
       </div>
       <!-- <Comment v-if="isArticle" /> --> <!-- 评论功能已下线 -->
     </template>

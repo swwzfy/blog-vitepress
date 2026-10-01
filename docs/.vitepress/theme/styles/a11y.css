@@ -30,7 +30,13 @@
 .VPFeature::after,
 .related-card::after,
 .bento-card::after,
-.about-card::after {
+.about-card::after,
+.post-nav-card::after {
+  transition: none;
+}
+
+/* bento 卡 ↗ 箭头 */
+.bento-arrow {
   transition: none;
 }
 }
@@ -96,5 +102,51 @@
     right: 1.5rem;
     width: 40px;
     height: 40px;
+  }
+}
+
+/* ============================================
+   图片灯箱（effects.js initLightbox 注入）
+   常驻 DOM，靠 .open 切换透明度/可见性 —— 不反复增删节点
+   ============================================ */
+.lightbox {
+  position: fixed;
+  inset: 0;
+  z-index: 3000;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  padding: var(--space-5);
+  background: rgba(0, 0, 0, 0.85);
+  backdrop-filter: blur(8px);
+  -webkit-backdrop-filter: blur(8px);
+  cursor: zoom-out;
+  opacity: 0;
+  visibility: hidden;
+  transition: opacity 0.25s, visibility 0.25s;
+}
+
+.lightbox.open {
+  opacity: 1;
+  visibility: visible;
+}
+
+.lightbox img {
+  max-width: min(92vw, 1600px);
+  max-height: 90vh;
+  border-radius: var(--radius-sm);
+  box-shadow: 0 8px 40px rgba(0, 0, 0, 0.4);
+  transform: scale(0.96);
+  transition: transform 0.25s;
+}
+
+.lightbox.open img {
+  transform: scale(1);
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .lightbox,
+  .lightbox img {
+    transition: none;
   }
 }

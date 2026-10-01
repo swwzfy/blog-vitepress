@@ -20,6 +20,8 @@ const dict = {
   backPrev: { zh: '返回上一页', en: 'Go Back' },
   backHome: { zh: '返回首页', en: 'Home' },
   relatedPosts: { zh: '相关文章', en: 'Related Posts' },
+  prevPost: { zh: '上一篇', en: 'Previous' },
+  nextPost: { zh: '下一篇', en: 'Next' },
   pageNotFound: { zh: '页面迷失在虚空中', en: 'Lost in the Void' },
   pageNotFoundDesc: {
     zh: '你要找的页面可能已被移除、改名，或者从未存在过。',
@@ -77,6 +79,7 @@ const dict = {
   statWords: { zh: '全站字数', en: 'Words' },
   statThisMonth: { zh: '本月更新', en: 'This month' },
   recentPosts: { zh: '最新文章', en: 'Recent Posts' },
+  viewAll: { zh: '全部文章', en: 'View all' },
 
   // —— 友链 / 生活 ——
   circleTitle: { zh: '圈子动态', en: 'Latest from the Circle' },
@@ -85,6 +88,19 @@ const dict = {
     en: 'Recent posts from friend blogs, aggregated at build time.'
   },
   noLifePosts: { zh: '还没有生活类文章。', en: 'No life articles yet.' },
+
+  // —— 电台页 ——
+  radioPlay: { zh: '播放', en: 'Play' },
+  radioPause: { zh: '暂停', en: 'Pause' },
+  radioMissing: {
+    zh: '音频还没上传，等我把麦架好。',
+    en: 'Audio not uploaded yet — still setting up the mic.'
+  },
+
+  // —— 书影音页 ——
+  shelfBooks: { zh: '书', en: 'Books' },
+  shelfMovies: { zh: '影视', en: 'Films' },
+  shelfMusic: { zh: '音乐', en: 'Music' },
 
   // —— 首页时钟卡 ——
   datePlaceholder: { zh: '---- · -- · --', en: '-- · -- · ----' },

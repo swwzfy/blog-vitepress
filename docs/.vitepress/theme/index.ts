@@ -40,6 +40,7 @@ export default {
     const LifeList = (await import('./components/LifeList.vue')).default
     const HomeBento = (await import('./HomeBento.vue')).default
     const FriendsLinks = (await import('./components/FriendsLinks.vue')).default
+    const Shelf = (await import('./components/Shelf.vue')).default
     app.component('Tags', Tags)
     app.component('RecentPosts', RecentPosts)
     app.component('Stats', Stats)
@@ -48,5 +49,6 @@ export default {
     app.component('LifeList', LifeList)
     app.component('HomeBento', HomeBento)
     app.component('FriendsLinks', FriendsLinks)
+    app.component('Shelf', Shelf)
   }
 }
