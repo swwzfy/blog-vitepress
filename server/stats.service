@@ -1,0 +1,15 @@
+[Unit]
+Description=Personal site stats (SQLite + Python stdlib)
+After=network.target
+
+[Service]
+ExecStart=/usr/bin/python3 /opt/site-stats/stats.py
+Environment=STATS_DB=/var/lib/site-stats/stats.db
+Environment=STATS_SALT=/var/lib/site-stats/salt
+Restart=always
+RestartSec=3
+User=www-data
+Group=www-data
+
+[Install]
+WantedBy=multi-user.target

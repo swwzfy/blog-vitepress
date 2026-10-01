@@ -229,15 +229,45 @@ function loadLive2d() {
 const FOUNDED_DATE = '2026-06-26'
 const uptimeDays = ref<number | null>(null)
 
+// —— 自建访客统计（server/stats.py + nginx 反代 /api/）——
+// 只在生产域名下打点/拉数，本地开发不污染线上数据；
+// 接口不可达时统计区整块隐藏，绝不挂"-"（评审问题 #2 的根治）
+const siteStats = ref<{ uv: number; pv: number } | null>(null)
+const postViews = ref<number | null>(null)
+const isProdSite = typeof window !== 'undefined' && /(^|\.)jossecho\.com$/.test(window.location.hostname)
+
+async function refreshStats(path: string) {
+  if (!isProdSite) return
+  try {
+    const res = await fetch(`/api/stats.json?url=${encodeURIComponent(path)}`)
+    // 响应回来前路由又变了就丢弃，防止旧路径的阅读数串页
+    if (!res.ok || window.location.pathname !== path) return
+    const data = await res.json()
+    siteStats.value = { uv: data.uv, pv: data.pv }
+    postViews.value = typeof data.views === 'number' ? data.views : null
+  } catch {
+    // 服务不在线时静默
+  }
+}
+
+function sendHit(path: string) {
+  if (!isProdSite) return
+  new Image().src = `/api/hit?url=${encodeURIComponent(path)}`
+}
+
 onMounted(() => {
   update()
   loadLive2d()
   canSpeak.value = 'speechSynthesis' in window
   uptimeDays.value = Math.max(1, Math.floor((Date.now() - new Date(FOUNDED_DATE).getTime()) / 86400000))
+  sendHit(window.location.pathname)
+  void refreshStats(window.location.pathname)
 })
 watch(() => page.value.relativePath, () => {
   if (speaking.value) stopSpeech()
   update()
+  sendHit(window.location.pathname)
+  void refreshStats(window.location.pathname)
 })
 </script>
 
@@ -258,8 +288,10 @@ watch(() => page.value.relativePath, () => {
           <span class="meta-reading">{{ readingTime }} {{ t('minRead') }}</span>
           <span class="meta-dot">·</span>
           <span class="meta-words">{{ wordCount }} {{ t('words') }}</span>
-          <span class="meta-dot">·</span>
-          <span class="meta-views">👁 <span id="busuanzi_value_page_pv">-</span> {{ t('reads') }}</span>
+          <template v-if="postViews !== null">
+            <span class="meta-dot">·</span>
+            <span class="meta-views">👁 {{ postViews }} {{ t('reads') }}</span>
+          </template>
           <template v-if="canSpeak">
             <span class="meta-dot">·</span>
             <button class="tts-btn" type="button" @click="toggleSpeech">
@@ -354,11 +386,13 @@ watch(() => page.value.relativePath, () => {
               Powered by VitePress
             </p>
             <div class="site-stats">
-              <span id="busuanzi_container_site_uv">{{ t('visit') }} <span id="busuanzi_value_site_uv">-</span></span>
-              <span class="stats-dot">·</span>
-              <span id="busuanzi_container_site_pv">{{ t('views') }} <span id="busuanzi_value_site_pv">-</span></span>
-              <template v-if="uptimeDays !== null">
+              <template v-if="siteStats">
+                <span>{{ t('visit') }} {{ siteStats.uv }}</span>
                 <span class="stats-dot">·</span>
+                <span>{{ t('views') }} {{ siteStats.pv }}</span>
+              </template>
+              <template v-if="uptimeDays !== null">
+                <span v-if="siteStats" class="stats-dot">·</span>
                 <span>{{ t('uptime', { days: uptimeDays ?? 0 }) }}</span>
               </template>
             </div>

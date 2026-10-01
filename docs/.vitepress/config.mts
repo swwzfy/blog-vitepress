@@ -216,8 +216,7 @@ export default defineConfig({
     // i18n SEO 的 hreflang 改由 buildEnd 逐页注入（scripts/build-seo.js），
     // 指向对应语种的同一页面，而不是全站一律指向首页
     ['meta', { name: 'twitter:title', content: "Kiran's Blog" }],
-    ['meta', { name: 'twitter:description', content: '独立开发者 · 写作者 · 终身学习者' }],
-    ['script', { async: '', src: '//busuanzi.ibruce.info/busuanzi/2.3/busuanzi.pure.mini.js' }]
+    ['meta', { name: 'twitter:description', content: '独立开发者 · 写作者 · 终身学习者' }]
   ],
   async buildEnd(siteConfig) {
     const { createRequire } = await import('module')
