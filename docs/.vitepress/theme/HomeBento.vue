@@ -1,11 +1,49 @@
 <script setup lang="ts">
-import { ref } from 'vue'
+import { ref, onMounted } from 'vue'
 import { useRouter } from 'vitepress'
 import { useLocale } from '@/composables/useLocale'
-import { zhPosts, enPosts } from '@/utils/posts'
+import { zhPosts, enPosts, postRoutePath } from '@/utils/posts'
+import { statsAvailable } from '@/utils/stats'
 
 const { isEn, t } = useLocale()
 const router = useRouter()
+
+// —— 最多阅读（自建统计 /api/top.json，server/stats.py）——
+// 只在生产域名下拉数；拿不到就整卡隐藏，不占格、不挂"-"。
+// 排行是全站口径（中英混合），展示时映射到当前语种的镜像文章并去重
+// （本站中英 1:1 对应），两个语种的首页才能显示同一份榜单
+interface HotPost {
+  url: string
+  title: string
+  views: number
+}
+const hotPosts = ref<HotPost[]>([])
+onMounted(async () => {
+  if (!statsAvailable()) return
+  try {
+    const res = await fetch('/api/top.json?n=10')
+    if (!res.ok) return
+    const data = await res.json()
+    const source = isEn.value ? enPosts : zhPosts
+    const seen = new Set<string>()
+    const out: HotPost[] = []
+    for (const it of (data.items || []) as Array<{ url: string; views: number }>) {
+      if (typeof it.url !== 'string' || typeof it.views !== 'number') continue
+      // 线上历史数据的 url 带 .html 后缀（nginx 下访客地址形态），剥掉并归一到无语种前缀
+      const routePath = it.url.replace(/\.html$/, '').replace(/^\//, '').replace(/^en\//, '')
+      if (seen.has(routePath)) continue
+      const localized = (isEn.value ? 'en/' : '') + routePath
+      const post = source.find(p => postRoutePath(p.url) === localized)
+      if (!post) continue
+      seen.add(routePath)
+      out.push({ url: post.url, title: post.title, views: it.views })
+      if (out.length >= 3) break
+    }
+    hotPosts.value = out
+  } catch {
+    // 服务不在线时整卡隐藏
+  }
+})
 
 // —— 快捷指令（借鉴友链 Leelaa 的终端命令面板）——
 // 随机只发生在点击时：SSR/SSG 渲染稳定，无 hydration 风险
@@ -115,6 +153,23 @@ function askAnswer() {
               <span class="bento-dot">·</span>
               <a href="mailto:swwzfy@163.com">Email</a>
             </div>
+          </div>
+        </div>
+        <!-- 最多阅读：通栏单独成行（4 列制下窄卡必留洞，同快捷指令卡的处理），
+             必须排在订阅卡之后 —— 生活+订阅凑满一行，本卡独占一行。
+             数据来自自建统计，接口不可达时整卡不渲染 -->
+        <div v-if="hotPosts.length" class="item bento-item-full">
+          <div class="bento-card">
+            <div class="bento-icon">🔥</div>
+            <h3 class="bento-title">{{ t('hotPosts') }}</h3>
+            <ul class="hot-list">
+              <li v-for="p in hotPosts" :key="p.url">
+                <a class="hot-link" :href="p.url" :title="p.title">
+                  <span class="hot-name">{{ p.title }}</span>
+                  <span class="hot-views">👁 {{ p.views }} {{ t('reads') }}</span>
+                </a>
+              </li>
+            </ul>
           </div>
         </div>
         <div class="item bento-item-full">

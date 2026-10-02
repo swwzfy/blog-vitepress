@@ -1,10 +1,11 @@
 <script setup lang="ts">
 import DefaultTheme from 'vitepress/theme'
 import { useData } from 'vitepress'
-import { ref, computed, onMounted, watch, nextTick } from 'vue'
-import { zhPosts, enPosts, byDateDesc, postRoutePath } from '@/utils/posts'
+import { ref, computed, onMounted, watch } from 'vue'
+import { zhPosts, enPosts, byDateDesc, postRoutePath, wordsByRoutePath } from '@/utils/posts'
 import { formatDate } from '@/utils/format'
 import { useLocale } from '@/composables/useLocale'
+import { statsAvailable } from '@/utils/stats'
 
 const { Layout } = DefaultTheme
 const { frontmatter, page } = useData()
@@ -12,40 +13,11 @@ const { t, isEn } = useLocale()
 
 const isArticle = computed(() => !!frontmatter.value.date)
 
-const wordCount = ref(0)
-const readingTime = ref(0)
-
-/** 阅读时长缓存，避免重复扫文；上限 100 条防止 SPA 内无限增长 */
-const readTimeCache = new Map<string, { words: number; minutes: number }>()
-const READ_TIME_CACHE_MAX = 100
-
-function computeReadingTime() {
-  nextTick(() => {
-    const el = document.querySelector('.vp-doc')
-    if (!el) return
-    const path = page.value.relativePath
-    const cached = readTimeCache.get(path)
-    if (cached) {
-      wordCount.value = cached.words
-      readingTime.value = cached.minutes
-      return
-    }
-    const text = el.textContent || ''
-    const chinese = (text.match(/[一-鿿]/g) || []).length
-    const english = (text.match(/[a-zA-Z]+/g) || []).length
-    const words = chinese + english
-    const minutes = Math.max(1, Math.ceil(words / 300))
-    if (readTimeCache.size >= READ_TIME_CACHE_MAX) {
-      // Map 按插入序淘汰最早写入的 20%（FIFO，重复访问不续命；当前文章量级下够用）
-      const keys = [...readTimeCache.keys()]
-      const evictCount = Math.floor(READ_TIME_CACHE_MAX * 0.2)
-      for (let i = 0; i < evictCount; i++) readTimeCache.delete(keys[i])
-    }
-    readTimeCache.set(path, { words, minutes })
-    wordCount.value = words
-    readingTime.value = minutes
-  })
-}
+// 字数与阅读时长来自构建期 posts-meta.json（utils/posts.ts 的 wordsByRoutePath）。
+// 必须是 computed：SSR 渲染期即求值，产物 HTML 非 0 —— 若在 onMounted 里现算，
+// 爬虫/无 JS 环境拿到的永远是「0 分钟阅读 · 0 字」（改前的病灶）。
+const wordCount = computed(() => wordsByRoutePath.get(page.value.relativePath.replace(/\.md$/, '')) ?? 0)
+const readingTime = computed(() => Math.max(1, Math.ceil(wordCount.value / 300)))
 
 interface RelatedPost {
   title: string
@@ -106,9 +78,6 @@ function findAdjacent() {
 
 function update() {
   if (!isArticle.value) return
-  wordCount.value = 0
-  readingTime.value = 0
-  computeReadingTime()
   findRelated()
   findAdjacent()
 }
@@ -234,10 +203,11 @@ const uptimeDays = ref<number | null>(null)
 // 接口不可达时统计区整块隐藏，绝不挂"-"（评审问题 #2 的根治）
 const siteStats = ref<{ uv: number; pv: number } | null>(null)
 const postViews = ref<number | null>(null)
-const isProdSite = typeof window !== 'undefined' && /(^|\.)jossecho\.com$/.test(window.location.hostname)
+const postLikes = ref<number | null>(null)
+const liked = ref(false)
 
 async function refreshStats(path: string) {
-  if (!isProdSite) return
+  if (!statsAvailable()) return
   try {
     const res = await fetch(`/api/stats.json?url=${encodeURIComponent(path)}`)
     // 响应回来前路由又变了就丢弃，防止旧路径的阅读数串页
@@ -245,13 +215,44 @@ async function refreshStats(path: string) {
     const data = await res.json()
     siteStats.value = { uv: data.uv, pv: data.pv }
     postViews.value = typeof data.views === 'number' ? data.views : null
+    postLikes.value = typeof data.likes === 'number' ? data.likes : null
+  } catch {
+    // 服务不在线时静默
+  }
+}
+
+function syncLikedState(path: string) {
+  try {
+    liked.value = localStorage.getItem('liked:' + path) === '1'
+  } catch {
+    liked.value = false
+  }
+}
+
+// 点赞：GET 打点式（与 /api/hit 同构，无用户文本输入），服务端按 IP+路径永久去重；
+// localStorage 只管「我赞过」的 UI 态。按钮只在 postLikes 非 null（即可用域且
+// 接口可达）时渲染，所以这里不用再查 statsAvailable
+async function likePost() {
+  const path = window.location.pathname
+  if (liked.value || postLikes.value === null) return
+  try {
+    const res = await fetch(`/api/like?url=${encodeURIComponent(path)}`)
+    if (!res.ok) return
+    liked.value = true
+    try {
+      localStorage.setItem('liked:' + path, '1')
+    } catch {
+      /* 隐私模式等存储不可用时只丢 UI 态，服务端已计数 */
+    }
+    // 响应期间路由变了就不动当前页的计数
+    if (window.location.pathname === path) postLikes.value += 1
   } catch {
     // 服务不在线时静默
   }
 }
 
 function sendHit(path: string) {
-  if (!isProdSite) return
+  if (!statsAvailable()) return
   new Image().src = `/api/hit?url=${encodeURIComponent(path)}`
 }
 
@@ -261,12 +262,14 @@ onMounted(() => {
   canSpeak.value = 'speechSynthesis' in window
   uptimeDays.value = Math.max(1, Math.floor((Date.now() - new Date(FOUNDED_DATE).getTime()) / 86400000))
   sendHit(window.location.pathname)
+  syncLikedState(window.location.pathname)
   void refreshStats(window.location.pathname)
 })
 watch(() => page.value.relativePath, () => {
   if (speaking.value) stopSpeech()
   update()
   sendHit(window.location.pathname)
+  syncLikedState(window.location.pathname)
   void refreshStats(window.location.pathname)
 })
 </script>
@@ -291,6 +294,18 @@ watch(() => page.value.relativePath, () => {
           <template v-if="postViews !== null">
             <span class="meta-dot">·</span>
             <span class="meta-views">👁 {{ postViews }} {{ t('reads') }}</span>
+          </template>
+          <template v-if="postLikes !== null">
+            <span class="meta-dot">·</span>
+            <button
+              class="like-btn"
+              :class="{ 'is-liked': liked }"
+              type="button"
+              :aria-label="t('likePost')"
+              @click="likePost"
+            >
+              {{ liked ? '❤️' : '👍' }} {{ postLikes }}
+            </button>
           </template>
           <template v-if="canSpeak">
             <span class="meta-dot">·</span>

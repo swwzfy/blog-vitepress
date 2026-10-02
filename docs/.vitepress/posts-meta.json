@@ -1,0 +1,463 @@
+{
+  "generatedAt": "2026-10-02T15:30:54.185Z",
+  "zh": [
+    {
+      "path": "posts/ai-memory.md",
+      "url": "/posts/ai-memory",
+      "title": "为什么我让 AI 管我的记忆",
+      "date": "2026-05-18",
+      "description": "给 AI 搭了一套三层记忆系统——长期记忆、短期记忆、语义检索。不只是技术实验，是对「连续性」的思考。",
+      "tags": [
+        "AI",
+        "知识管理"
+      ],
+      "words": 225
+    },
+    {
+      "path": "posts/aliyun-ecs-filing.md",
+      "url": "/posts/aliyun-ecs-filing",
+      "title": "阿里云 ECS 选型与备案实录",
+      "date": "2026-09-03",
+      "description": "从选型、购买、备案到上线，记录一次国内个人服务器上线的完整经历，含备案被卡的教训。",
+      "tags": [
+        "服务器运维"
+      ],
+      "words": 1186
+    },
+    {
+      "path": "posts/blog-modern-makeover.md",
+      "url": "/posts/blog-modern-makeover",
+      "title": "博客现代化改造：噪点、追光、View Transitions 与 Bento",
+      "date": "2026-09-27",
+      "description": "给三年攒下的「效果存量」做一次减法：噪点纹理、边框追光、原生 View Transitions、大标题紧字距、Bento 首页。坑都比效果本身值钱——SPA 导航吃掉 CSS 过渡、:has 特异性、vp-doc 全局样式污染。",
+      "tags": [
+        "VitePress",
+        "前端"
+      ],
+      "words": 2569
+    },
+    {
+      "path": "posts/blog-tech-stack.md",
+      "url": "/posts/blog-tech-stack",
+      "title": "我的博客是怎么搭的",
+      "date": "2026-09-20",
+      "description": "一篇讲清楚这个博客的技术选型、主题定制方式、i18n 方案、RSS 自建原因，以及几个性能取舍背后的逻辑。",
+      "tags": [
+        "VitePress",
+        "前端"
+      ],
+      "words": 2081
+    },
+    {
+      "path": "posts/deepseek-harness.md",
+      "url": "/posts/deepseek-harness",
+      "title": "DeepSeek Harness：一切皆插件的 Agent 框架怎么装",
+      "date": "2026-08-14",
+      "description": "DeepSeek Harness 是 DeepSeek 开源的 Agent 运行框架，核心思路是「一切皆插件」。本文覆盖 Node.js 安装与两种 Agent 安装方式（npx 一键启动 + 源码克隆）。",
+      "tags": [
+        "AI",
+        "Agent",
+        "编程语言",
+        "工具"
+      ],
+      "words": 1804
+    },
+    {
+      "path": "posts/local-llm-deployment.md",
+      "url": "/posts/local-llm-deployment",
+      "title": "本地大模型部署：从 PC 到服务器，五种方案摆在一起看",
+      "date": "2026-07-16",
+      "description": "把模型跑在自己机器上的几条典型路径——从桌面应用到生产推理框架，按场景摆开。",
+      "tags": [
+        "AI",
+        "本地大模型"
+      ],
+      "words": 1400
+    },
+    {
+      "path": "posts/notes-evolution.md",
+      "url": "/posts/notes-evolution",
+      "title": "我的笔记系统演进史",
+      "date": "2026-05-25",
+      "description": "从备忘录到 Notion 到 Obsidian，再到自己搭的系统。折腾笔记工具的过程本身就是一种思考。",
+      "tags": [
+        "知识管理"
+      ],
+      "words": 224
+    },
+    {
+      "path": "posts/openclaw-vs-hermes.md",
+      "url": "/posts/openclaw-vs-hermes",
+      "title": "OpenClaw 与 Hermes：把 AI Agent 的两种解法拆开看",
+      "date": "2026-07-16",
+      "description": "一个往外接，一个向内省——两种 AI Agent 路线在不同维度上的取舍。",
+      "tags": [
+        "AI",
+        "Agent"
+      ],
+      "words": 1354
+    },
+    {
+      "path": "posts/openspec-review.md",
+      "url": "/posts/openspec-review",
+      "title": "给 AI 加一层「规格书」：OpenSpec 使用体验",
+      "date": "2026-06-26",
+      "description": "AI 写代码能力越来越强，但需求只活在聊天记录里。OpenSpec 在人和 AI 之间加了一层轻量规格书，先对齐再动手。这是我的实际使用体验。",
+      "tags": [
+        "AI",
+        "工具",
+        "Agent"
+      ],
+      "words": 1166
+    },
+    {
+      "path": "posts/personal-server.md",
+      "url": "/posts/personal-server",
+      "title": "从零搭建个人服务器",
+      "date": "2026-04-28",
+      "description": "从买域名、选 VPS、配 Nginx、装 SSL 到部署第一个服务的全过程，适合新手参考。",
+      "tags": [
+        "服务器运维"
+      ],
+      "words": 168
+    },
+    {
+      "path": "posts/python-setup.md",
+      "url": "/posts/python-setup",
+      "title": "Python 新手入门：环境搭建与第一个项目",
+      "date": "2026-08-12",
+      "description": "从安装解释器到跑起第一个项目，uv/poetry/pip 三个包管理器对照，Windows/macOS/Linux 三平台覆盖。每个命令都能复制粘贴直接跑。",
+      "tags": [
+        "编程语言",
+        "工具"
+      ],
+      "words": 1121
+    },
+    {
+      "path": "posts/rust-cli.md",
+      "url": "/posts/rust-cli",
+      "title": "用 Rust 重写我的命令行工具",
+      "date": "2026-06-12",
+      "description": "为什么用 Rust 重写 Python CLI 工具，启动时间从 800ms 降到 12ms，单文件 4.2MB 无依赖。",
+      "tags": [
+        "编程语言",
+        "工具",
+        "性能"
+      ],
+      "words": 280
+    },
+    {
+      "path": "posts/self-hosted-visitor-stats.md",
+      "url": "/posts/self-hosted-visitor-stats",
+      "title": "自建访客统计实录：告别不蒜子，200 行 Python + SQLite",
+      "date": "2026-10-01",
+      "description": "不蒜子常年半死不活，页脚挂着永远的减号。用 Python 标准库加 SQLite 自建访客统计，零第三方依赖，从写完到上线踩了五个坑，每个都比效果值钱。",
+      "tags": [
+        "服务器运维"
+      ],
+      "words": 1657
+    },
+    {
+      "path": "posts/ssh-hardening.md",
+      "url": "/posts/ssh-hardening",
+      "title": "SSH 安全加固实战",
+      "date": "2026-09-03",
+      "description": "一台暴露公网的服务器，SSH 是唯一的门。改端口、禁 root、配密钥、上 fail2ban，把暴力破解挡在门外。",
+      "tags": [
+        "服务器运维",
+        "安全"
+      ],
+      "words": 1466
+    },
+    {
+      "path": "posts/suzhou-hanshan-temple.md",
+      "url": "/posts/suzhou-hanshan-temple",
+      "title": "苏州寒山寺游记",
+      "date": "2026-08-18",
+      "description": "写了半年代码，眼睛累，心里也累。挑个周末自驾去苏州看了寒山寺。",
+      "tags": [
+        "生活"
+      ],
+      "words": 1445
+    },
+    {
+      "path": "posts/vitepress-live2d-mascot.md",
+      "url": "/posts/vitepress-live2d-mascot",
+      "title": "在 VitePress 博客集成 Live2D 看板娘",
+      "date": "2026-08-18",
+      "description": "给博客加只小宠物，记录从选型到上线的几个坑，包括 webpack 拆包加载顺序、tap_body 键名、VitePress Layout slot 限制。",
+      "tags": [
+        "VitePress",
+        "前端"
+      ],
+      "words": 883
+    },
+    {
+      "path": "posts/vitepress-three-custom-tricks.md",
+      "url": "/posts/vitepress-three-custom-tricks",
+      "title": "三个 VitePress 定制技巧",
+      "date": "2026-09-12",
+      "description": "给 VitePress 加粒子背景、鼠标光晕和氛围渐变。效果本身很便宜，坑都藏在细节里——DPR、合成层，以及学会不做动画。",
+      "tags": [
+        "VitePress",
+        "前端",
+        "性能"
+      ],
+      "words": 1333
+    },
+    {
+      "path": "posts/workbuddy.md",
+      "url": "/posts/workbuddy",
+      "title": "WorkBuddy：把 AI 从对话框变成工作台",
+      "date": "2026-08-27",
+      "description": "用过很多 AI 工具之后，我发现自己真正缺的不是「更会聊天的模型」，而是能真正动手干活的助手。WorkBuddy 给我的感觉是——它把文件、命令行、浏览器和多模态生成都接到了同一个对话里。",
+      "tags": [
+        "AI",
+        "工具",
+        "Agent"
+      ],
+      "words": 953
+    },
+    {
+      "path": "posts/yangzhou-cafe.md",
+      "url": "/posts/yangzhou-cafe",
+      "title": "扬州咖啡馆工作指南",
+      "date": "2026-06-22",
+      "description": "测评扬州多家咖啡馆的 WiFi、插座、噪音和咖啡质量，远程工作者的选址指南。",
+      "tags": [
+        "生活"
+      ],
+      "words": 1174
+    }
+  ],
+  "en": [
+    {
+      "path": "en/posts/ai-memory.md",
+      "url": "/en/posts/ai-memory",
+      "title": "Why I Let AI Manage My Memory",
+      "date": "2026-05-18",
+      "description": "Built a three-layer memory system for AI — long-term memory, short-term memory, semantic search. Not just a tech experiment, it's a reflection on “continuity”.",
+      "tags": [
+        "AI",
+        "Knowledge Management"
+      ],
+      "words": 138
+    },
+    {
+      "path": "en/posts/aliyun-ecs-filing.md",
+      "url": "/en/posts/aliyun-ecs-filing",
+      "title": "Alibaba Cloud ECS: Instance Selection & ICP Filing",
+      "date": "2026-09-03",
+      "description": "From instance selection, purchase, and ICP filing to going live — a full walkthrough of launching a personal server in mainland China, including the lesson learned from a filing rejection.",
+      "tags": [
+        "Server Ops"
+      ],
+      "words": 844
+    },
+    {
+      "path": "en/posts/blog-modern-makeover.md",
+      "url": "/en/posts/blog-modern-makeover",
+      "title": "Modernizing This Blog: Noise, Spotlight, View Transitions & Bento",
+      "date": "2026-09-27",
+      "description": "A subtraction pass over three years of accumulated effects: film-grain noise, spotlight borders, native View Transitions, tighter display type, and a Bento home page. The traps were worth more than the effects — SPA navigation eating CSS transitions, :has specificity, and vp-doc global style pollution.",
+      "tags": [
+        "VitePress",
+        "Frontend"
+      ],
+      "words": 1830
+    },
+    {
+      "path": "en/posts/blog-tech-stack.md",
+      "url": "/en/posts/blog-tech-stack",
+      "title": "How This Blog Is Built",
+      "date": "2026-09-20",
+      "description": "A walkthrough of the tech stack, theme customization, i18n setup, why I built RSS from scratch, and the performance trade-offs behind every visual effect.",
+      "tags": [
+        "VitePress",
+        "Frontend"
+      ],
+      "words": 1403
+    },
+    {
+      "path": "en/posts/deepseek-harness.md",
+      "url": "/en/posts/deepseek-harness",
+      "title": "DeepSeek Harness: Installing the All-Plugins Agent Framework",
+      "date": "2026-08-14",
+      "description": "DeepSeek Harness is an open-source Agent runtime where every capability is a plugin. This guide covers Node.js setup and two ways to install the Agent (npx one-liner vs. source clone).",
+      "tags": [
+        "AI",
+        "Agent",
+        "Languages",
+        "Tools"
+      ],
+      "words": 1269
+    },
+    {
+      "path": "en/posts/local-llm-deployment.md",
+      "url": "/en/posts/local-llm-deployment",
+      "title": "Local LLM Deployment — From PC to Self-Hosted Server, Five Paths Side by Side",
+      "date": "2026-07-16",
+      "description": "Five typical paths for running models on your own hardware — desktop apps to production inference frameworks, matched to your situation.",
+      "tags": [
+        "AI",
+        "Local LLMs"
+      ],
+      "words": 934
+    },
+    {
+      "path": "en/posts/notes-evolution.md",
+      "url": "/en/posts/notes-evolution",
+      "title": "My Notes System Evolution",
+      "date": "2026-05-25",
+      "description": "From Apple Notes to Notion to Obsidian, then to my own system. The process of tinkering with note tools is itself a form of thinking.",
+      "tags": [
+        "Knowledge Management"
+      ],
+      "words": 144
+    },
+    {
+      "path": "en/posts/openclaw-vs-hermes.md",
+      "url": "/en/posts/openclaw-vs-hermes",
+      "title": "OpenClaw vs Hermes — Two Approaches to AI Agent Design",
+      "date": "2026-07-16",
+      "description": "One reaches outward, one reflects inward — two AI Agent paths and their trade-offs across ten dimensions.",
+      "tags": [
+        "AI",
+        "Agent"
+      ],
+      "words": 880
+    },
+    {
+      "path": "en/posts/openspec-review.md",
+      "url": "/en/posts/openspec-review",
+      "title": "Adding a Spec Layer for AI — My OpenSpec Experience",
+      "date": "2026-06-26",
+      "description": "AI coding is powerful, but requirements only live in chat history. OpenSpec adds a lightweight spec layer between you and AI — align first, then build. Here's my hands-on experience.",
+      "tags": [
+        "AI",
+        "Tools",
+        "Agent"
+      ],
+      "words": 727
+    },
+    {
+      "path": "en/posts/personal-server.md",
+      "url": "/en/posts/personal-server",
+      "title": "Building a Personal Server from Scratch",
+      "date": "2026-04-28",
+      "description": "The whole process from buying a domain, choosing a VPS, configuring Nginx, installing SSL to deploying the first service. Suitable for beginners.",
+      "tags": [
+        "Server Ops"
+      ],
+      "words": 128
+    },
+    {
+      "path": "en/posts/python-setup.md",
+      "url": "/en/posts/python-setup",
+      "title": "Python Beginner's Guide: Environment Setup & First Project",
+      "date": "2026-08-12",
+      "description": "From installing the interpreter to running your first project. Compares uv, poetry, and pip. Covers Windows, macOS, and Linux. Every command is copy-paste ready.",
+      "tags": [
+        "Languages",
+        "Tools"
+      ],
+      "words": 868
+    },
+    {
+      "path": "en/posts/rust-cli.md",
+      "url": "/en/posts/rust-cli",
+      "title": "Rewriting My CLI Tool in Rust",
+      "date": "2026-06-12",
+      "description": "Why I rewrote a Python CLI tool in Rust, startup time dropped from 800ms to 12ms, single file 4.2MB with zero dependencies.",
+      "tags": [
+        "Languages",
+        "Tools",
+        "Performance"
+      ],
+      "words": 181
+    },
+    {
+      "path": "en/posts/self-hosted-visitor-stats.md",
+      "url": "/en/posts/self-hosted-visitor-stats",
+      "title": "Self-Hosting Visitor Stats: Ditching Busuanzi with 200 Lines of Python and SQLite",
+      "date": "2026-10-01",
+      "description": "The free stats service on my blog footer was half-dead, leaving a permanent dash. I replaced it with a self-hosted counter built on the Python standard library and SQLite — zero dependencies, five pitfalls, each worth more than the feature.",
+      "tags": [
+        "Server Ops"
+      ],
+      "words": 1255
+    },
+    {
+      "path": "en/posts/ssh-hardening.md",
+      "url": "/en/posts/ssh-hardening",
+      "title": "Hardening SSH on a Fresh Server",
+      "date": "2026-09-03",
+      "description": "A server exposed to the public internet has one door: SSH. Change the port, disable root login, switch to key auth, and add fail2ban to keep brute-force bots out.",
+      "tags": [
+        "Server Ops",
+        "Security"
+      ],
+      "words": 1071
+    },
+    {
+      "path": "en/posts/suzhou-hanshan-temple.md",
+      "url": "/en/posts/suzhou-hanshan-temple",
+      "title": "A Visit to Hanshan Temple in Suzhou",
+      "date": "2026-08-18",
+      "description": "Half a year of writing code tired out my eyes and my mind. I took a weekend drive to see Hanshan Temple in Suzhou.",
+      "tags": [
+        "Life"
+      ],
+      "words": 1305
+    },
+    {
+      "path": "en/posts/vitepress-live2d-mascot.md",
+      "url": "/en/posts/vitepress-live2d-mascot",
+      "title": "Adding a Live2D Mascot to a VitePress Blog",
+      "date": "2026-08-18",
+      "description": "How I wired a Live2D model into this VitePress blog, plus the five traps I fell into — webpack split-bundle order, tap_body key naming, VitePress Layout slot limitations, and more.",
+      "tags": [
+        "VitePress",
+        "Frontend"
+      ],
+      "words": 653
+    },
+    {
+      "path": "en/posts/vitepress-three-custom-tricks.md",
+      "url": "/en/posts/vitepress-three-custom-tricks",
+      "title": "Three VitePress Customization Tricks",
+      "date": "2026-09-12",
+      "description": "Adding a particle background, a cursor glow, and an ambient gradient to VitePress. The effects themselves are cheap — the traps hide in details: DPR, compositing layers, and learning not to animate.",
+      "tags": [
+        "VitePress",
+        "Frontend",
+        "Performance"
+      ],
+      "words": 996
+    },
+    {
+      "path": "en/posts/workbuddy.md",
+      "url": "/en/posts/workbuddy",
+      "title": "WorkBuddy: Turning AI from a Chat Box into a Workbench",
+      "date": "2026-08-27",
+      "description": "After trying plenty of AI tools, what I really lacked wasn't a chattier model — it was an assistant that actually does the work. WorkBuddy feels like it wires the filesystem, the terminal, the browser, and multimodal generation into a single conversation.",
+      "tags": [
+        "AI",
+        "Tools",
+        "Agent"
+      ],
+      "words": 581
+    },
+    {
+      "path": "en/posts/yangzhou-cafe.md",
+      "url": "/en/posts/yangzhou-cafe",
+      "title": "Yangzhou Coffee Shop Work Guide",
+      "date": "2026-06-22",
+      "description": "Tested multiple coffee shops in Yangzhou for WiFi, outlets, noise, and coffee quality. A location guide for remote workers.",
+      "tags": [
+        "Life"
+      ],
+      "words": 756
+    }
+  ]
+}

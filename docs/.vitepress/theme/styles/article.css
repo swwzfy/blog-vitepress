@@ -55,6 +55,23 @@
   color: var(--vp-c-brand-1);
 }
 
+/* 点赞按钮：与朗读按钮同族；已赞后保持主题色 */
+.like-btn {
+  background: none;
+  border: none;
+  padding: 0;
+  font: inherit;
+  font-size: 14px;
+  color: var(--vp-c-text-3);
+  cursor: pointer;
+  transition: color 0.2s;
+}
+
+.like-btn:hover,
+.like-btn.is-liked {
+  color: var(--vp-c-brand-1);
+}
+
 .article-tags {
   display: flex;
   flex-wrap: wrap;

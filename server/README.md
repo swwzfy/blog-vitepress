@@ -41,7 +41,11 @@ sudo nginx -t && sudo systemctl reload nginx
 # 带 normal UA 测：
 curl -s -A 'Mozilla/5.0' 'https://www.jossecho.com/api/hit?url=/test'
 curl -s 'https://www.jossecho.com/api/stats.json?url=/test'
-# 期望 {"uv": 1, "pv": 1, "views": 1}
+# 期望 {"uv": 1, "pv": 1, "views": 1, "likes": 0}
+# 点赞：同 IP+路径 永久去重，连点两次 likes 仍是 1
+curl -s -A 'Mozilla/5.0' 'https://www.jossecho.com/api/like?url=/test'
+curl -s 'https://www.jossecho.com/api/top.json'      # 文章阅读 Top N（默认 8）
+curl -s 'https://www.jossecho.com/api/trend.json'    # 近 30 天逐日 pv/uv
 ```
 
 浏览器访问几篇文章后，页脚出现「访客 N · 访问 M」，文章页元信息行出现「👁 N 次阅读」。
@@ -51,6 +55,9 @@ curl -s 'https://www.jossecho.com/api/stats.json?url=/test'
 - **访客（uv）**：全历史去重 IP（哈希后），明细不清理，所以是真正的累计值
 - **访问（pv）**：全历史打点次数，同 IP 同路径 30 分钟内的刷新只计一次
 - **阅读数（views）**：该路径的累计打点数
+- **点赞（likes）**：该路径的累计点赞数，同 IP 同路径永久只计一次（无"取消赞"）
+- **每日聚合（daily 表）**：pv/uv 按服务器本地日聚合，启动时从明细全量重建（自愈），
+  运行期在打点事务里增量累加；uv = 当日去重访客
 - 数据目录备份：`sqlite3 /var/lib/site-stats/stats.db ".backup '/备份路径/stats.db'"`，挂 cron 即可
 
 ## 恢复电台时的注意

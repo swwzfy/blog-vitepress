@@ -16,6 +16,9 @@
   --font-display: 'LXGW WenKai Screen', 'Noto Serif SC', 'Songti SC', 'SimSun', 'Noto Serif', serif;
   /* 正文基础栈：系统 sans。Inter 已决定不加载 webfont（config.mts），勿回加引用 */
   --font-body: 'PingFang SC', 'Microsoft YaHei', 'Noto Sans SC', sans-serif;
+  /* VitePress 默认主题自己的组件（导航、搜索弹层等）走这个变量，默认以 Inter 开头 ——
+     不覆盖的话 core fonts.css 的 @font-face 仍会命中，每页下载 inter-*.woff2 */
+  --vp-font-family-base: var(--font-body);
 
   /* —— 圆角梯度 —— */
   --radius-xs: 4px;

@@ -1,39 +1,5 @@
 import type { Post } from './types'
-
-interface PageModule {
-  __pageData?: {
-    title?: string
-    frontmatter?: {
-      date?: string
-      description?: string
-      tags?: string[]
-      draft?: boolean
-    }
-  }
-}
-
-const zhModules = import.meta.glob('../../../posts/*.md', { eager: true }) as Record<string, PageModule>
-const enModules = import.meta.glob('../../../en/posts/*.md', { eager: true }) as Record<string, PageModule>
-
-function parsePost(filePath: string, mod: PageModule): Post | null {
-  const data = mod.__pageData
-  if (!data) return null
-  if (data.frontmatter?.draft === true) return null
-  const relPath = filePath.replace(/^(?:\.\.\/)+/, '').replace(/\.md$/, '')
-  return {
-    title: data.title || '',
-    url: '/' + relPath,
-    date: data.frontmatter?.date || '',
-    description: data.frontmatter?.description || '',
-    tags: data.frontmatter?.tags || []
-  }
-}
-
-function toPosts(modules: Record<string, PageModule>): Post[] {
-  return Object.entries(modules)
-    .map(([fp, m]) => parsePost(fp, m))
-    .filter((p): p is Post => p !== null)
-}
+import postsMeta from '../../posts-meta.json'
 
 /**
  * 文章按日期倒序。Archives / RecentPosts / LifeList / useTags 以及 Layout 相关文章的
@@ -53,8 +19,23 @@ export function postRoutePath(url: string): string {
 }
 
 /**
- * 中英文 post 列表。eager glob 在构建期被内联，运行时是稳定对象。
- * 每次调用 usePosts 时不再重新扫描文件。
+ * 中英文文章列表：数据来自构建期 scripts/build-posts-meta.js 生成的 posts-meta.json
+ * （config.mts 的 posts-meta 插件在 buildStart 刷新；dev 下监听文章增删改重生成）。
+ * 取代旧实现对 md 页面模块的 eager glob —— 那会把全部文章的编译产物合进一个每页
+ * 都 modulepreload 的大 chunk，而列表只需要这几 KB 元信息。draft 已在生成期排除。
+ * 页面正文由 VitePress 路由按需加载，不经此处。
  */
-export const zhPosts: Post[] = toPosts(zhModules)
-export const enPosts: Post[] = toPosts(enModules)
+function toPosts(entries: typeof postsMeta.zh): Post[] {
+  return entries.map(({ title, url, date, description, tags }) => ({ title, url, date, description, tags }))
+}
+
+export const zhPosts: Post[] = toPosts(postsMeta.zh)
+export const enPosts: Post[] = toPosts(postsMeta.en)
+
+/**
+ * 路由相对路径（posts/x）→ 构建期字数。Layout 文章头的字数与阅读时长由此取值，
+ * SSG 输出即非 0（原先客户端扫 .vp-doc 现算，爬虫看到的是 0）。
+ */
+export const wordsByRoutePath = new Map<string, number>(
+  [...postsMeta.zh, ...postsMeta.en].map(e => [e.path.replace(/\.md$/, ''), e.words])
+)

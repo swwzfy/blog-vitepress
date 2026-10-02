@@ -1,6 +1,7 @@
 import { defineConfig } from 'vitepress'
-import { writeFileSync, readFileSync, readdirSync } from 'fs'
-import { resolve } from 'path'
+import { writeFileSync, readFileSync, readdirSync, existsSync, unlinkSync, statSync } from 'fs'
+import { resolve, sep } from 'path'
+import http, { IncomingMessage, ServerResponse, OutgoingHttpHeaders } from 'node:http'
 
 const hostname = 'https://www.jossecho.com'
 
@@ -64,6 +65,33 @@ function makeSocialLinks(rssHref: string) {
       ariaLabel: 'Email'
     }
   ]
+}
+
+// 本地联调：dev / preview 把 /api 转发到本机 stats.py（server/stats.py 自起临时库），
+// 统计 UI 在 localhost 端到端真跑，不用上线才能看效果。手写转发而不用 vite 的
+// server.proxy / preview.proxy —— 后者在 VitePress 1.6 的 preview 服务上实测不生效
+// （/api 落进 SPA 404 页）。stats.py 不在跑时 502，前端优雅隐藏；线上走 nginx 反代，不经此处
+const LOCAL_STATS_BASE = `http://127.0.0.1:${process.env.STATS_PORT ?? 8787}`
+
+function proxyApi(req: IncomingMessage, res: ServerResponse, next: () => void): void {
+  const url = req.url ?? ''
+  if (!url.startsWith('/api/')) {
+    next()
+    return
+  }
+  const upstream = http.request(
+    LOCAL_STATS_BASE + url,
+    { method: req.method, headers: { ...req.headers, host: '127.0.0.1' } as OutgoingHttpHeaders },
+    (r) => {
+      res.writeHead(r.statusCode ?? 502, r.headers as OutgoingHttpHeaders)
+      r.pipe(res)
+    }
+  )
+  upstream.on('error', () => {
+    res.writeHead(502, { 'Content-Type': 'text/plain; charset=utf-8' })
+    res.end('local stats service down')
+  })
+  req.pipe(upstream)
 }
 
 export default defineConfig({
@@ -144,6 +172,14 @@ export default defineConfig({
     }
   },
   vite: {
+    // 本地联调：dev 把 /api 代理到本机 stats.py（server/stats.py 自起临时库），
+    // 统计 UI 在 localhost 端到端真跑，不用上线才能看效果。
+    // proxyApi 中间件是 server.proxy 的等价兜底（挂 dev 的 configureServer）；
+    // 两者在 dev 都生效时 vite 内置代理先行，不冲突。
+    // 注意 vite 的 preview.proxy 在 VitePress 1.6 的 preview 服务上实测不生效
+    // （configurePreviewServer 也不被调用，/api 落进 SPA 404），本地验证请走 dev。
+    // stats.py 不在跑时接口 502/404，前端优雅隐藏；线上走 nginx 反代，不经此处
+    server: { proxy: { '/api': LOCAL_STATS_BASE } },
     define: {
       __SITE_WORDS__: JSON.stringify(SITE_WORDS)
     },
@@ -162,9 +198,33 @@ export default defineConfig({
           await cwdRequire('./scripts/build-friends-activity.js').refreshFriendsActivity()
         }
       },
+      // 构建期生成文章元信息（标题/日期/标签/字数），theme/utils/posts.ts 改为读
+      // posts-meta.json —— 替代对 md 页面模块的 eager glob（那会把全部文章的编译产物
+      // 合成一个每页都加载的 640KB chunk）。dev 下监听增删改，与旧 glob 的即时性对齐。
+      {
+        name: 'posts-meta',
+        async buildStart() {
+          const { createRequire } = await import('module')
+          const cwdRequire = createRequire(resolve(process.cwd(), 'index.js'))
+          cwdRequire('./scripts/build-posts-meta.js').buildPostsMeta()
+        },
+        configureServer(server) {
+          // posts-meta.json 已在模块图里，被 Vite 自行监听：这里只需在文章增删改时重写它
+          const regenerate = async (file: string) => {
+            if (!/\/posts\/[^/]+\.md$/.test(file.replace(/\\/g, '/'))) return
+            const { createRequire } = await import('module')
+            const cwdRequire = createRequire(resolve(process.cwd(), 'index.js'))
+            cwdRequire('./scripts/build-posts-meta.js').buildPostsMeta()
+          }
+          server.watcher.on('add', regenerate)
+          server.watcher.on('unlink', regenerate)
+          server.watcher.on('change', regenerate)
+        }
+      },
       {
         name: 'rss-charset-headers',
         configureServer(server) {
+          server.middlewares.use(proxyApi)
           server.middlewares.use((req, res, next) => {
             if (req.url === '/feed.rss' || req.url === '/en/feed.rss') {
               res.setHeader('Content-Type', 'application/rss+xml; charset=utf-8')
@@ -175,6 +235,7 @@ export default defineConfig({
           })
         },
         configurePreviewServer(server) {
+          server.middlewares.use(proxyApi)
           server.middlewares.use((req, res, next) => {
             if (req.url === '/feed.rss' || req.url === '/en/feed.rss') {
               res.setHeader('Content-Type', 'application/rss+xml; charset=utf-8')
@@ -264,6 +325,46 @@ export default defineConfig({
       mkdirSync(dirname(destPath), { recursive: true })
       copyFileSync(srcPath, destPath)
       console.log(`  mirrored ${rel} -> ${relative(PROJECT_ROOT_DOCS, destPath)}`)
+    }
+
+    // VitePress 默认主题的 Inter @font-face（theme-default/styles/fonts.css）无条件打进
+    // 产物 CSS，并随之拷出全部 12 个 woff2（~500KB）。本站字体栈是系统字体
+    // （tokens.css 覆盖了 --vp-font-family-base，勿回加 Inter 引用），这些文件永远不会
+    // 被请求，产物里直接剔除。
+    // siteConfig.outDir 在 Windows 上是正斜杠风格，守卫前先 resolve 归一化，否则恒 false
+    const outRoot = resolve(siteConfig.outDir)
+    const assetsDir = resolve(outRoot, 'assets')
+    if (assetsDir.startsWith(outRoot + sep) && existsSync(assetsDir)) {
+      let pruned = 0
+      for (const name of readdirSync(assetsDir)) {
+        if (/^inter-.*\.woff2$/.test(name)) {
+          unlinkSync(resolve(assetsDir, name))
+          pruned++
+        }
+      }
+      // 字体文件剔了，Vite 注入各页 head 的 preload 死链也要同步剥掉，
+      // 否则每个访客的控制台都多一条字体 404
+      if (pruned) {
+        let cleaned = 0
+        const walk = (dir: string): void => {
+          for (const name of readdirSync(dir)) {
+            const p = resolve(dir, name)
+            if (!p.startsWith(outRoot + sep)) throw new Error(`refusing to touch outside ${outRoot}: ${p}`)
+            if (statSync(p).isDirectory()) {
+              walk(p)
+            } else if (name.endsWith('.html')) {
+              const html = readFileSync(p, 'utf8')
+              const cleanedHtml = html.replace(/<link rel="preload" href="\/assets\/inter-[^"]*"[^>]*>\n?/g, '')
+              if (cleanedHtml !== html) {
+                writeFileSync(p, cleanedHtml)
+                cleaned++
+              }
+            }
+          }
+        }
+        walk(outRoot)
+        console.log(`  buildEnd: pruned ${pruned} Inter woff2 files, cleaned preloads in ${cleaned} pages`)
+      }
     }
   },
   // VitePress 不会自动排除 draft: true 的页面 —— 设 srcExclude 让它不进入路由表。

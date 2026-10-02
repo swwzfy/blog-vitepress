@@ -140,7 +140,9 @@
 
   .home-bento .bento-item-full .cmd-list {
     display: grid;
-    grid-template-columns: repeat(4, 1fr);
+    /* minmax(0,1fr)：cmd-row 里的等宽字体命令文本不可换行，min-width:auto 会让
+       最长那条撑爆轨道 —— 窗口缩窄时列宽失衡、内容溢出卡片 */
+    grid-template-columns: repeat(4, minmax(0, 1fr));
     align-items: stretch;
   }
 
@@ -219,6 +221,83 @@
   color: var(--vp-c-text-2);
   line-height: 1.7;
   margin: 0 0 var(--space-4);
+}
+
+/* 最多阅读卡（HomeBento）：通栏单独成行 —— 4 列制下窄卡必留洞（同快捷指令卡的处理）。
+   窄屏竖排一行一条；≥960 三条横排铺满。接口不可达时整卡不渲染。
+   .vp-doc 前缀压 markdown 的 ul 样式（disc 圆点 / 缩进），单类规则特异性不够 */
+.vp-doc .hot-list {
+  list-style: none;
+  margin: 0;
+  padding: 0;
+  display: flex;
+  flex-direction: column;
+  gap: var(--space-2);
+}
+
+.hot-link {
+  display: flex;
+  align-items: baseline;
+  justify-content: space-between;
+  gap: var(--space-3);
+  font-size: 14px;
+}
+
+.vp-doc .hot-link {
+  color: var(--vp-c-text-2);
+  text-decoration: none;
+  transition: color 0.2s;
+}
+
+.vp-doc .hot-link:hover {
+  color: var(--vp-c-brand-1);
+}
+
+.hot-name {
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+
+.hot-views {
+  flex-shrink: 0;
+  font-size: 13px;
+  color: var(--vp-c-text-3);
+}
+
+@media (min-width: 960px) {
+  /* 媒体查询里同样要 .vp-doc 前缀：否则 0,1,0 < 0,2,0，三列 grid 会被
+     上面的基础 flex 规则永久压死（2026-10-02 实测翻过车） */
+  .vp-doc .hot-list {
+    display: grid;
+    /* minmax(0,1fr) 而非 1fr：grid 子项 min-width:auto 会被最长的不可换行标题
+       撑爆轨道 —— 等宽变不等宽（文字对不齐）、窗口窄时溢出卡片 */
+    grid-template-columns: repeat(3, minmax(0, 1fr));
+    gap: var(--space-4);
+  }
+
+  .vp-doc .hot-list li {
+    /* VitePress 的 .vp-doc ul li 给相邻 li 加 margin-top:8px，会把 2/3 列标题
+       顶下去 8px（第一列是首子元素没有 margin）——列表间距统一交给 gap */
+    margin-top: 0;
+    margin-bottom: 0;
+    min-width: 0;
+  }
+
+  /* 横排后每条改为上下两行（标题在上、阅读数在下），竖线分隔 */
+  .vp-doc .hot-list li + li {
+    border-left: 1px solid var(--vp-c-divider);
+    padding-left: var(--space-4);
+  }
+
+  .vp-doc .hot-link {
+    flex-direction: column;
+    align-items: stretch;
+    gap: var(--space-1);
+    /* 撑满行高 + 两端对齐：标题恒在顶部、阅读数恒在底部，
+       即使将来某条标题换行，三列的阅读数也保持同一水平线 */
+    height: 100%;
+  }
 }
 
 .bento-links {

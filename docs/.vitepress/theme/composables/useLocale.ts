@@ -32,6 +32,8 @@ const dict = {
   minRead: { zh: '分钟阅读', en: 'min read' },
   words: { zh: '字', en: 'words' },
   reads: { zh: '次阅读', en: 'reads' },
+  likePost: { zh: '给这篇文章点赞', en: 'Like this post' },
+  hotPosts: { zh: '最多阅读', en: 'Most Read' },
   ttsPlay: { zh: '朗读本文', en: 'Read aloud' },
   ttsStop: { zh: '停止朗读', en: 'Stop reading' },
   footerDesc: {

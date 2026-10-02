@@ -17,6 +17,15 @@ const matter = require('gray-matter')
 const HOSTNAME = 'https://www.jossecho.com'
 const SITE_TITLE = "Kiran's Blog"
 
+/** 拼装读取/写盘路径前做边界校验，杜绝 page 值带 `..` 越出 src/out 目录（AGENTS.md 第 5 节） */
+function resolveInside(root, p) {
+  const resolved = path.resolve(root, p)
+  if (!resolved.startsWith(path.resolve(root) + path.sep)) {
+    throw new Error(`refusing to touch outside ${root}: ${p}`)
+  }
+  return resolved
+}
+
 /** 与 config.mts sitemap 同一套 URL 规则：无后缀，index 折叠成目录根 */
 function pageUrl(page) {
   const url = page.replace(/index\.(md|html)$/, '').replace(/\.(md|html)$/, '')
@@ -26,9 +35,11 @@ function pageUrl(page) {
 function loadPageMeta(siteConfig) {
   const meta = new Map()
   for (const page of siteConfig.pages) {
+    // 守卫放在 try 外：越界要大声失败，不能被「读不到就跳过」的兜底吞掉
+    const srcPath = resolveInside(siteConfig.srcDir, page)
     let fm = {}
     try {
-      fm = matter(fs.readFileSync(path.resolve(siteConfig.srcDir, page), 'utf8')).data || {}
+      fm = matter(fs.readFileSync(srcPath, 'utf8')).data || {}
     } catch {
       // frontmatter 读不到时 injectSeo 会退回解析产物 HTML，此处不中断构建
     }
@@ -48,7 +59,7 @@ function escapeAttr(s) {
 function injectSeo(siteConfig, pageMeta) {
   let injected = 0
   for (const [page, info] of pageMeta) {
-    const htmlPath = path.resolve(siteConfig.outDir, page.replace(/\.md$/, '.html'))
+    const htmlPath = resolveInside(siteConfig.outDir, page.replace(/\.md$/, '.html'))
     if (!fs.existsSync(htmlPath)) continue
     let html = fs.readFileSync(htmlPath, 'utf8')
 
