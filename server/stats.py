@@ -5,7 +5,9 @@
 端点：
   GET /api/hit?url=<路径>       记一次访问（204），同 IP+路径 30 分钟内去重
   GET /api/like?url=<路径>      给文章点赞（204），同 IP+路径 永久去重
-  GET /api/stats.json[?url=路径] {"uv","pv"[,"views","likes"]}（带 url 时附该路径数据）
+  GET /api/react?url=<路径>&r=<表情> 给文章添加反应（204），白名单四枚表情，
+                                同 IP+路径+表情 永久去重（可多选不同表情，无取消）
+  GET /api/stats.json[?url=路径] {"uv","pv"[,"views","likes","reactions"]}（带 url 时附该路径数据）
   GET /api/top.json[?n=N]       {"items":[{url,views}...]} 文章阅读 Top N（默认 8，上限 20）
   GET /api/trend.json           {"days":[{date,pv,uv}...]} 近 30 天逐日聚合
   GET /api/health               存活检查（200 ok）
@@ -43,6 +45,9 @@ PORT = int(os.environ.get('STATS_PORT', '8787'))
 DEDUPE_WINDOW = 1800  # 同 IP+路径的打点去重窗口（秒）
 UA_RE = re.compile(r'bot|spider|crawl|curl|wget|python-requests|headless', re.I)
 PATH_RE = re.compile(r'^/[\w\-./]{0,150}$')
+
+# 反应白名单：不在名单内的 r 参数直接忽略
+REACT_EMOJIS = ('👍', '❤️', '😂', '🎉')
 
 
 def normalize_url(path: str) -> str:
@@ -84,6 +89,13 @@ def init_db() -> None:
             ip_hash TEXT NOT NULL,
             ts      INTEGER NOT NULL)''')
         conn.execute('CREATE INDEX IF NOT EXISTS idx_likes_ip ON likes(ip_hash, url)')
+        conn.execute('''CREATE TABLE IF NOT EXISTS reactions (
+            url      TEXT NOT NULL,
+            reaction TEXT NOT NULL,
+            ip_hash  TEXT NOT NULL,
+            ts       INTEGER NOT NULL)''')
+        conn.execute('CREATE INDEX IF NOT EXISTS idx_reactions_ip ON reactions(ip_hash, url, reaction)')
+        conn.execute('CREATE INDEX IF NOT EXISTS idx_reactions_url ON reactions(url, reaction)')
         # daily 是明细的派生缓存（旧版 SQLite 无 UPSERT，重建比增量合并可靠）：
         # 启动时全量重算一次，运行期在打点事务里增量累加 —— 重启即自愈
         conn.execute('''CREATE TABLE IF NOT EXISTS daily (
@@ -111,6 +123,8 @@ class Handler(BaseHTTPRequestHandler):
             self._hit(qs)
         elif url.path == '/api/like':
             self._like(qs)
+        elif url.path == '/api/react':
+            self._react(qs)
         elif url.path == '/api/stats.json':
             self._stats(qs)
         elif url.path == '/api/top.json':
@@ -188,6 +202,37 @@ class Handler(BaseHTTPRequestHandler):
             conn.close()
         self._send(204, b'')
 
+    def _react(self, qs):
+        path = normalize_url((qs.get('url') or [''])[0])
+        reaction = (qs.get('r') or [''])[0]
+        # http.server 以 latin-1 解码请求行：客户端若未百分号编码 emoji，
+        # 这里会拿到乱码——还原一次；已正确解码的（含 >U+00FF 字符）会抛错，原样保留
+        try:
+            reaction = reaction.encode('latin-1').decode('utf-8')
+        except UnicodeError:
+            pass
+        ua = self.headers.get('User-Agent', '')
+        if not PATH_RE.match(path) or reaction not in REACT_EMOJIS or UA_RE.search(ua):
+            self._send(204, b'')
+            return
+        ip = self.headers.get('X-Real-IP') or self.client_address[0]
+        ip_hash = hashlib.sha256((ip + SALT).encode()).hexdigest()
+        conn = sqlite3.connect(DB_PATH)
+        try:
+            dup = conn.execute(
+                'SELECT 1 FROM reactions WHERE ip_hash=? AND url=? AND reaction=? LIMIT 1',
+                (ip_hash, path, reaction),
+            ).fetchone()
+            if not dup:
+                conn.execute(
+                    'INSERT INTO reactions(url, reaction, ip_hash, ts) VALUES(?,?,?,?)',
+                    (path, reaction, ip_hash, int(time.time())),
+                )
+            conn.commit()
+        finally:
+            conn.close()
+        self._send(204, b'')
+
     def _stats(self, qs):
         path = (qs.get('url') or [None])[0]
         conn = sqlite3.connect(DB_PATH)
@@ -204,6 +249,12 @@ class Handler(BaseHTTPRequestHandler):
                 out['likes'] = conn.execute(
                     'SELECT COUNT(*) FROM likes WHERE url IN (?, ?)', (base, base + '.html')
                 ).fetchone()[0]
+                out['reactions'] = {
+                    e: c for e, c in conn.execute(
+                        'SELECT reaction, COUNT(*) FROM reactions WHERE url=? GROUP BY reaction',
+                        (base,),
+                    ).fetchall()
+                }
         finally:
             conn.close()
         self._send(200, json.dumps(out).encode())

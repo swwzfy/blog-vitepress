@@ -204,7 +204,12 @@ const uptimeDays = ref<number | null>(null)
 const siteStats = ref<{ uv: number; pv: number } | null>(null)
 const postViews = ref<number | null>(null)
 const postLikes = ref<number | null>(null)
+const postReactions = ref<Record<string, number> | null>(null)
+const myReactions = ref<string[]>([])
 const liked = ref(false)
+
+// 与 server/stats.py 的 REACT_EMOJIS 白名单保持一致
+const REACT_EMOJIS = ['👍', '❤️', '😂', '🎉'] as const
 
 async function refreshStats(path: string) {
   if (!statsAvailable()) return
@@ -216,6 +221,46 @@ async function refreshStats(path: string) {
     siteStats.value = { uv: data.uv, pv: data.pv }
     postViews.value = typeof data.views === 'number' ? data.views : null
     postLikes.value = typeof data.likes === 'number' ? data.likes : null
+    // 旧版后端无 reactions 字段 → null，反应行整体隐藏
+    if (data.reactions && typeof data.reactions === 'object') {
+      const counts: Record<string, number> = {}
+      for (const e of REACT_EMOJIS) counts[e] = typeof data.reactions[e] === 'number' ? data.reactions[e] : 0
+      postReactions.value = counts
+    } else {
+      postReactions.value = null
+    }
+  } catch {
+    // 服务不在线时静默
+  }
+}
+
+function syncReactionsState(path: string) {
+  try {
+    const saved = localStorage.getItem('reacted:' + path)
+    myReactions.value = saved ? saved.split(',') : []
+  } catch {
+    myReactions.value = []
+  }
+}
+
+// 反应：GET 打点式（无文本输入），服务端按 IP+路径+表情永久去重，可多选不同表情、无取消；
+// localStorage 只记「我点过哪些」的 UI 态。行只在 postReactions 非 null（可用域且接口可达）时渲染
+async function react(emoji: string) {
+  const path = window.location.pathname
+  if (myReactions.value.includes(emoji) || postReactions.value === null) return
+  try {
+    const res = await fetch(`/api/react?url=${encodeURIComponent(path)}&r=${encodeURIComponent(emoji)}`)
+    if (!res.ok) return
+    myReactions.value = [...myReactions.value, emoji]
+    try {
+      localStorage.setItem('reacted:' + path, myReactions.value.join(','))
+    } catch {
+      /* 隐私模式等存储不可用时只丢 UI 态，服务端已计数 */
+    }
+    // 响应期间路由变了就不动当前页的计数
+    if (window.location.pathname === path && postReactions.value) {
+      postReactions.value = { ...postReactions.value, [emoji]: (postReactions.value[emoji] || 0) + 1 }
+    }
   } catch {
     // 服务不在线时静默
   }
@@ -263,6 +308,7 @@ onMounted(() => {
   uptimeDays.value = Math.max(1, Math.floor((Date.now() - new Date(FOUNDED_DATE).getTime()) / 86400000))
   sendHit(window.location.pathname)
   syncLikedState(window.location.pathname)
+  syncReactionsState(window.location.pathname)
   void refreshStats(window.location.pathname)
 })
 watch(() => page.value.relativePath, () => {
@@ -270,6 +316,7 @@ watch(() => page.value.relativePath, () => {
   update()
   sendHit(window.location.pathname)
   syncLikedState(window.location.pathname)
+  syncReactionsState(window.location.pathname)
   void refreshStats(window.location.pathname)
 })
 </script>
@@ -313,6 +360,19 @@ watch(() => page.value.relativePath, () => {
               {{ speaking ? `⏹ ${t('ttsStop')}` : `🔊 ${t('ttsPlay')}` }}
             </button>
           </template>
+        </div>
+        <div v-if="postReactions !== null" class="reactions-row">
+          <button
+            v-for="e in REACT_EMOJIS"
+            :key="e"
+            class="reaction-btn"
+            :class="{ 'is-mine': myReactions.includes(e) }"
+            type="button"
+            :aria-label="t('reactAria')"
+            @click="react(e)"
+          >
+            {{ e }} <span class="reaction-count">{{ postReactions[e] || 0 }}</span>
+          </button>
         </div>
         <div v-if="frontmatter.tags?.length" class="article-tags">
           <span v-for="tag in frontmatter.tags" :key="tag" class="tag">{{ tag }}</span>
