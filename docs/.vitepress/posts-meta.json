@@ -1,6 +1,19 @@
 {
-  "generatedAt": "2026-10-02T15:30:54.185Z",
+  "generatedAt": "2026-10-03T02:50:19.076Z",
   "zh": [
+    {
+      "path": "posts/ai-code-edit-weaknesses.md",
+      "url": "/posts/ai-code-edit-weaknesses",
+      "title": "AI 改代码的弱点实录：一个断层，修错三次",
+      "date": "2026-10-03",
+      "description": "让 AI 重做归档页，断层我定位到「2026 头顶的横线」它还是修错。复盘两天人机协作的全过程：AI 改代码的五个弱点，和四条对策。",
+      "tags": [
+        "VitePress",
+        "前端",
+        "AI"
+      ],
+      "words": 1584
+    },
     {
       "path": "posts/ai-memory.md",
       "url": "/posts/ai-memory",
@@ -231,6 +244,19 @@
     }
   ],
   "en": [
+    {
+      "path": "en/posts/ai-code-edit-weaknesses.md",
+      "url": "/en/posts/ai-code-edit-weaknesses",
+      "title": "The Weak Spots of AI Code Editing: One Fault Line, Three Wrong Fixes",
+      "date": "2026-10-03",
+      "description": "I had AI rebuild my archive page. Even after I pinpointed the bug to the horizontal line above 2026, it still fixed the wrong one. A full retrospective of two days of human-AI collaboration: five weaknesses, four countermeasures.",
+      "tags": [
+        "VitePress",
+        "Frontend",
+        "AI"
+      ],
+      "words": 1076
+    },
     {
       "path": "en/posts/ai-memory.md",
       "url": "/en/posts/ai-memory",

@@ -1,6 +1,7 @@
 ---
 title: Timeline
 description: "My timeline: the milestones from learning to code to writing this blog and shipping indie projects."
+aside: false
 ---
 
 # Timeline

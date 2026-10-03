@@ -92,6 +92,15 @@ const dict = {
   noLifePosts: { zh: '还没有生活类文章。', en: 'No life articles yet.' },
 
   // —— 归档页 ——
+  archTitle: { zh: '文章归档', en: 'Articles' },
+  archSubtitle: {
+    zh: '技术笔记、独立开发与生活随笔，按时间倒序。',
+    en: 'Engineering notes, indie development and life essays, newest first.'
+  },
+  archStatPosts: { zh: '{n} 篇文章', en: '{n} posts' },
+  archStatWords: { zh: '{n} 字', en: '{n} words' },
+  archStatMonthly: { zh: '本月更新 {n} 篇', en: '{n} new this month' },
+
   yearNav: { zh: '年份跳转', en: 'Jump to year' },
 
   // —— 电台页 ——

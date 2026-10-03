@@ -1,6 +1,7 @@
 ---
 title: 友链
 description: "友情链接 —— 我常读的站点，以及申请友链的方式。"
+aside: false
 ---
 
 # 友情链接

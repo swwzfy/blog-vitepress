@@ -1,6 +1,7 @@
 ---
 title: Friends
 description: "Friends — sites I read often, plus how to apply for a link exchange."
+aside: false
 ---
 
 # Friends

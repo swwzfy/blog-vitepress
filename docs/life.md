@@ -1,6 +1,7 @@
 ---
 title: 生活
 description: "咖啡、随笔、读书、跑步 —— 写代码之外的那部分生活。"
+aside: false
 ---
 
 # 生活

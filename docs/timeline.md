@@ -1,6 +1,7 @@
 ---
 title: 时间线
 description: "我的时间线：从入坑编程到写博客、做独立开发的关键节点。"
+aside: false
 ---
 
 # 时间线
