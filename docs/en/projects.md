@@ -8,6 +8,12 @@ aside: false
 
 Some things I've built.
 
+## This Blog
+
+The site you are looking at right now. Built with VitePress and a self-hosted stats backend — what you see is the demo.
+
+**Tech Stack:** VitePress, Vue, Python
+
 ## CLI Tools
 
 Command-line tools rewritten in Rust. 12ms startup, single-file distribution.
