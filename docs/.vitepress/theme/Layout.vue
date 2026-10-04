@@ -5,7 +5,7 @@ import { ref, computed, onMounted, watch } from 'vue'
 import { zhPosts, enPosts, byDateDesc, postRoutePath, wordsByRoutePath } from '@/utils/posts'
 import { formatDate } from '@/utils/format'
 import { useLocale } from '@/composables/useLocale'
-import { statsAvailable } from '@/utils/stats'
+import { statsAvailable, setupSearchBeacon } from '@/utils/stats'
 
 const { Layout } = DefaultTheme
 const { frontmatter, page } = useData()
@@ -306,6 +306,7 @@ onMounted(() => {
   loadLive2d()
   canSpeak.value = 'speechSynthesis' in window
   uptimeDays.value = Math.max(1, Math.floor((Date.now() - new Date(FOUNDED_DATE).getTime()) / 86400000))
+  setupSearchBeacon()
   sendHit(window.location.pathname)
   syncLikedState(window.location.pathname)
   syncReactionsState(window.location.pathname)

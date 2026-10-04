@@ -7,6 +7,9 @@
   GET /api/like?url=<路径>      给文章点赞（204），同 IP+路径 永久去重
   GET /api/react?url=<路径>&r=<表情> 给文章添加反应（204），白名单四枚表情，
                                 同 IP+路径+表情 永久去重（可多选不同表情，无取消）
+  GET /api/search?q=<词>        记录本地搜索热词（204），2-80 字符，
+                                同 IP+词 10 分钟内去重
+  GET /api/searches.json[?n=N]  {"items":[{term,count}...]} 近 30 天热词榜（默认 10，上限 20）
   GET /api/stats.json[?url=路径] {"uv","pv"[,"views","likes","reactions"]}（带 url 时附该路径数据）
   GET /api/top.json[?n=N]       {"items":[{url,views}...]} 文章阅读 Top N（默认 8，上限 20）
   GET /api/trend.json           {"days":[{date,pv,uv}...]} 近 30 天逐日聚合
@@ -96,6 +99,12 @@ def init_db() -> None:
             ts       INTEGER NOT NULL)''')
         conn.execute('CREATE INDEX IF NOT EXISTS idx_reactions_ip ON reactions(ip_hash, url, reaction)')
         conn.execute('CREATE INDEX IF NOT EXISTS idx_reactions_url ON reactions(url, reaction)')
+        conn.execute('''CREATE TABLE IF NOT EXISTS searches (
+            term    TEXT NOT NULL,
+            ts      INTEGER NOT NULL,
+            ip_hash TEXT NOT NULL)''')
+        conn.execute('CREATE INDEX IF NOT EXISTS idx_searches_term ON searches(term, ts)')
+        conn.execute('CREATE INDEX IF NOT EXISTS idx_searches_ip ON searches(ip_hash, ts)')
         # daily 是明细的派生缓存（旧版 SQLite 无 UPSERT，重建比增量合并可靠）：
         # 启动时全量重算一次，运行期在打点事务里增量累加 —— 重启即自愈
         conn.execute('''CREATE TABLE IF NOT EXISTS daily (
@@ -125,6 +134,10 @@ class Handler(BaseHTTPRequestHandler):
             self._like(qs)
         elif url.path == '/api/react':
             self._react(qs)
+        elif url.path == '/api/search':
+            self._search(qs)
+        elif url.path == '/api/searches.json':
+            self._searches(qs)
         elif url.path == '/api/stats.json':
             self._stats(qs)
         elif url.path == '/api/top.json':
@@ -232,6 +245,57 @@ class Handler(BaseHTTPRequestHandler):
         finally:
             conn.close()
         self._send(204, b'')
+
+    def _search(self, qs):
+        term = (qs.get('q') or [''])[0]
+        # http.server 以 latin-1 解码请求行：未百分号编码的中文先还原（浏览器路径不受影响）
+        try:
+            term = term.encode('latin-1').decode('utf-8')
+        except UnicodeError:
+            pass
+        term = ' '.join(term.split())
+        ua = self.headers.get('User-Agent', '')
+        # 2-80 字符：过滤单字噪声与超长滥用
+        if not (2 <= len(term) <= 80) or UA_RE.search(ua):
+            self._send(204, b'')
+            return
+        ip = self.headers.get('X-Real-IP') or self.client_address[0]
+        ip_hash = hashlib.sha256((ip + SALT).encode()).hexdigest()
+        now = int(time.time())
+        conn = sqlite3.connect(DB_PATH)
+        try:
+            dup = conn.execute(
+                'SELECT 1 FROM searches WHERE ip_hash=? AND term=? AND ts>? LIMIT 1',
+                (ip_hash, term, now - 600),
+            ).fetchone()
+            if not dup:
+                conn.execute(
+                    'INSERT INTO searches(term, ts, ip_hash) VALUES(?,?,?)',
+                    (term, now, ip_hash),
+                )
+            conn.commit()
+        finally:
+            conn.close()
+        self._send(204, b'')
+
+    def _searches(self, qs):
+        try:
+            n = int((qs.get('n') or ['10'])[0])
+        except ValueError:
+            n = 10
+        n = max(1, min(n, 20))
+        since = int(time.time()) - 30 * 86400
+        conn = sqlite3.connect(DB_PATH)
+        try:
+            rows = conn.execute(
+                'SELECT term, COUNT(*) AS c FROM searches WHERE ts>? GROUP BY term ORDER BY c DESC LIMIT ?',
+                (since, n),
+            ).fetchall()
+        finally:
+            conn.close()
+        self._send(200, json.dumps(
+            {'items': [{'term': t, 'count': c} for t, c in rows]}
+        ).encode())
 
     def _stats(self, qs):
         path = (qs.get('url') or [None])[0]
