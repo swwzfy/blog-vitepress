@@ -11,6 +11,7 @@ SQLite 单文件 + Python 标准库的访客统计。服务端零第三方依赖
 | `stats.py` | `/opt/site-stats/stats.py` |
 | `stats.service` | `/etc/systemd/system/stats.service` |
 | `nginx-stats-snippet.conf` | 内容粘进 nginx 对应位置（见下） |
+| `../docs/.vitepress/friends.json`（仓库里的友链清单） | `/var/lib/site-stats/friends.json`（友链动态抓取的数据源，加/删友链后记得同步这份） |
 
 ## 部署步骤（ECS 上执行）
 
@@ -56,6 +57,11 @@ curl -s 'https://www.jossecho.com/api/trend.json'    # 近 30 天逐日 pv/uv
 - **访问（pv）**：全历史打点次数，同 IP 同路径 30 分钟内的刷新只计一次
 - **阅读数（views）**：该路径的累计打点数
 - **点赞（likes）**：该路径的累计点赞数，同 IP 同路径永久只计一次（无"取消赞"）
+- **圈子动态（friend_feeds 表）**：后台线程每 6 小时抓一次各友链 RSS（启动即抓一轮），
+  每友链最多 4 条；数据源是 `/var/lib/site-stats/friends.json`（部署时从仓库上传，
+  加删友链后同步更新）；各站存活状态在 friend_health 表（SSH 只读查看）
+- **端点 `/api/friends-activity`**：与构建期 friends-activity.json 同构，
+  前端拿不到时自动回退已提交的种子文件
 - **每日聚合（daily 表）**：pv/uv 按服务器本地日聚合，启动时从明细全量重建（自愈），
   运行期在打点事务里增量累加；uv = 当日去重访客
 - 数据目录备份：`sqlite3 /var/lib/site-stats/stats.db ".backup '/备份路径/stats.db'"`，挂 cron 即可

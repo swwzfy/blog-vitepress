@@ -10,6 +10,11 @@
   GET /api/search?q=<词>        记录本地搜索热词（204），2-80 字符，
                                 同 IP+词 10 分钟内去重
   GET /api/searches.json[?n=N]  {"items":[{term,count}...]} 近 30 天热词榜（默认 10，上限 20）
+  GET /api/friends-activity     {"fetchedAt","items":[{title,link,date,friend,avatar}...]}
+                                友链圈子动态（与构建期 friends-activity.json 同构，
+                                前端拿不到时回退种子文件）。数据来自后台线程定时
+                                抓取 FRIENDS_JSON 里带 feed 的友链（启动即抓，
+                                此后每 6 小时一轮），健康状态记录在 friend_health 表
   GET /api/stats.json[?url=路径] {"uv","pv"[,"views","likes","reactions"]}（带 url 时附该路径数据）
   GET /api/top.json[?n=N]       {"items":[{url,views}...]} 文章阅读 Top N（默认 8，上限 20）
   GET /api/trend.json           {"days":[{date,pv,uv}...]} 近 30 天逐日聚合
@@ -26,11 +31,17 @@
     （线上 nginx 下访客地址带 .html，历史明细两种形态并存，2026-10-02 起）
 """
 import hashlib
+import ipaddress
 import json
 import os
 import re
+import socket
 import sqlite3
+import threading
 import time
+import urllib.request
+from datetime import datetime
+from email.utils import parsedate_to_datetime
 from http.server import BaseHTTPRequestHandler, HTTPServer
 from socketserver import ThreadingMixIn
 from urllib.parse import urlparse, parse_qs
@@ -43,9 +54,13 @@ class ThreadingHTTPServer(ThreadingMixIn, HTTPServer):
 
 DB_PATH = os.environ.get('STATS_DB', '/var/lib/site-stats/stats.db')
 SALT_PATH = os.environ.get('STATS_SALT', '/var/lib/site-stats/salt')
+FRIENDS_JSON = os.environ.get('FRIENDS_JSON', '/var/lib/site-stats/friends.json')
 HOST = os.environ.get('STATS_HOST', '127.0.0.1')
 PORT = int(os.environ.get('STATS_PORT', '8787'))
 DEDUPE_WINDOW = 1800  # 同 IP+路径的打点去重窗口（秒）
+SEARCH_DEDUPE_WINDOW = 600  # 同 IP+搜索词的去重窗口（秒）
+FEED_INTERVAL = 6 * 3600  # 友链 feed 抓取周期（秒）
+FEED_TIMEOUT = 8
 UA_RE = re.compile(r'bot|spider|crawl|curl|wget|python-requests|headless', re.I)
 PATH_RE = re.compile(r'^/[\w\-./]{0,150}$')
 
@@ -105,6 +120,19 @@ def init_db() -> None:
             ip_hash TEXT NOT NULL)''')
         conn.execute('CREATE INDEX IF NOT EXISTS idx_searches_term ON searches(term, ts)')
         conn.execute('CREATE INDEX IF NOT EXISTS idx_searches_ip ON searches(ip_hash, ts)')
+        conn.execute('''CREATE TABLE IF NOT EXISTS friend_feeds (
+            friend      TEXT NOT NULL,
+            title       TEXT NOT NULL,
+            link        TEXT NOT NULL,
+            published   TEXT,
+            published_ts INTEGER NOT NULL,
+            fetched_at  INTEGER NOT NULL)''')
+        conn.execute('CREATE INDEX IF NOT EXISTS idx_feeds_ts ON friend_feeds(published_ts)')
+        conn.execute('''CREATE TABLE IF NOT EXISTS friend_health (
+            friend    TEXT PRIMARY KEY,
+            last_ok   INTEGER,
+            last_fail INTEGER,
+            last_error TEXT)''')
         # daily 是明细的派生缓存（旧版 SQLite 无 UPSERT，重建比增量合并可靠）：
         # 启动时全量重算一次，运行期在打点事务里增量累加 —— 重启即自愈
         conn.execute('''CREATE TABLE IF NOT EXISTS daily (
@@ -120,6 +148,134 @@ def init_db() -> None:
         conn.commit()
     finally:
         conn.close()
+
+
+def _assert_public_http_url(url: str) -> None:
+    """SSRF 防护（Mimosa 要求）：仅允许 http(s)，解析出的全部 IP 不得落在
+    私网/环回/链路本地/保留段。友链地址来自服务器本地配置文件（管理员可控），
+    此为纵深防御；DNS rebinding 的彻底防护需固定 IP 连接，个人博客量级
+    采用解析校验 + 短超时。"""
+    m = re.match(r'^https?://([^/:?#]+)', url, re.I)
+    if not m:
+        raise ValueError('only http(s) feed urls are allowed: %s' % url)
+    host = m.group(1)
+    for info in socket.getaddrinfo(host, None):
+        ip = ipaddress.ip_address(info[4][0])
+        if (ip.is_private or ip.is_loopback or ip.is_link_local
+                or ip.is_reserved or ip.is_multicast or ip.is_unspecified):
+            raise ValueError('feed host resolves to a forbidden address: %s' % ip)
+
+
+class _SafeRedirectHandler(urllib.request.HTTPRedirectHandler):
+    """重定向目标逐跳复检，防止校验通过后被 302 引入内网"""
+
+    def redirect_request(self, req, fp, code, msg, headers, newurl):
+        _assert_public_http_url(newurl)
+        return super().redirect_request(req, fp, code, msg, headers, newurl)
+
+
+_FEED_OPENER = urllib.request.build_opener(_SafeRedirectHandler())
+
+
+_FEED_ENTITIES = {'amp': '&', 'lt': '<', 'gt': '>', 'quot': '"', 'apos': "'", '#39': "'"}
+
+
+def _decode_entities(s: str) -> str:
+    return re.sub(r'&(amp|lt|gt|quot|apos|#39);', lambda m: _FEED_ENTITIES[m.group(1)], s)
+
+
+def _parse_feed(xml: str):
+    """极简 RSS 2.0 / Atom 解析：只取 title/link/date，剥 CDATA 与内联标签（与构建期 JS 同口径）"""
+    items = []
+    for block in re.split(r'<(?:item|entry)[\s>]', xml)[1:]:
+        def pick(tag, block=block):
+            m = re.search(r'<%s[^>]*>([\s\S]*?)</%s>' % (tag, tag), block, re.I)
+            if not m:
+                return ''
+            stripped = re.sub(r'<!\[CDATA\[([\s\S]*?)\]\]>', r'\1', m.group(1))
+            return _decode_entities(re.sub(r'<[^>]+>', '', stripped)).strip()
+        title = pick('title')
+        link = pick('link')
+        if not link:
+            m = re.search(r'<link[^>]*href="([^"]+)"', block, re.I)
+            link = m.group(1).strip() if m else ''
+        date = pick('pubDate') or pick('published') or pick('updated')
+        if title and link:
+            items.append({'title': title, 'link': link, 'date': date})
+    return items
+
+
+def _date_epoch(s: str) -> int:
+    for parser in (parsedate_to_datetime,
+                   lambda x: datetime.fromisoformat(x.replace('Z', '+00:00'))):
+        try:
+            return int(parser(s).timestamp())
+        except Exception:
+            continue
+    return 0
+
+
+def _load_friends():
+    with open(FRIENDS_JSON, encoding='utf-8') as f:
+        return json.load(f)
+
+
+def fetch_friend_feeds():
+    try:
+        friends = _load_friends()
+    except Exception as e:
+        print('friend_feeds: FRIENDS_JSON unreadable:', e)
+        return
+    ok = fail = 0
+    for f in friends:
+        feed = f.get('feed')
+        if not feed:
+            continue
+        name = f.get('name', '')
+        now = int(time.time())
+        try:
+            _assert_public_http_url(feed)
+            req = urllib.request.Request(feed, headers={
+                'User-Agent': 'jossecho-blog friends-feed fetcher (+https://www.jossecho.com)',
+                'Accept-Encoding': 'identity',
+            })
+            with _FEED_OPENER.open(req, timeout=FEED_TIMEOUT) as r:
+                xml = r.read().decode('utf-8', errors='replace')
+            conn = sqlite3.connect(DB_PATH)
+            try:
+                conn.execute('DELETE FROM friend_feeds WHERE friend=?', (name,))
+                for it in _parse_feed(xml)[:4]:
+                    conn.execute(
+                        'INSERT INTO friend_feeds(friend, title, link, published, published_ts, fetched_at)'
+                        ' VALUES(?,?,?,?,?,?)',
+                        (name, it['title'], it['link'], it['date'], _date_epoch(it['date']), now),
+                    )
+                conn.execute('INSERT OR IGNORE INTO friend_health(friend) VALUES(?)', (name,))
+                conn.execute('UPDATE friend_health SET last_ok=?, last_error=NULL WHERE friend=?', (now, name))
+                conn.commit()
+            finally:
+                conn.close()
+            ok += 1
+        except Exception as e:
+            conn = sqlite3.connect(DB_PATH)
+            try:
+                conn.execute('INSERT OR IGNORE INTO friend_health(friend) VALUES(?)', (name,))
+                conn.execute('UPDATE friend_health SET last_fail=?, last_error=? WHERE friend=?',
+                             (now, str(e)[:200], name))
+                conn.commit()
+            finally:
+                conn.close()
+            fail += 1
+    print('friend_feeds: %d ok, %d fail' % (ok, fail))
+
+
+def _feeds_loop():
+    while True:
+        try:
+            fetch_friend_feeds()
+        except Exception:
+            pass  # 周期循环不允许死：下一轮再试
+        time.sleep(FEED_INTERVAL)
 
 
 class Handler(BaseHTTPRequestHandler):
@@ -138,6 +294,8 @@ class Handler(BaseHTTPRequestHandler):
             self._search(qs)
         elif url.path == '/api/searches.json':
             self._searches(qs)
+        elif url.path == '/api/friends-activity':
+            self._friends_activity()
         elif url.path == '/api/stats.json':
             self._stats(qs)
         elif url.path == '/api/top.json':
@@ -297,6 +455,27 @@ class Handler(BaseHTTPRequestHandler):
             {'items': [{'term': t, 'count': c} for t, c in rows]}
         ).encode())
 
+    def _friends_activity(self):
+        conn = sqlite3.connect(DB_PATH)
+        try:
+            rows = conn.execute(
+                'SELECT friend, title, link, published FROM friend_feeds'
+                ' ORDER BY published_ts DESC LIMIT 8'
+            ).fetchall()
+            fetched_at = conn.execute('SELECT MAX(fetched_at) FROM friend_feeds').fetchone()[0]
+        finally:
+            conn.close()
+        try:
+            avatars = {f.get('name', ''): f.get('avatar', '') for f in _load_friends()}
+        except Exception:
+            avatars = {}
+        items = [
+            {'title': t, 'link': l, 'date': p, 'friend': fr, 'avatar': avatars.get(fr, '')}
+            for fr, t, l, p in rows
+        ]
+        fetched_iso = time.strftime('%Y-%m-%dT%H:%M:%SZ', time.gmtime(fetched_at)) if fetched_at else ''
+        self._send(200, json.dumps({'fetchedAt': fetched_iso, 'items': items}).encode())
+
     def _stats(self, qs):
         path = (qs.get('url') or [None])[0]
         conn = sqlite3.connect(DB_PATH)
@@ -376,4 +555,6 @@ class Handler(BaseHTTPRequestHandler):
 
 if __name__ == '__main__':
     init_db()
+    # 友链圈子动态抓取线程：启动即抓一轮，此后每 6 小时一次（守护线程不阻塞服务）
+    threading.Thread(target=_feeds_loop, daemon=True).start()
     ThreadingHTTPServer((HOST, PORT), Handler).serve_forever()
