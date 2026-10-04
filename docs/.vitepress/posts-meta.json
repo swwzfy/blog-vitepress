@@ -1,5 +1,5 @@
 {
-  "generatedAt": "2026-10-04T02:04:21.774Z",
+  "generatedAt": "2026-10-04T10:12:16.887Z",
   "zh": [
     {
       "path": "posts/ai-code-edit-weaknesses.md",
@@ -88,17 +88,6 @@
       "words": 1400
     },
     {
-      "path": "posts/notes-evolution.md",
-      "url": "/posts/notes-evolution",
-      "title": "我的笔记系统演进史",
-      "date": "2026-05-25",
-      "description": "从备忘录到 Notion 到 Obsidian，再到自己搭的系统。折腾笔记工具的过程本身就是一种思考。",
-      "tags": [
-        "知识管理"
-      ],
-      "words": 224
-    },
-    {
       "path": "posts/openclaw-vs-hermes.md",
       "url": "/posts/openclaw-vs-hermes",
       "title": "OpenClaw 与 Hermes：把 AI Agent 的两种解法拆开看",
@@ -128,11 +117,11 @@
       "url": "/posts/personal-server",
       "title": "从零搭建个人服务器",
       "date": "2026-04-28",
-      "description": "从买域名、选 VPS、配 Nginx、装 SSL 到部署第一个服务的全过程，适合新手参考。",
+      "description": "从登录一台裸机 CentOS 到静态博客和动态统计服务真正跑起来：SSH 加固、宝塔与 Nginx 反代、systemd 托管、权限最小化，和三次真实上线事故的完整记录。",
       "tags": [
         "服务器运维"
       ],
-      "words": 168
+      "words": 2525
     },
     {
       "path": "posts/python-setup.md",
@@ -145,19 +134,6 @@
         "工具"
       ],
       "words": 1121
-    },
-    {
-      "path": "posts/rust-cli.md",
-      "url": "/posts/rust-cli",
-      "title": "用 Rust 重写我的命令行工具",
-      "date": "2026-06-12",
-      "description": "为什么用 Rust 重写 Python CLI 工具，启动时间从 800ms 降到 12ms，单文件 4.2MB 无依赖。",
-      "tags": [
-        "编程语言",
-        "工具",
-        "性能"
-      ],
-      "words": 280
     },
     {
       "path": "posts/self-hosted-visitor-stats.md",
@@ -331,17 +307,6 @@
       "words": 934
     },
     {
-      "path": "en/posts/notes-evolution.md",
-      "url": "/en/posts/notes-evolution",
-      "title": "My Notes System Evolution",
-      "date": "2026-05-25",
-      "description": "From Apple Notes to Notion to Obsidian, then to my own system. The process of tinkering with note tools is itself a form of thinking.",
-      "tags": [
-        "Knowledge Management"
-      ],
-      "words": 144
-    },
-    {
       "path": "en/posts/openclaw-vs-hermes.md",
       "url": "/en/posts/openclaw-vs-hermes",
       "title": "OpenClaw vs Hermes — Two Approaches to AI Agent Design",
@@ -371,11 +336,11 @@
       "url": "/en/posts/personal-server",
       "title": "Building a Personal Server from Scratch",
       "date": "2026-04-28",
-      "description": "The whole process from buying a domain, choosing a VPS, configuring Nginx, installing SSL to deploying the first service. Suitable for beginners.",
+      "description": "From a bare CentOS box to a static blog plus a live stats backend — SSH hardening, BT Panel and Nginx reverse proxying, systemd, least privilege, and three real deployment failures.",
       "tags": [
         "Server Ops"
       ],
-      "words": 128
+      "words": 1837
     },
     {
       "path": "en/posts/python-setup.md",
@@ -388,19 +353,6 @@
         "Tools"
       ],
       "words": 868
-    },
-    {
-      "path": "en/posts/rust-cli.md",
-      "url": "/en/posts/rust-cli",
-      "title": "Rewriting My CLI Tool in Rust",
-      "date": "2026-06-12",
-      "description": "Why I rewrote a Python CLI tool in Rust, startup time dropped from 800ms to 12ms, single file 4.2MB with zero dependencies.",
-      "tags": [
-        "Languages",
-        "Tools",
-        "Performance"
-      ],
-      "words": 181
     },
     {
       "path": "en/posts/self-hosted-visitor-stats.md",

@@ -3,6 +3,7 @@ title: My Notes System Evolution
 date: 2026-05-25
 tags: [Knowledge Management]
 description: From Apple Notes to Notion to Obsidian, then to my own system. The process of tinkering with note tools is itself a form of thinking.
+draft: true
 ---
 
 # My Notes System Evolution

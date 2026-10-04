@@ -3,6 +3,7 @@ title: 用 Rust 重写我的命令行工具
 date: 2026-06-12
 tags: [编程语言, 工具, 性能]
 description: 为什么用 Rust 重写 Python CLI 工具，启动时间从 800ms 降到 12ms，单文件 4.2MB 无依赖。
+draft: true
 ---
 
 # 用 Rust 重写我的命令行工具

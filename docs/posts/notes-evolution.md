@@ -3,6 +3,7 @@ title: 我的笔记系统演进史
 date: 2026-05-25
 tags: [知识管理]
 description: 从备忘录到 Notion 到 Obsidian，再到自己搭的系统。折腾笔记工具的过程本身就是一种思考。
+draft: true
 ---
 
 # 我的笔记系统演进史
