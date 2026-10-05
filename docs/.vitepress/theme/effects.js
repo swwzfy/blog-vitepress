@@ -1,7 +1,11 @@
-// 页面可见性状态
-let isPageVisible = true
+// 页面可见性状态。隐藏时各 rAF 循环彻底 cancelAnimationFrame 停帧、回前台再恢复
+// （见各循环处的 runXxx）：主流浏览器对隐藏页签本就不派发 rAF，这里防的是
+// 非标准 webview 与隐藏瞬间已排队帧的空转。
+let isPageVisible = !document.hidden
+const visibilityWatchers = []
 document.addEventListener('visibilitychange', () => {
   isPageVisible = !document.hidden
+  visibilityWatchers.forEach(fn => fn(isPageVisible))
 })
 
 // 效果容器
@@ -385,11 +389,8 @@ function initParticles() {
     ctx.stroke();
   }
 
+  let particleRaf = 0;
   function animate() {
-    if (!isPageVisible) {
-      requestAnimationFrame(animate);
-      return;
-    }
     ctx.clearRect(0, 0, canvas.width, canvas.height);
     if (skin === 'stars') {
       const now = performance.now();
@@ -404,9 +405,14 @@ function initParticles() {
       shootingStars = shootingStars.filter(s => s.alive);
     }
     if (skin === 'plain') drawLines();
-    requestAnimationFrame(animate);
+    particleRaf = requestAnimationFrame(animate);
   }
-  animate();
+  function runParticles(run) {
+    cancelAnimationFrame(particleRaf);
+    if (run) particleRaf = requestAnimationFrame(animate);
+  }
+  runParticles(isPageVisible);
+  visibilityWatchers.add(run => runParticles(run));
 
   document.addEventListener('mousemove', e => {
     mouseX = e.clientX;
@@ -444,20 +450,20 @@ function initCursorGlow() {
     glow.style.opacity = '0';
   });
 
+  let glowRaf = 0;
   function animate() {
-    if (!isPageVisible) {
-      requestAnimationFrame(animate);
-      return;
-    }
-
     glowX += (mouseX - glowX) * 0.08;
     glowY += (mouseY - glowY) * 0.08;
     // transform 合成层动画，不走 left/top 布局重排
     glow.style.transform = `translate(${glowX}px, ${glowY}px) translate(-50%, -50%)`;
-
-    requestAnimationFrame(animate);
+    glowRaf = requestAnimationFrame(animate);
   }
-  animate();
+  function runGlow(run) {
+    cancelAnimationFrame(glowRaf);
+    if (run) glowRaf = requestAnimationFrame(animate);
+  }
+  runGlow(isPageVisible);
+  visibilityWatchers.add(run => runGlow(run));
 }
 
 // 阅读进度条

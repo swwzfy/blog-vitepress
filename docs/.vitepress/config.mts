@@ -328,7 +328,7 @@ export default defineConfig({
     }
 
     // VitePress 默认主题的 Inter @font-face（theme-default/styles/fonts.css）无条件打进
-    // 产物 CSS，并随之拷出全部 12 个 woff2（~500KB）。本站字体栈是系统字体
+    // 产物 CSS，并随之拷出全部 14 个 woff2（~500KB）。本站字体栈是系统字体
     // （tokens.css 覆盖了 --vp-font-family-base，勿回加 Inter 引用），这些文件永远不会
     // 被请求，产物里直接剔除。
     // siteConfig.outDir 在 Windows 上是正斜杠风格，守卫前先 resolve 归一化，否则恒 false
