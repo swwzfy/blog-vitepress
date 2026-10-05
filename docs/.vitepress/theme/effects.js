@@ -1,8 +1,12 @@
+import { watchWeather } from './weather.js';
+
 // 页面可见性状态。隐藏时各 rAF 循环彻底 cancelAnimationFrame 停帧、回前台再恢复
 // （见各循环处的 runXxx）：主流浏览器对隐藏页签本就不派发 rAF，这里防的是
 // 非标准 webview 与隐藏瞬间已排队帧的空转。
 let isPageVisible = !document.hidden
-const visibilityWatchers = []
+// Set 而非数组：注册方用 .add（若是数组，add 不存在，rAF 启动后抛 TypeError 被
+// requestIdleCallback 吞掉——9b8c0b5 曾因此让停帧/重估皮肤整体失效）
+const visibilityWatchers = new Set()
 document.addEventListener('visibilitychange', () => {
   isPageVisible = !document.hidden
   visibilityWatchers.forEach(fn => fn(isPageVisible))
@@ -37,12 +41,23 @@ function initParticles() {
   let particles = [];
   let mouseX = -1000, mouseY = -1000;
 
-  // —— 皮肤：按月份/明暗/时刻给粒子换装，全部 canvas 2D 现场绘制，零图片 ——
-  // 优先级：深夜星空（23 点后且暗色）> 流萤（6-8 月、仅暗色）> 季节飘落物 > 素净微粒（5/9 月兜底）。
+  // —— 皮肤：按月份/明暗/时刻/实时天气给粒子换装，全部 canvas 2D 现场绘制，零图片 ——
+  // 优先级：深夜星空（23 点后且暗色）> 实时雨/雪（weather.js，晴/多云/雾不干预）> 季节飘落物 > 素净微粒（5/9 月兜底）。
   const isDark = () => document.documentElement.classList.contains('dark');
   const isNight = () => { const h = new Date().getHours(); return h >= 23 || h < 5; };
+  // Open-Meteo weather_code → 皮肤意图：雨系（毛毛雨 51-57 / 雨 61-67 / 阵雨 80-82 / 雷暴 95+）→ rain，
+  // 雪系（雪 71-77 / 阵雪 85-86）→ snow；其余返回 null 走季节逻辑。霜无对应代码，按定案不做。
+  function weatherSkin(code) {
+    if (code == null) return null;
+    if ((code >= 51 && code <= 67) || (code >= 80 && code <= 82) || code >= 95) return 'rain';
+    if ((code >= 71 && code <= 77) || code === 85 || code === 86) return 'snow';
+    return null;
+  }
+  let weatherCode = null;
   function pickSkin() {
     if (isNight() && isDark()) return 'stars';
+    const w = weatherSkin(weatherCode);
+    if (w) return w;
     const m = new Date().getMonth() + 1;
     if (m >= 3 && m <= 4) return 'sakura';
     if (m >= 6 && m <= 8) return isDark() ? 'firefly' : 'plain';
@@ -217,6 +232,39 @@ function initParticles() {
     }
   }
 
+  // 雨丝：细线段沿固定风向快速斜落，无横摆（实时下雨/雷暴时覆盖季节皮肤）
+  class Raindrop extends Faller {
+    constructor() { super(); this.reset(false); }
+    reset(fromTop) {
+      this.topPad = 30;
+      this.edgePad = 30;
+      this.len = Math.random() * 9 + 9;
+      this.speedY = Math.random() * 4.5 + 5.5;
+      this.slant = Math.random() * 0.5 + 0.7;
+      this.opacity = Math.random() * 0.22 + 0.18;
+      this.setPos(fromTop);
+    }
+    update() {
+      this.y += this.speedY;
+      this.x += this.slant;
+      if (this.y > vh + this.topPad) this.reset(true);
+      if (this.x < -this.edgePad) this.x = vw + this.edgePad;
+      else if (this.x > vw + this.edgePad) this.x = -this.edgePad;
+    }
+    draw() {
+      // 线段沿速度方向：尾端 = 头部 - 单位速度 * 线长
+      const k = this.len / Math.hypot(this.slant, this.speedY);
+      ctx.strokeStyle = isDark()
+        ? `rgba(174, 194, 224, ${this.opacity})`
+        : `rgba(96, 118, 150, ${this.opacity})`;
+      ctx.lineWidth = 1;
+      ctx.beginPath();
+      ctx.moveTo(this.x, this.y);
+      ctx.lineTo(this.x - this.slant * k, this.y - this.speedY * k);
+      ctx.stroke();
+    }
+  }
+
   // 流萤：径向渐变光晕 + 呼吸明灭，缓速漂移（6-8 月、仅暗色下被选中）
   class Firefly {
     constructor() { this.reset(); }
@@ -319,6 +367,9 @@ function initParticles() {
         break;
       case 'snow':
         particles = Array.from({ length: countFor(18000, 30, 90) }, () => new Snowflake());
+        break;
+      case 'rain':
+        particles = Array.from({ length: countFor(14000, 40, 120) }, () => new Raindrop());
         break;
       case 'firefly':
         particles = Array.from({ length: countFor(45000, 8, 26) }, () => new Firefly());
@@ -426,6 +477,14 @@ function initParticles() {
   }).observe(document.documentElement, { attributes: true, attributeFilter: ['class'] });
   document.addEventListener('visibilitychange', () => {
     if (document.hidden) return;
+    const next = pickSkin();
+    if (next !== skin) { skin = next; buildParticles(); }
+  });
+
+  // 天气数据到达/30 分钟刷新时重估皮肤（weather.js 已有缓存会立即回调一次）；
+  // 请求失败不回调，weatherCode 维持 null，等价于无天气 → 纯季节逻辑
+  watchWeather(w => {
+    weatherCode = w ? w.code : null;
     const next = pickSkin();
     if (next !== skin) { skin = next; buildParticles(); }
   });

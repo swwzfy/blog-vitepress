@@ -1,6 +1,7 @@
 <script setup lang="ts">
 import { ref, computed, onMounted, onUnmounted } from 'vue'
 import { useLocale } from '@/composables/useLocale'
+import { watchWeather } from '@/weather'
 
 const { isEn, t } = useLocale()
 
@@ -119,37 +120,27 @@ function getWeatherEmoji(code: number): string {
   return '⛈️'
 }
 
-async function fetchWeather() {
-  try {
-    // 坐标硬编码为扬州（站主所在地）；open-meteo 免费且无需 key
-    const res = await fetch(
-      'https://api.open-meteo.com/v1/forecast?latitude=32.39&longitude=119.40&current=temperature_2m,weather_code'
-    )
-    const data = await res.json()
-    const { temperature_2m, weather_code } = data.current
-    const desc = weatherCodeMap[weather_code]
-    const text = desc ? (isEn.value ? desc.en : desc.zh) : ''
-    const emoji = getWeatherEmoji(weather_code)
-    weather.value = `${emoji} ${temperature_2m}°C ${text}`
-  } catch {
-    weather.value = ''
-  }
-}
+// 天气数据来自共享模块 weather.js（粒子换肤同一数据源，全站只发一次请求、30 分钟自刷）。
+// 请求失败时模块不推送，weather 保持空串 → 胶囊隐藏，下个 tick 成功后自愈
+let stopWeather: (() => void) | undefined
 
 let timeTimer: ReturnType<typeof setInterval> | undefined
-let weatherTimer: ReturnType<typeof setInterval> | undefined
 
 onMounted(() => {
   updateTime()
   timeTimer = setInterval(updateTime, 1000)
-  fetchWeather()
-  weatherTimer = setInterval(fetchWeather, 30 * 60 * 1000) // 每30分钟刷新
+  stopWeather = watchWeather(w => {
+    if (!w) return
+    const desc = weatherCodeMap[w.code]
+    const text = desc ? (isEn.value ? desc.en : desc.zh) : ''
+    weather.value = `${getWeatherEmoji(w.code)} ${w.temperature}°C ${text}`
+  })
 })
 
 // 不清理的话 dev HMR 每次热更新都会叠一个 interval，时钟会越走越快
 onUnmounted(() => {
   clearInterval(timeTimer)
-  clearInterval(weatherTimer)
+  stopWeather?.()
 })
 </script>
 
