@@ -72,11 +72,14 @@ curl -s 'https://www.jossecho.com/api/trend.json'    # 近 30 天逐日 pv/uv
 验证：
 
 ```bash
-# 不带 X-Real-IP：本机回环属内网 → 回退扬州
+# 不带 X-Real-IP（本机回环）：设计行为就是 502 {"error":"no cn city for client ip"}
+# —— 服务端只对中国公网城市负责，回环/内网/海外交前端浏览器定位链接管（其最终兜底扬州）
 curl -s http://127.0.0.1:8787/api/weather
-# 伪装一个江苏电信 IP：应返回南京的天气（X-Real-IP 由 nginx 在线上注入，本地测试可手动加）
+# 伪装一个江苏电信 IP：这才是有效的部署验证（X-Real-IP 由 nginx 在线上注入，本地测试手动加）
 curl -s -H 'X-Real-IP: 114.114.114.114' http://127.0.0.1:8787/api/weather
 # 期望形如 {"code": 0, "temperature": 16.2, "city": "南京"}（code 是 WMO 天气码）
+# 若仍是 no cn city：服务日志出现 "xdb unreadable" = 数据文件没就位，
+# 检查 /var/lib/site-stats/ 下两个 xdb；补传即可（懒加载，无需重启）
 ```
 
 浏览器 Ctrl+F5 后首页时钟卡天气胶囊应显示访客所在城市名。
