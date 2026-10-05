@@ -33,10 +33,28 @@ function initParticles() {
   let particles = [];
   let mouseX = -1000, mouseY = -1000;
 
+  // —— 皮肤：按月份/明暗/时刻给粒子换装，全部 canvas 2D 现场绘制，零图片 ——
+  // 优先级：深夜星空（23 点后且暗色）> 流萤（6-8 月、仅暗色）> 季节飘落物 > 素净微粒（5/9 月兜底）。
+  const isDark = () => document.documentElement.classList.contains('dark');
+  const isNight = () => { const h = new Date().getHours(); return h >= 23 || h < 5; };
+  function pickSkin() {
+    if (isNight() && isDark()) return 'stars';
+    const m = new Date().getMonth() + 1;
+    if (m >= 3 && m <= 4) return 'sakura';
+    if (m >= 6 && m <= 8) return isDark() ? 'firefly' : 'plain';
+    if (m >= 10 && m <= 11) return 'leaves';
+    if (m === 12 || m <= 2) return 'snow';
+    return 'plain';
+  }
+  let skin = pickSkin();
+  let shootingStars = [];
+  let shootAt = 0;
+
   // DPR 适配：物理像素 = CSS 像素 * dpr，避免 retina 上模糊。dpr 上限 2 防止 4K 屏过度膨胀。
   // 粒子坐标一律用 CSS 像素（vw/vh），物理像素映射交给 setTransform；鼠标坐标也是 CSS 像素。
   const dpr = Math.min(window.devicePixelRatio || 1, 2)
   let vw = 0, vh = 0;
+
   function resize() {
     vw = window.innerWidth
     vh = window.innerHeight
@@ -45,9 +63,14 @@ function initParticles() {
     canvas.width = Math.floor(vw * dpr)
     canvas.height = Math.floor(vh * dpr)
     ctx.setTransform(dpr, 0, 0, dpr, 0, 0)
+    // 漂落类皮肤重建分布；素净微粒维持原行为（出界自复位，不重建）
+    if (skin !== 'plain') buildParticles();
   }
-  resize();
-  window.addEventListener('resize', resize);
+
+  // 数量随屏幕面积缩放，上下限按粒子的视觉重量各自定
+  function countFor(divisor, min, max) {
+    return Math.max(min, Math.min(max, Math.floor(vw * vh / divisor)));
+  }
 
   class Particle {
     constructor() { this.reset(); }
@@ -79,8 +102,236 @@ function initParticles() {
     }
   }
 
-  const count = Math.min(80, Math.floor(window.innerWidth * window.innerHeight / 15000));
-  particles = Array.from({ length: count }, () => new Particle());
+  // 漂落类共通运动：正弦横摆 + 匀速下落 + 横向出界回绕 + 落底重生。
+  // topPad/edgePad 由子类在 reset 里先设，setPos 用它们决定出屏距离。
+  class Faller {
+    setPos(fromTop) {
+      this.x = Math.random() * vw;
+      this.y = fromTop ? -this.topPad : Math.random() * vh;
+      this.phase = Math.random() * Math.PI * 2;
+    }
+    update() {
+      this.phase += this.swayFreq;
+      this.y += this.speedY;
+      this.x += Math.sin(this.phase) * this.swayAmp;
+      if (this.y > vh + this.topPad) this.reset(true);
+      if (this.x < -this.edgePad) this.x = vw + this.edgePad;
+      else if (this.x > vw + this.edgePad) this.x = -this.edgePad;
+    }
+  }
+
+  // 樱花瓣：贝塞尔尖椭圆，摇摆下落 + 自转（3-4 月）
+  class Petal extends Faller {
+    constructor() { super(); this.reset(false); }
+    reset(fromTop) {
+      this.topPad = 12;
+      this.edgePad = 12;
+      this.size = Math.random() * 2.5 + 3.5;
+      this.speedY = Math.random() * 0.55 + 0.3;
+      this.swayAmp = Math.random() * 0.35 + 0.15;
+      this.swayFreq = Math.random() * 0.02 + 0.015;
+      this.rot = Math.random() * Math.PI * 2;
+      this.rotSpeed = (Math.random() - 0.5) * 0.04;
+      this.opacity = Math.random() * 0.3 + 0.45;
+      // 首屏 hero 本身带粉色渐变，花瓣明度压到 56-66 才不致融进背景
+      this.light = 56 + Math.random() * 10;
+      this.setPos(fromTop);
+    }
+    draw() {
+      ctx.save();
+      ctx.translate(this.x, this.y);
+      ctx.rotate(this.rot);
+      ctx.fillStyle = `hsla(342, 80%, ${this.light}%, ${this.opacity})`;
+      ctx.beginPath();
+      ctx.moveTo(0, -this.size);
+      ctx.quadraticCurveTo(this.size * 0.85, 0, 0, this.size);
+      ctx.quadraticCurveTo(-this.size * 0.85, 0, 0, -this.size);
+      ctx.fill();
+      ctx.restore();
+    }
+  }
+
+  // 落叶：秋色小叶 + 主叶脉，摆幅与翻滚都比花瓣强（10-11 月）
+  const LEAF_COLORS = ['#c9764b', '#d89a3e', '#b65440', '#94a04a'];
+  class Leaf extends Faller {
+    constructor() { super(); this.reset(false); }
+    reset(fromTop) {
+      this.topPad = 14;
+      this.edgePad = 14;
+      this.size = Math.random() * 2.5 + 4;
+      this.speedY = Math.random() * 0.7 + 0.35;
+      this.swayAmp = Math.random() * 0.5 + 0.2;
+      this.swayFreq = Math.random() * 0.018 + 0.01;
+      this.rot = Math.random() * Math.PI * 2;
+      this.rotSpeed = (Math.random() - 0.5) * 0.06;
+      this.opacity = Math.random() * 0.25 + 0.45;
+      this.color = LEAF_COLORS[Math.floor(Math.random() * LEAF_COLORS.length)];
+      this.setPos(fromTop);
+    }
+    draw() {
+      ctx.save();
+      ctx.translate(this.x, this.y);
+      ctx.rotate(this.rot);
+      ctx.globalAlpha = this.opacity;
+      ctx.fillStyle = this.color;
+      ctx.beginPath();
+      ctx.moveTo(0, -this.size);
+      ctx.quadraticCurveTo(this.size, -this.size * 0.15, 0, this.size);
+      ctx.quadraticCurveTo(-this.size, -this.size * 0.15, 0, -this.size);
+      ctx.fill();
+      ctx.strokeStyle = 'rgba(0, 0, 0, 0.18)';
+      ctx.lineWidth = 0.6;
+      ctx.beginPath();
+      ctx.moveTo(0, -this.size * 0.7);
+      ctx.lineTo(0, this.size * 0.7);
+      ctx.stroke();
+      ctx.globalAlpha = 1;
+      ctx.restore();
+    }
+  }
+
+  // 雪：暗色下纯白、亮色下降为灰蓝（白底上白点不可见）（12-2 月）
+  class Snowflake extends Faller {
+    constructor() { super(); this.reset(false); }
+    reset(fromTop) {
+      this.topPad = 6;
+      this.edgePad = 6;
+      this.r = Math.random() * 1.8 + 1;
+      this.speedY = Math.random() * 0.5 + 0.25;
+      this.swayAmp = Math.random() * 0.4 + 0.15;
+      this.swayFreq = Math.random() * 0.012 + 0.008;
+      this.opacity = Math.random() * 0.45 + 0.35;
+      this.setPos(fromTop);
+    }
+    draw() {
+      ctx.beginPath();
+      ctx.arc(this.x, this.y, this.r, 0, Math.PI * 2);
+      ctx.fillStyle = isDark()
+        ? `rgba(255, 255, 255, ${this.opacity})`
+        : `rgba(112, 138, 168, ${this.opacity * 0.85})`;
+      ctx.fill();
+    }
+  }
+
+  // 流萤：径向渐变光晕 + 呼吸明灭，缓速漂移（6-8 月、仅暗色下被选中）
+  class Firefly {
+    constructor() { this.reset(); }
+    reset() {
+      this.x = Math.random() * vw;
+      this.y = Math.random() * vh;
+      this.vx = (Math.random() - 0.5) * 0.3;
+      this.vy = (Math.random() - 0.5) * 0.2;
+      this.glowR = Math.random() * 5 + 6;
+      this.coreR = Math.random() * 0.8 + 1.2;
+      this.freq = Math.random() * 0.025 + 0.015;
+      this.phase = Math.random() * Math.PI * 2;
+    }
+    update() {
+      this.phase += this.freq;
+      this.x += this.vx;
+      this.y += Math.sin(this.phase * 0.5) * 0.15;
+      if (this.x < -20) this.x = vw + 18;
+      else if (this.x > vw + 20) this.x = -18;
+      if (this.y < -20) this.y = vh + 18;
+      else if (this.y > vh + 20) this.y = -18;
+    }
+    draw() {
+      const blink = 0.5 + 0.5 * Math.sin(this.phase);
+      const glow = blink * blink;
+      const g = ctx.createRadialGradient(this.x, this.y, 0, this.x, this.y, this.glowR);
+      g.addColorStop(0, `rgba(255, 226, 130, ${0.34 * glow})`);
+      g.addColorStop(1, 'rgba(255, 226, 130, 0)');
+      ctx.fillStyle = g;
+      ctx.beginPath();
+      ctx.arc(this.x, this.y, this.glowR, 0, Math.PI * 2);
+      ctx.fill();
+      ctx.fillStyle = `rgba(255, 240, 190, ${0.35 + 0.6 * glow})`;
+      ctx.beginPath();
+      ctx.arc(this.x, this.y, this.coreR, 0, Math.PI * 2);
+      ctx.fill();
+    }
+  }
+
+  // 星空：静态微星呼吸闪烁；流星由调度器另行生成（深夜 + 暗色专属）
+  class Star {
+    constructor() { this.reset(); }
+    reset() {
+      this.x = Math.random() * vw;
+      this.y = Math.random() * vh;
+      this.r = Math.random() * 0.7 + 0.4;
+      this.freq = Math.random() * 0.02 + 0.006;
+      this.phase = Math.random() * Math.PI * 2;
+      this.base = Math.random() * 0.45 + 0.25;
+    }
+    update() { this.phase += this.freq; }
+    draw() {
+      ctx.beginPath();
+      ctx.arc(this.x, this.y, this.r, 0, Math.PI * 2);
+      ctx.fillStyle = `rgba(255, 255, 255, ${this.base * (0.55 + 0.45 * Math.sin(this.phase))})`;
+      ctx.fill();
+    }
+  }
+  class ShootingStar {
+    constructor() {
+      this.x = Math.random() * vw * 0.7 + vw * 0.15;
+      this.y = Math.random() * vh * 0.3;
+      const dir = Math.random() < 0.5 ? 1 : -1;
+      this.vx = dir * (Math.random() * 4 + 5);
+      this.vy = Math.random() * 2 + 1.5;
+      this.tail = Math.random() * 50 + 70;
+      this.life = 1;
+      this.decay = Math.random() * 0.015 + 0.02;
+      this.len = Math.hypot(this.vx, this.vy);
+      this.alive = true;
+    }
+    update() {
+      this.x += this.vx;
+      this.y += this.vy;
+      this.life -= this.decay;
+      if (this.life <= 0 || this.x < -this.tail || this.x > vw + this.tail || this.y > vh + this.tail) this.alive = false;
+    }
+    draw() {
+      const nx = this.x - (this.vx / this.len) * this.tail;
+      const ny = this.y - (this.vy / this.len) * this.tail;
+      const g = ctx.createLinearGradient(this.x, this.y, nx, ny);
+      g.addColorStop(0, `rgba(255, 255, 255, ${0.8 * this.life})`);
+      g.addColorStop(1, 'rgba(255, 255, 255, 0)');
+      ctx.strokeStyle = g;
+      ctx.lineWidth = 1.5;
+      ctx.beginPath();
+      ctx.moveTo(this.x, this.y);
+      ctx.lineTo(nx, ny);
+      ctx.stroke();
+    }
+  }
+
+  function buildParticles() {
+    switch (skin) {
+      case 'sakura':
+        particles = Array.from({ length: countFor(24000, 20, 55) }, () => new Petal());
+        break;
+      case 'leaves':
+        particles = Array.from({ length: countFor(30000, 14, 40) }, () => new Leaf());
+        break;
+      case 'snow':
+        particles = Array.from({ length: countFor(18000, 30, 90) }, () => new Snowflake());
+        break;
+      case 'firefly':
+        particles = Array.from({ length: countFor(45000, 8, 26) }, () => new Firefly());
+        break;
+      case 'stars':
+        particles = Array.from({ length: countFor(9500, 50, 140) }, () => new Star());
+        break;
+      default:
+        particles = Array.from({ length: Math.min(80, Math.floor(vw * vh / 15000)) }, () => new Particle());
+    }
+    shootAt = performance.now() + 2500 + Math.random() * 5000;
+  }
+
+  // 先 resize 拿到 vw/vh（非 plain 皮肤在 resize 内部完成首次 build），plain 再手动 build
+  resize();
+  if (skin === 'plain') buildParticles();
+  window.addEventListener('resize', resize);
 
   const LINE_DIST = 120;
   function drawLines() {
@@ -140,8 +391,19 @@ function initParticles() {
       return;
     }
     ctx.clearRect(0, 0, canvas.width, canvas.height);
+    if (skin === 'stars') {
+      const now = performance.now();
+      if (now >= shootAt) {
+        shootingStars.push(new ShootingStar());
+        shootAt = now + 4000 + Math.random() * 5000;
+      }
+    }
     particles.forEach(p => { p.update(); p.draw(); });
-    drawLines();
+    if (skin === 'stars') {
+      shootingStars.forEach(s => { s.update(); s.draw(); });
+      shootingStars = shootingStars.filter(s => s.alive);
+    }
+    if (skin === 'plain') drawLines();
     requestAnimationFrame(animate);
   }
   animate();
@@ -149,6 +411,17 @@ function initParticles() {
   document.addEventListener('mousemove', e => {
     mouseX = e.clientX;
     mouseY = e.clientY;
+  });
+
+  // 明暗切换 / 回到前台时重估皮肤（切主题、跨过 23 点都能当场换装）
+  new MutationObserver(() => {
+    const next = pickSkin();
+    if (next !== skin) { skin = next; buildParticles(); }
+  }).observe(document.documentElement, { attributes: true, attributeFilter: ['class'] });
+  document.addEventListener('visibilitychange', () => {
+    if (document.hidden) return;
+    const next = pickSkin();
+    if (next !== skin) { skin = next; buildParticles(); }
   });
 }
 
