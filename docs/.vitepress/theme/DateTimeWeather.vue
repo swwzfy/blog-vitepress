@@ -136,7 +136,10 @@ onMounted(() => {
         if (!w) return
         const desc = weatherCodeMap[w.code]
         const text = desc ? (isEn.value ? desc.en : desc.zh) : ''
-        weather.value = `${getWeatherEmoji(w.code)} ${w.temperature}°C ${text}`
+        // 城市名带上访客才看得出「这是我所在地的天气」（IP 定位失败兜底时是 Yangzhou）
+        weather.value = [getWeatherEmoji(w.code), w.city, `${w.temperature}°C`, text]
+          .filter(Boolean)
+          .join(' ')
       })
     })
     .catch(() => {})
