@@ -29,7 +29,7 @@ docs/
 │   │   ├── page-transitions.js # 页面过渡（View Transitions）
 │   │   ├── custom.css        # 自定义样式（配色、动画、光标）
 │   │   ├── effects.js        # 粒子（季节+天气换装）+ 鼠标光晕 + 进度条/回到顶部/灯箱
-│   │   ├── weather.js        # 访客实时天气共享源（IP 城市级定位，时钟卡与粒子换肤共用，30 分钟自刷）
+│   │   ├── weather.js        # 访客实时天气共享源（服务端定位优先/直连回退/扬州兜底三级链，时钟卡与粒子换肤共用）
 │   │   ├── composables/      # 组合式函数（useLocale 等）
 │   │   ├── components/       # 页面级组件（LifeList.vue）
 │   │   └── utils/            # 工具函数（posts、types、format）
@@ -83,7 +83,7 @@ CSS 变量定义在 `custom.css`：
 页面特效在 `effects.js` 中实现（`index.ts` 动态导入，重特效经 `requestIdleCallback` 延后，SSR 安全）：
 
 1. **背景渐变** — 三色径向渐变 + 15s 流动动画
-2. **粒子系统（季节 + 天气换装）** — Canvas 绘制，按月份自动切换：3-4 月樱花瓣、6-8 月暗色下流萤、10-11 月落叶、12-2 月雪（暗色纯白 / 亮色灰蓝）、5/9 月素净微粒 + 连线；深夜（23 点后）且暗色切为星空 + 流星；访客所在地实时天气（`weather.js` 共享模块，IP 城市级定位免授权、定位失败回退扬州；与时钟卡同源请求，30 分钟自刷，失败静默）覆盖季节逻辑——雨系（含雷暴）切雨丝、雪系切雪，晴/多云/雾不干预；切换主题、天气刷新或回到前台时实时重估皮肤
+2. **粒子系统（季节 + 天气换装）** — Canvas 绘制，按月份自动切换：3-4 月樱花瓣、6-8 月暗色下流萤、10-11 月落叶、12-2 月雪（暗色纯白 / 亮色灰蓝）、5/9 月素净微粒 + 连线；深夜（23 点后）且暗色切为星空 + 流星；访客所在地实时天气（`weather.js` 共享模块，定位三级链：同源 `/api/weather`（stats 后端 ip2region 离线库）→ 浏览器直连 ipwho/geojs → 扬州兜底，全程免授权弹窗、失败逐级静默；30 分钟自刷）覆盖季节逻辑——雨系（含雷暴）切雨丝、雪系切雪，晴/多云/雾不干预；切换主题、天气刷新或回到前台时实时重估皮肤
 3. **鼠标光晕** — 500px 径向渐变跟随鼠标，blur(40px)
 4. **阅读进度条 / 回到顶部** — 滚动驱动
 5. **卡片 Spotlight** — 指针相对坐标写入 CSS 变量，供卡片边框追光层使用
@@ -144,7 +144,7 @@ npm run og                 # 重生成 OG 图（.agents/scripts/make-og.js）
 - **友链动态** — `scripts/build-friends-activity.js` 在 `buildStart` 聚合友链 RSS，24h 缓存 + 失败兜底
 - **SEO 注入** — `scripts/build-seo.js` 在 `buildEnd` 逐页注入 og / canonical / hreflang
 - **字体剔除** — `buildEnd` 删除默认主题无条件拷出的 Inter woff2（全站零引用），同步清理各页 preload 死链
-- **自建访客统计** — 替代已移除的不蒜子：`server/` 纯标准库 Python + SQLite 服务（:8787，systemd 托管），提供页面打点、点赞、热榜、搜索热词、友链动态端点
+- **自建访客统计** — 替代已移除的不蒜子：`server/` 纯标准库 Python + SQLite 服务（:8787，systemd 托管），提供页面打点、点赞、热榜、搜索热词、友链动态端点，以及访客天气 `/api/weather`（ip2region 离线 IP 定位 + Open-Meteo，按城市缓存）
 
 ## 评论与敏感词
 
@@ -181,7 +181,7 @@ npm run build       # 生成静态文件到 docs/.vitepress/dist
 - 或上传到 CDN / 静态站点托管服务
 - 不需要压缩成 zip / tar.gz
 
-> 统计服务如有改动，另需覆盖服务器上的 `server/stats.py` 并 `systemctl restart stats`（详见 `server/README.md`）。
+> 统计服务如有改动，另需覆盖服务器上的 `server/stats.py` 并 `systemctl restart stats`；天气定位还需 ip2region 数据文件（详见 `server/README.md`）。
 >
 > 当前为手动上传部署。如需「改完一键发布」，可后续增加 `rsync` / `scp` 脚本或 CI（如 GitHub Actions），尚未实现。
 
@@ -191,7 +191,8 @@ npm run build       # 生成静态文件到 docs/.vitepress/dist
 
 ## 最近改进
 
-- ✅ 粒子背景按季节与实时天气换装：樱花 / 流萤 / 落叶 / 雪 / 雨丝 / 深夜星空流星（雨雪由访客所在地实时天气驱动——IP 城市级定位，与时钟卡共用一次请求）
+- ✅ 粒子背景按季节与实时天气换装：樱花 / 流萤 / 落叶 / 雪 / 雨丝 / 深夜星空流星（雨雪由访客所在地实时天气驱动——定位三级链：stats 后端 ip2region → 浏览器直连 → 扬州兜底）
+- ✅ 天气链路容错加固：天气模块运行时动态加载（chunk 缺失只降级、不拖垮其他特效）；顺修 rAF 停帧监听注册失效的历史 bug（visibilityWatchers 误用数组 .add）
 - ✅ 自建访客统计替代不蒜子（`server/` 纯标准库 Python + SQLite），扩展点赞、热榜、搜索热词与友链动态服务端化
 - ✅ 构建期文章元信息聚合：最大 JS 640KB → 48KB，dist 7.1M → 6.5M
 - ✅ 归档页重设计、Bento 首页、View Transitions 路由过渡、全局噪点
