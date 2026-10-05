@@ -147,15 +147,16 @@ function goBack() {
   else window.location.href = '/'
 }
 
-// 客户端首次加载 live2d 柴犬看板娘。CDN 动态注入，不进 VitePress bundle。
+// 客户端首次加载 live2d 白猫看板娘。脚本与模型已自托管 docs/public/live2d/（同源加载）。
+// 原走 jsDelivr：unpkg 国内可达性差经常加载不出来，jsDelivr 也有方差，且
+// 「脚本 → model.json → moc/贴图」是串行发现链，每跳 0.5s+，猫要 2s 开外才出现。
 // webpack 拆包加载顺序：先 main (L2Dwidget.min.js) 再 manifest (L2Dwidget.0.min.js)，
 // 反序会报 webpackJsonp is not defined。
 // dialog.script 键名是 snake_case（tap_body），不是文档写的 'tap body'（带空格）。
 // 移动端 < 768 关闭。调试可在控制台 `window.__DISABLE_LIVE2D__ = true`。
-// CDN 用 jsDelivr：unpkg 国内可达性差，柴犬经常加载不出来。
-const L2D_AUTOLOAD = 'https://cdn.jsdelivr.net/npm/live2d-widget@3.1.4/lib/L2Dwidget.min.js'
-const L2D_MANIFEST = 'https://cdn.jsdelivr.net/npm/live2d-widget@3.1.4/lib/L2Dwidget.0.min.js'
-const L2D_MODEL = 'https://cdn.jsdelivr.net/npm/live2d-widget-model-tororo@1.0.5/assets/tororo.model.json'
+const L2D_AUTOLOAD = '/live2d/L2Dwidget.min.js'
+const L2D_MANIFEST = '/live2d/L2Dwidget.0.min.js'
+const L2D_MODEL = '/live2d/tororo/tororo.model.json'
 let l2dLoaded = false
 
 function loadLive2d() {
@@ -164,6 +165,28 @@ function loadLive2d() {
   const win = window as any
   if (win.__DISABLE_LIVE2D__) return
   if (win.innerWidth < 768) return
+
+  // 资源预热：模型全家桶 URL 静态已知，挂载瞬间并行拉起，砍掉串行发现链。
+  // 放在这里而不是 config.mts head —— 移动端/禁用看板娘时不白下载 ~760KB。
+  // 三种模式都是实测踩出来的：moc/json/mtn 走 XHR（as=fetch）、贴图走 new Image()
+  // 且 widget 给它设了 crossOrigin='anonymous'（as=image）—— 两者都必须带
+  // crossorigin 才能和消费方模式对上，否则整个被二次请求；widget 脚本走
+  // 无 crossorigin 的 <script>（as=script），恰好不能带，带了反而错配。
+  const preloads: Array<[string, string]> = [
+    [L2D_MODEL, 'fetch'],
+    ['/live2d/tororo/moc/tororo.moc', 'fetch'],
+    ['/live2d/tororo/moc/tororo.2048/texture_00.png', 'image'],
+    ['/live2d/tororo/tororo.pose.json', 'fetch'],
+    ['/live2d/tororo/mtn/00_idle.mtn', 'fetch']
+  ]
+  for (const [href, kind] of preloads) {
+    const link = document.createElement('link')
+    link.rel = 'preload'
+    link.as = kind
+    link.href = href
+    if (kind !== 'script') link.crossOrigin = ''
+    document.head.appendChild(link)
+  }
 
   const main = document.createElement('script')
   main.src = L2D_AUTOLOAD
