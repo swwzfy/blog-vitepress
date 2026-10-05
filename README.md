@@ -1,6 +1,6 @@
 # Kiran's Blog
 
-基于 VitePress 的个人博客，紫粉配色，带粒子背景、鼠标光晕、自定义光标，以及桌面端 live2D 看板娘。生产域名 `https://www.jossecho.com`。
+基于 VitePress 的个人博客，紫粉配色，带按季节换装的粒子背景、鼠标光晕，以及桌面端 live2D 看板娘。生产域名 `https://www.jossecho.com`。
 
 ## 技术栈
 
@@ -28,7 +28,7 @@ docs/
 │   │   ├── useTags.ts        # 标签数据加载
 │   │   ├── page-transitions.js # 页面过渡（View Transitions）
 │   │   ├── custom.css        # 自定义样式（配色、动画、光标）
-│   │   ├── effects.js        # 粒子系统 + 鼠标光晕 + 自定义光标
+│   │   ├── effects.js        # 粒子（季节换装）+ 鼠标光晕 + 进度条/回到顶部/灯箱
 │   │   ├── composables/      # 组合式函数（useLocale 等）
 │   │   ├── components/       # 页面级组件（LifeList.vue）
 │   │   └── utils/            # 工具函数（posts、types、format）
@@ -42,7 +42,7 @@ docs/
 ├── projects.md              # 中文项目展示
 ├── friends.md               # 中文友链
 ├── life.md                  # 中文生活页
-├── posts/                   # 中文文章目录（18 篇，中英镜像；列表按 frontmatter 驱动，不在此逐一罗列）
+├── posts/                   # 中文文章目录（已发布 19 篇 + 草稿 2 篇，中英镜像；列表按 frontmatter 驱动，不在此逐一罗列）
 └── en/                      # 英文版本（镜像结构）
     ├── index.md
     ├── about.md
@@ -55,7 +55,7 @@ docs/
     └── posts/
 ```
 
-> 注：中文与英文目录结构必须镜像对应。草稿文章通过 `config.mts` 的 `srcExclude` 排除路由，并在 `scripts/build-rss.js` 中按 `frontmatter.draft` 二次过滤（目前排除 `suzhou-hanshan-temple.md` 中英两版）。
+> 注：中文与英文目录结构必须镜像对应。草稿文章通过 `config.mts` 的 `srcExclude` 排除路由，并在 `scripts/build-rss.js` 中按 `frontmatter.draft` 二次过滤（当前哪些在草稿以各文件 frontmatter 的 `draft: true` 为准）。
 
 ## 配色方案
 
@@ -79,19 +79,20 @@ CSS 变量定义在 `custom.css`：
 
 ## 视觉效果与交互
 
-全部在 `effects.js` 中实现，通过 `index.ts` 的 `onMounted` 动态导入：
+页面特效在 `effects.js` 中实现（`index.ts` 动态导入，重特效经 `requestIdleCallback` 延后，SSR 安全）：
 
 1. **背景渐变** — 三色径向渐变 + 15s 流动动画
-2. **粒子系统** — Canvas 绘制，鼠标靠近时粒子被吸引，粒子间距 < 120px 时连线
+2. **粒子系统（季节换装）** — Canvas 绘制，按月份自动切换：3-4 月樱花瓣、6-8 月暗色下流萤、10-11 月落叶、12-2 月雪（暗色纯白 / 亮色灰蓝）、5/9 月素净微粒 + 连线；深夜（23 点后）且暗色切为星空 + 流星；切换主题或回到前台时实时重估皮肤
 3. **鼠标光晕** — 500px 径向渐变跟随鼠标，blur(40px)
-4. **自定义光标** — 紫色光点 + 环形跟随，hover 链接时环放大，点击时涟漪扩散
-5. **卡片 hover** — translateY(-4px) + 紫色边框 + 阴影
-6. **页面过渡** — fadeIn 0.5s
-7. **live2D 看板娘** — 桌面端（≥768px）从 CDN 动态加载 tororo 柴犬模型，移动端自动关闭
-8. **文章页增强** — 自动计算阅读时长与字数、相关文章推荐（按标签匹配，取前 3 篇）
-9. **自定义 404 页** — 星空动画 + 返回按钮
+4. **阅读进度条 / 回到顶部** — 滚动驱动
+5. **卡片 Spotlight** — 指针相对坐标写入 CSS 变量，供卡片边框追光层使用
+6. **图片灯箱** — 点击文章内图片全屏查看，Esc 或点击遮罩关闭
+7. **live2D 看板娘** — 桌面端（≥768px）从 CDN 动态加载 tororo 白猫模型，移动端自动关闭
+8. **路由过渡** — `page-transitions.js` 用 View Transitions API 包住 SPA 导航做 cross-fade，不支持的浏览器静默跳过
+9. **文章页增强** — 构建期字数与阅读时长、相关文章推荐（按标签匹配，取前 3 篇）、上下篇导航
+10. **自定义 404 页** — 星空动画 + 返回按钮
 
-移动端（< 768px）自动隐藏光标和光晕，并关闭 live2D。
+移动端（< 768px）关闭粒子和光晕；`prefers-reduced-motion: reduce` 下动效整体静态化。
 
 ## 国际化（i18n）
 
@@ -112,7 +113,7 @@ description: 文章描述，用于 SEO
 ---
 ```
 
-阅读时长与字数由 `Layout.vue` 自动计算，无需手动填写。
+阅读时长与字数由构建期 `scripts/build-posts-meta.js` 扫描正文生成 `posts-meta.json`，`Layout.vue` 直接取值（SSG 输出即非 0），无需手动填写。
 
 ### 添加英文页面
 
@@ -125,18 +126,24 @@ description: 文章描述，用于 SEO
 ## 常用命令
 
 ```bash
-npm run dev      # 本地开发（predev 自动 kill 旧 :5173 进程）
-npm run build    # 构建静态文件 + sitemap + 双语 RSS
-npm run preview  # 预览构建结果
-npm run lint     # ESLint 检查
-npm run og       # 重生成 OG 图（.agents/scripts/make-og.js）
+npm run dev                # 本地开发（predev 自动 kill 旧 :5173 进程）
+npm run build              # 构建静态文件 + sitemap + 双语 RSS + SEO 注入 + 字体剔除
+npm run preview            # 预览构建结果
+npm run check:frontmatter  # 校验文章 frontmatter 完整性
+npm run typecheck          # TypeScript 类型检查
+npm run lint               # ESLint 检查（lint:fix 自动修复）
+npm run og                 # 重生成 OG 图（.agents/scripts/make-og.js）
 ```
 
-## 插件
+## 插件与构建钩子
 
-- **sitemap** — 构建时自动生成 `sitemap.xml`
+- **sitemap** — 构建时自动生成 `sitemap.xml`（draft 页面兜底排除）
 - **rss** — 自写 `scripts/build-rss.js`（替代 `vitepress-plugin-rss`），输出中英两份 `feed.rss` 与 `en/feed.rss`，并在 `buildEnd` 钩子里镜像一份到 `docs/public/`（解决 dev 模式访问 404）
-- **busuanzi** — 不蒜子站点/页面访问统计，已在 `config.mts` head 与 `Layout.vue` 页脚接入
+- **文章元信息** — `scripts/build-posts-meta.js` 挂在 `buildStart`（dev 下监听文章增删改），扫描中英 frontmatter 与字数生成 `posts-meta.json`，供列表与阅读时长使用
+- **友链动态** — `scripts/build-friends-activity.js` 在 `buildStart` 聚合友链 RSS，24h 缓存 + 失败兜底
+- **SEO 注入** — `scripts/build-seo.js` 在 `buildEnd` 逐页注入 og / canonical / hreflang
+- **字体剔除** — `buildEnd` 删除默认主题无条件拷出的 Inter woff2（全站零引用），同步清理各页 preload 死链
+- **自建访客统计** — 替代已移除的不蒜子：`server/` 纯标准库 Python + SQLite 服务（:8787，systemd 托管），提供页面打点、点赞、热榜、搜索热词、友链动态端点
 
 ## 评论与敏感词
 
@@ -173,6 +180,8 @@ npm run build       # 生成静态文件到 docs/.vitepress/dist
 - 或上传到 CDN / 静态站点托管服务
 - 不需要压缩成 zip / tar.gz
 
+> 统计服务如有改动，另需覆盖服务器上的 `server/stats.py` 并 `systemctl restart stats`（详见 `server/README.md`）。
+>
 > 当前为手动上传部署。如需「改完一键发布」，可后续增加 `rsync` / `scp` 脚本或 CI（如 GitHub Actions），尚未实现。
 
 ### Netlify / Vercel 部署配置
@@ -181,11 +190,10 @@ npm run build       # 生成静态文件到 docs/.vitepress/dist
 
 ## 最近改进
 
-- ✅ 新增生活（life）页与 `LifeList.vue` 组件
-- ✅ 接入 busuanzi 访问统计（站点 UV / PV、文章阅读量）
-- ✅ 桌面端 live2D 看板娘（tororo 柴犬）
-- ✅ 文章页自动阅读时长 / 字数统计 + 相关文章推荐
-- ✅ 自定义 404 页（星空动画）
+- ✅ 粒子背景按季节换装：樱花 / 流萤 / 落叶 / 雪 / 深夜星空流星
+- ✅ 自建访客统计替代不蒜子（`server/` 纯标准库 Python + SQLite），扩展点赞、热榜、搜索热词与友链动态服务端化
+- ✅ 构建期文章元信息聚合：最大 JS 640KB → 48KB，dist 7.1M → 6.5M
+- ✅ 归档页重设计、Bento 首页、View Transitions 路由过渡、全局噪点
+- ✅ 标签分类学收敛 47 → 12（见 `TAG-TAXONOMY.md`）
+- ✅ 桌面端 live2D 看板娘（tororo 白猫）、自定义 404 页（星空动画）
 - ✅ 评论功能下线，保留组件代码与敏感词表备用
-- ✅ 修复 RSS 预览页中文乱码（UTF-8 编码 + 正确的 HTTP 响应头）
-- ✅ 项目结构整洁化，移除临时测试文件
