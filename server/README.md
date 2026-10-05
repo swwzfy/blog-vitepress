@@ -12,6 +12,7 @@ SQLite 单文件 + Python 标准库的访客统计。服务端零第三方依赖
 | `stats.service` | `/etc/systemd/system/stats.service` |
 | `nginx-stats-snippet.conf` | 内容粘进 nginx 对应位置（见下） |
 | `../docs/.vitepress/friends.json`（仓库里的友链清单） | `/var/lib/site-stats/friends.json`（友链动态抓取的数据源，加/删友链后记得同步这份） |
+| ip2region 数据文件（不入仓库） | `/var/lib/site-stats/ip2region_v4.xdb` + `ip2region_v6.xdb`（`/api/weather` 的离线 IP 库，见下） |
 
 ## 部署步骤（ECS 上执行）
 
@@ -50,6 +51,35 @@ curl -s 'https://www.jossecho.com/api/trend.json'    # 近 30 天逐日 pv/uv
 ```
 
 浏览器访问几篇文章后，页脚出现「访客 N · 访问 M」，文章页元信息行出现「👁 N 次阅读」。
+
+## 天气端点（/api/weather）
+
+首页时钟卡与背景粒子按**访客所在地**显示天气。定位在服务端完成：访客 IP 经
+[ip2region](https://github.com/lionsoul2014/ip2region) 离线库查城市（数据文件独立部署，
+**不入仓库**，从该仓库 `data/` 目录下载 `ip2region_v4.xdb`（11MB）与 `ip2region_v6.xdb`
+（37MB）），城市坐标永久缓存、天气按城市缓存 30 分钟（Open-Meteo 上游）。判不出
+中国城市（海外/内网/数据缺失）回退扬州。xdb 文件缺失只影响这一个端点（返回 502），
+服务本体与前端（回退浏览器直连定位链）都不受影响。
+
+部署/更新（宝塔面板）：
+
+1. **文件**：把两个 xdb 文件上传到 `/var/lib/site-stats/`，与 stats.db 同目录
+   （文件名保持 `ip2region_v4.xdb` / `ip2region_v6.xdb`，或用环境变量
+   `IP2REGION_XDB_V4/V6` 改路径）
+2. **上传新 stats.py 后** `systemctl restart stats`（xdb 支持热上传，不重启也行——
+   文件是按请求懒加载的，但重启一次可以清掉坐标缓存）
+
+验证：
+
+```bash
+# 不带 X-Real-IP：本机回环属内网 → 回退扬州
+curl -s http://127.0.0.1:8787/api/weather
+# 伪装一个江苏电信 IP：应返回南京的天气（X-Real-IP 由 nginx 在线上注入，本地测试可手动加）
+curl -s -H 'X-Real-IP: 114.114.114.114' http://127.0.0.1:8787/api/weather
+# 期望形如 {"code": 0, "temperature": 16.2, "city": "南京"}（code 是 WMO 天气码）
+```
+
+浏览器 Ctrl+F5 后首页时钟卡天气胶囊应显示访客所在城市名。
 
 ## 语义口径
 

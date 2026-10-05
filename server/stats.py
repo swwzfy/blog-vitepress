@@ -19,6 +19,12 @@
   GET /api/top.json[?n=N]       {"items":[{url,views}...]} 文章阅读 Top N（默认 8，上限 20）
   GET /api/trend.json           {"days":[{date,pv,uv}...]} 近 30 天逐日聚合
   GET /api/health               存活检查（200 ok）
+  GET /api/weather              {"code","temperature","city"} 访客所在地当前天气：
+                                X-Real-IP 经 ip2region 离线库（ip2region_v4/v6.xdb，
+                                独立部署在数据目录，缺失时本端点 502、服务不受影响）
+                                城市级定位 → 城市坐标永久缓存 → Open-Meteo 当前天气
+                                按城市缓存 30 分钟；只对中国城市负责，内网/海外返回
+                                502，由前端浏览器直连定位链接管（其最终兜底为扬州）
 
 设计取舍：
   - 只监听 127.0.0.1，公网入口交给 nginx 反代 + limit_req 限流，
@@ -44,7 +50,7 @@ from datetime import datetime
 from email.utils import parsedate_to_datetime
 from http.server import BaseHTTPRequestHandler, HTTPServer
 from socketserver import ThreadingMixIn
-from urllib.parse import urlparse, parse_qs
+from urllib.parse import urlparse, parse_qs, quote
 
 
 class ThreadingHTTPServer(ThreadingMixIn, HTTPServer):
@@ -278,6 +284,164 @@ def _feeds_loop():
         time.sleep(FEED_INTERVAL)
 
 
+# —— 天气（ip2region 离线定位 + Open-Meteo）——
+# xdb 整体载入内存（v4 11MB + v6 37MB）：检索免文件句柄，天然线程安全，免锁。
+# 城市坐标与天气缓存的读写依赖 GIL 的原子性，最坏情况是并发时重复一次上游请求，
+# 结果幂等，不值得为此加锁。
+
+XDB_V4_PATH = os.environ.get('IP2REGION_XDB_V4', '/var/lib/site-stats/ip2region_v4.xdb')
+XDB_V6_PATH = os.environ.get('IP2REGION_XDB_V6', '/var/lib/site-stats/ip2region_v6.xdb')
+WEATHER_TTL = 1800
+UPSTREAM_TIMEOUT = 6
+
+_XDB_BUFS = {}       # 'v4'/'v6' -> bytes；加载失败不缓存，下次请求重试（文件后补部署即可自愈）
+_COORD_CACHE = {}    # city -> (lat, lon)，城市坐标基本不变，进程内永久
+_WEATHER_CACHE = {}  # city -> (ts, payload)
+
+
+def _load_xdb(which):
+    if which in _XDB_BUFS:
+        return _XDB_BUFS[which]
+    path = XDB_V4_PATH if which == 'v4' else XDB_V6_PATH
+    try:
+        with open(path, 'rb') as f:
+            buf = f.read()
+    except OSError as e:
+        print('weather: xdb unreadable (%s): %s' % (path, e))
+        return None
+    _XDB_BUFS[which] = buf
+    return buf
+
+
+def _u16(b, o):
+    return b[o] | (b[o + 1] << 8)
+
+
+def _u32(b, o):
+    return b[o] | (b[o + 1] << 8) | (b[o + 2] << 16) | (b[o + 3] << 24)
+
+
+def _search_xdb(buf, ip_bytes):
+    """v3 xdb 检索：向量索引定位段 → 段内二分。v4 索引是小端字节序（逐字节反转比较，
+    兼容旧编码实现），v6 直接大端比较；index_size v4=14 / v6=38（起止 IP + 2B 长度 + 4B 指针）"""
+    n = len(ip_bytes)
+    idx = ip_bytes[0] * 2048 + ip_bytes[1] * 8
+    s_ptr = _u32(buf, 256 + idx)
+    e_ptr = _u32(buf, 256 + idx + 4)
+    if s_ptr == 0 or e_ptr == 0:
+        return ''
+    index_size = 14 if n == 4 else 38
+
+    def cmp_at(off):
+        # 输入 ip 与 XDB 中 (off) 处起始 IP 的比较
+        if n == 4:
+            j = off + n - 1
+            for i in range(n):
+                if ip_bytes[i] != buf[j]:
+                    return -1 if ip_bytes[i] < buf[j] else 1
+                j -= 1
+            return 0
+        sub = buf[off:off + n]
+        return (ip_bytes > sub) - (ip_bytes < sub)
+
+    l, h = 0, (e_ptr - s_ptr) // index_size
+    d_len = d_ptr = 0
+    while l <= h:
+        m = (l + h) >> 1
+        p = s_ptr + m * index_size
+        c = cmp_at(p)
+        if c < 0:
+            h = m - 1
+        elif cmp_at(p + n) > 0:
+            l = m + 1
+        else:
+            d_len = _u16(buf, p + 2 * n)
+            d_ptr = _u32(buf, p + 2 * n + 2)
+            break
+    if d_len == 0:
+        return ''
+    return buf[d_ptr:d_ptr + d_len].decode('utf-8', errors='replace')
+
+
+def _ip_to_city(ip):
+    """访客 IP → 中国城市名（市级缺失退省级，剥掉 trailing 市/省）。
+    内网/保留段、海外、未收录一律返回空串：海外交给前端浏览器直连定位链
+    （国际库判定更准），不做硬编码兜底"""
+    try:
+        addr = ipaddress.ip_address(ip)
+    except ValueError:
+        return ''
+    if not addr.is_global:
+        return ''
+    buf = _load_xdb('v4' if addr.version == 4 else 'v6')
+    if not buf:
+        return ''
+    try:
+        region = _search_xdb(buf, addr.packed)
+    except Exception:
+        return ''
+    # v3 地区格式：国家|省|市|ISP|国家码（中国条目为中文，海外为英文）
+    parts = region.split('|')
+    if len(parts) < 3 or parts[0] != '中国':
+        return ''
+    for field in (parts[2], parts[1]):
+        name = field.strip()
+        if name and name != '0':
+            return name[:-1] if name.endswith(('市', '省')) else name
+    return ''
+
+
+def _get_coords(city):
+    """城市 → 坐标（Open-Meteo geocoding，进程内永久缓存）。先查剥掉市后缀的短名，
+    再退全名；查不到返回 None"""
+    if city in _COORD_CACHE:
+        return _COORD_CACHE[city]
+    for q in (city, city + '市'):
+        try:
+            url = ('https://geocoding-api.open-meteo.com/v1/search?name=%s&count=1&language=zh'
+                   % quote(q))
+            _assert_public_http_url(url)
+            req = urllib.request.Request(url, headers={
+                'User-Agent': 'jossecho-blog weather (+https://www.jossecho.com)',
+            })
+            with _FEED_OPENER.open(req, timeout=UPSTREAM_TIMEOUT) as r:
+                results = (json.load(r) or {}).get('results') or []
+            if results:
+                loc = (results[0]['latitude'], results[0]['longitude'])
+                _COORD_CACHE[city] = loc
+                return loc
+        except Exception:
+            continue
+    return None
+
+
+def _get_weather(city):
+    now = int(time.time())
+    hit = _WEATHER_CACHE.get(city)
+    if hit and now - hit[0] < WEATHER_TTL:
+        return hit[1]
+    coords = _get_coords(city)
+    if not coords:
+        return None
+    url = ('https://api.open-meteo.com/v1/forecast?latitude=%s&longitude=%s'
+           '&current=temperature_2m,weather_code' % coords)
+    try:
+        _assert_public_http_url(url)
+        req = urllib.request.Request(url, headers={
+            'User-Agent': 'jossecho-blog weather (+https://www.jossecho.com)',
+        })
+        with _FEED_OPENER.open(req, timeout=UPSTREAM_TIMEOUT) as r:
+            cur = (json.load(r) or {}).get('current') or {}
+        code, temp = cur.get('weather_code'), cur.get('temperature_2m')
+        if code is None or temp is None:
+            return None
+        payload = {'code': int(code), 'temperature': temp, 'city': city}
+    except Exception:
+        return None
+    _WEATHER_CACHE[city] = (now, payload)
+    return payload
+
+
 class Handler(BaseHTTPRequestHandler):
     server_version = 'SiteStats/1.0'
 
@@ -302,12 +466,27 @@ class Handler(BaseHTTPRequestHandler):
             self._top(qs)
         elif url.path == '/api/trend.json':
             self._trend()
+        elif url.path == '/api/weather':
+            self._weather()
         elif url.path == '/api/health':
             self._send(200, b'ok', 'text/plain')
         else:
             self._send(404, b'{"error":"not found"}')
 
     # —— 端点 ——
+
+    def _weather(self):
+        ip = self.headers.get('X-Real-IP') or self.client_address[0]
+        city = _ip_to_city(ip)
+        if not city:
+            # 内网/海外/未收录：502 交给前端浏览器直连定位链（海外判定更准）
+            self._send(502, b'{"error":"no cn city for client ip"}')
+            return
+        payload = _get_weather(city)
+        if not payload:
+            self._send(502, b'{"error":"weather upstream unavailable"}')
+            return
+        self._send(200, json.dumps(payload).encode())
 
     def _hit(self, qs):
         path = normalize_url((qs.get('url') or [''])[0])

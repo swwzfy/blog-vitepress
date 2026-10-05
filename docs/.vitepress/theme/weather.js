@@ -1,10 +1,11 @@
 // 访客实时天气共享源：Bento 时钟卡（DateTimeWeather.vue）与粒子换肤（effects.js）
-// 从这里拿同一份 Open-Meteo 数据——全站只发一次请求、每 30 分钟自刷。
-// 位置按访客出口 IP 做城市级定位（免授权弹窗，天气粒度足够）：主 ipwho.is、
-// 备 geojs.io，结果进 sessionStorage 缓存 6 小时（一次会话多次进站只打一次定位）；
-// 定位全部失败或缓存过期定位失败时回退扬州（站主所在地兜底）。
-// 天气请求失败不推送、不改 current，两个消费端各自按「无天气」降级（胶囊隐藏 /
-// 粒子退季节皮肤），下个 tick 成功后自然恢复。
+// 从这里拿同一份天气数据，每 30 分钟自刷。数据链优先级：
+//   1) 同源 /api/weather（stats 后端：ip2region 离线定位 + 按城市缓存，国内判定最准）
+//   2) 浏览器直连定位链：ipwho.is → geojs.io（IP 城市级、免授权弹窗，sessionStorage
+//      缓存 6h）+ Open-Meteo——stats 服务不可用时的回退
+//   3) 定位全失败回退扬州（站主所在地兜底）
+// 每级失败都静默落到下一级；全部失败不推送、不改 current，两个消费端各自按
+// 「无天气」降级（胶囊隐藏 / 粒子退季节皮肤），下个 tick 成功后自然恢复。
 
 const YANGZHOU = { latitude: 32.39, longitude: 119.4, city: 'Yangzhou' };
 const weatherUrl = (lat, lon) =>
@@ -12,7 +13,7 @@ const weatherUrl = (lat, lon) =>
 const REFRESH_MS = 30 * 60 * 1000;
 const LOC_TTL = 6 * 60 * 60 * 1000;
 
-// 主备定位源：pick 把各家 JSON 折叠成统一的 { latitude, longitude, city }，数据不可信返回 null
+// 回退定位源：pick 把各家 JSON 折叠成统一的 { latitude, longitude, city }，数据不可信返回 null
 const GEO_APIS = [
   {
     url: 'https://ipwho.is/',
@@ -34,8 +35,20 @@ function fetchJson(url, timeoutMs) {
   const ctrl = new AbortController();
   const timer = setTimeout(() => ctrl.abort(), timeoutMs);
   return fetch(url, { signal: ctrl.signal })
-    .then(res => res.json())
+    .then(res => {
+      if (!res.ok) throw new Error('HTTP ' + res.status);
+      return res.json();
+    })
     .finally(() => clearTimeout(timer));
+}
+
+// 源 1：stats 后端（同源，nginx 反代 /api）。只信任有限字段，形状不对按失败处理
+async function fetchFromServer() {
+  const d = await fetchJson('/api/weather', 4000);
+  if (!isFinite(d.code) || !isFinite(d.temperature) || !d.city) {
+    throw new Error('bad /api/weather payload');
+  }
+  return { code: d.code, temperature: d.temperature, city: d.city };
 }
 
 async function resolveLocation() {
@@ -63,25 +76,36 @@ async function resolveLocation() {
   return null;
 }
 
+// 源 2：浏览器直连定位 + Open-Meteo
+async function fetchFromBrowser() {
+  location = (await resolveLocation()) || location;
+  const d = await fetchJson(weatherUrl(location.latitude, location.longitude), 8000);
+  const cur = d.current || {};
+  if (!isFinite(cur.weather_code) || !isFinite(cur.temperature_2m)) {
+    throw new Error('bad open-meteo payload');
+  }
+  return { code: cur.weather_code, temperature: cur.temperature_2m, city: location.city };
+}
+
 let current = null;
-let location = YANGZHOU; // 上一次成功定位；初始即兜底值，定位从未成功过时天气就是扬州的
+let location = YANGZHOU; // 浏览器直连链的上一次成功定位；初始即兜底值
 let started = false;
 let timer;
 const subscribers = new Set();
 
 async function tick() {
-  location = (await resolveLocation()) || location;
+  let w;
   try {
-    const data = await fetchJson(weatherUrl(location.latitude, location.longitude), 8000);
-    current = {
-      code: data.current.weather_code,
-      temperature: data.current.temperature_2m,
-      city: location.city,
-    };
-    subscribers.forEach(fn => fn(current));
+    w = await fetchFromServer();
   } catch {
-    // 静默：消费端按「无天气」处理，下个 tick 自愈
+    try {
+      w = await fetchFromBrowser();
+    } catch {
+      return; // 两级都失败：维持现状，下个 tick 自愈
+    }
   }
+  current = w;
+  subscribers.forEach(fn => fn(current));
 }
 
 function start() {
