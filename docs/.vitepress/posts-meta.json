@@ -1,5 +1,5 @@
 {
-  "generatedAt": "2026-10-04T10:12:16.887Z",
+  "generatedAt": "2026-10-05T06:29:49.405Z",
   "zh": [
     {
       "path": "posts/ai-code-edit-weaknesses.md",
@@ -19,12 +19,12 @@
       "url": "/posts/ai-memory",
       "title": "为什么我让 AI 管我的记忆",
       "date": "2026-05-18",
-      "description": "给 AI 搭了一套三层记忆系统——长期记忆、短期记忆、语义检索。不只是技术实验，是对「连续性」的思考。",
+      "description": "会话会结束，上下文会被清空。四个月把记忆交给 AI 自己管之后，真正让它「记得住」的不是向量数据库，是几条笨纪律——一事一文、索引先行、敢删。",
       "tags": [
         "AI",
         "知识管理"
       ],
-      "words": 225
+      "words": 1830
     },
     {
       "path": "posts/aliyun-ecs-filing.md",
@@ -170,6 +170,18 @@
       "words": 1445
     },
     {
+      "path": "posts/vitepress-bundle-optimization.md",
+      "url": "/posts/vitepress-bundle-optimization",
+      "title": "VitePress 瘦身实录：一个 640KB 的 chunk 是怎么消失的",
+      "date": "2026-10-05",
+      "description": "本来只想修爬虫眼里的「字数 0」，顺藤摸出一个 640KB 的巨型 chunk——全站文章的编译产物，只为拿几 KB 的 frontmatter。把元信息搬进构建期后，最大 JS 降到 48KB，dist 顺带瘦了半兆。",
+      "tags": [
+        "VitePress",
+        "性能"
+      ],
+      "words": 1257
+    },
+    {
       "path": "posts/vitepress-live2d-mascot.md",
       "url": "/posts/vitepress-live2d-mascot",
       "title": "在 VitePress 博客集成 Live2D 看板娘",
@@ -238,12 +250,12 @@
       "url": "/en/posts/ai-memory",
       "title": "Why I Let AI Manage My Memory",
       "date": "2026-05-18",
-      "description": "Built a three-layer memory system for AI — long-term memory, short-term memory, semantic search. Not just a tech experiment, it's a reflection on “continuity”.",
+      "description": "Sessions end and context gets wiped. After four months of letting AI manage its own memory, what makes it remember is not a vector database but a few dumb disciplines — one fact per file, index first, and the courage to delete.",
       "tags": [
         "AI",
         "Knowledge Management"
       ],
-      "words": 138
+      "words": 1291
     },
     {
       "path": "en/posts/aliyun-ecs-filing.md",
@@ -387,6 +399,18 @@
         "Life"
       ],
       "words": 1305
+    },
+    {
+      "path": "en/posts/vitepress-bundle-optimization.md",
+      "url": "/en/posts/vitepress-bundle-optimization",
+      "title": "How a 640KB Chunk Disappeared from My VitePress Blog",
+      "date": "2026-10-05",
+      "description": "A zero word count in prerendered HTML led me to a 640KB mega chunk — every post compiled into JS just to read a few KB of frontmatter. Moving metadata to build time cut the largest JS bundle to 48KB and shaved half a megabyte off dist.",
+      "tags": [
+        "VitePress",
+        "Performance"
+      ],
+      "words": 961
     },
     {
       "path": "en/posts/vitepress-live2d-mascot.md",
