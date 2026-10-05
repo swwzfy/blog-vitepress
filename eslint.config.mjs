@@ -16,6 +16,9 @@ export default [
       'docs/.vitepress/dist/**',
       'docs/.vitepress/cache/**',
       'public/**',
+      // Live2D 的 vendor 压缩脚本：第三方产物不按业务规则检查
+      // （04c15f2 入库后曾被 lint 出 841 个错误打红 CI）
+      'docs/public/live2d/**',
       '.agents/**',
       '.claude/**'
     ]
