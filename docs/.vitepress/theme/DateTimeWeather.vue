@@ -1,7 +1,6 @@
 <script setup lang="ts">
 import { ref, computed, onMounted, onUnmounted } from 'vue'
 import { useLocale } from '@/composables/useLocale'
-import { watchWeather } from '@/weather'
 
 const { isEn, t } = useLocale()
 
@@ -121,7 +120,9 @@ function getWeatherEmoji(code: number): string {
 }
 
 // 天气数据来自共享模块 weather.js（粒子换肤同一数据源，全站只发一次请求、30 分钟自刷）。
-// 请求失败时模块不推送，weather 保持空串 → 胶囊隐藏，下个 tick 成功后自愈
+// 请求失败时模块不推送，weather 保持空串 → 胶囊隐藏，下个 tick 成功后自愈。
+// 运行时动态 import：静态引用会在 weather chunk 缺失时连带本组件加载失败，
+// 中断 index.ts enhanceApp 里排在后面的组件注册链
 let stopWeather: (() => void) | undefined
 
 let timeTimer: ReturnType<typeof setInterval> | undefined
@@ -129,12 +130,16 @@ let timeTimer: ReturnType<typeof setInterval> | undefined
 onMounted(() => {
   updateTime()
   timeTimer = setInterval(updateTime, 1000)
-  stopWeather = watchWeather(w => {
-    if (!w) return
-    const desc = weatherCodeMap[w.code]
-    const text = desc ? (isEn.value ? desc.en : desc.zh) : ''
-    weather.value = `${getWeatherEmoji(w.code)} ${w.temperature}°C ${text}`
-  })
+  import('@/weather')
+    .then(({ watchWeather }) => {
+      stopWeather = watchWeather(w => {
+        if (!w) return
+        const desc = weatherCodeMap[w.code]
+        const text = desc ? (isEn.value ? desc.en : desc.zh) : ''
+        weather.value = `${getWeatherEmoji(w.code)} ${w.temperature}°C ${text}`
+      })
+    })
+    .catch(() => {})
 })
 
 // 不清理的话 dev HMR 每次热更新都会叠一个 interval，时钟会越走越快

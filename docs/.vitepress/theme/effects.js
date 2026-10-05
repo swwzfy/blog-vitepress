@@ -1,5 +1,3 @@
-import { watchWeather } from './weather.js';
-
 // 页面可见性状态。隐藏时各 rAF 循环彻底 cancelAnimationFrame 停帧、回前台再恢复
 // （见各循环处的 runXxx）：主流浏览器对隐藏页签本就不派发 rAF，这里防的是
 // 非标准 webview 与隐藏瞬间已排队帧的空转。
@@ -481,13 +479,19 @@ function initParticles() {
     if (next !== skin) { skin = next; buildParticles(); }
   });
 
-  // 天气数据到达/30 分钟刷新时重估皮肤（weather.js 已有缓存会立即回调一次）；
-  // 请求失败不回调，weatherCode 维持 null，等价于无天气 → 纯季节逻辑
-  watchWeather(w => {
-    weatherCode = w ? w.code : null;
-    const next = pickSkin();
-    if (next !== skin) { skin = next; buildParticles(); }
-  });
+  // weather.js 独立成 chunk，运行时动态加载：静态 import 会在部署缺该文件时连带
+  // effects 整个模块加载失败（粒子/光晕/进度条/灯箱全灭）。catch 后最坏只是没有天气层
+  import('./weather.js')
+    .then(({ watchWeather }) => {
+      // 天气数据到达/30 分钟刷新时重估皮肤（weather.js 已有缓存会立即回调一次）；
+      // 请求失败不回调，weatherCode 维持 null，等价于无天气 → 纯季节逻辑
+      watchWeather(w => {
+        weatherCode = w ? w.code : null;
+        const next = pickSkin();
+        if (next !== skin) { skin = next; buildParticles(); }
+      });
+    })
+    .catch(() => {});
 }
 
 // 鼠标光晕
