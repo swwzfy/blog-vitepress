@@ -6,6 +6,7 @@ import { zhPosts, enPosts, byDateDesc, postRoutePath, wordsByRoutePath } from '@
 import { formatDate } from '@/utils/format'
 import { useLocale } from '@/composables/useLocale'
 import { statsAvailable, setupSearchBeacon } from '@/utils/stats'
+import { setupSearchHotwords } from '@/utils/search-hotwords'
 
 const { Layout } = DefaultTheme
 const { frontmatter, page } = useData()
@@ -330,6 +331,7 @@ onMounted(() => {
   canSpeak.value = 'speechSynthesis' in window
   uptimeDays.value = Math.max(1, Math.floor((Date.now() - new Date(FOUNDED_DATE).getTime()) / 86400000))
   setupSearchBeacon()
+  setupSearchHotwords()
   sendHit(window.location.pathname)
   syncLikedState(window.location.pathname)
   syncReactionsState(window.location.pathname)

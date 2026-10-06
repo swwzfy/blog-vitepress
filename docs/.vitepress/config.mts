@@ -73,6 +73,27 @@ function makeSocialLinks(rssHref: string) {
 // （/api 落进 SPA 404 页）。stats.py 不在跑时 502，前端优雅隐藏；线上走 nginx 反代，不经此处
 const LOCAL_STATS_BASE = `http://127.0.0.1:${process.env.STATS_PORT ?? 8787}`
 
+// 搜索分词：MiniSearch 默认按空白/标点切词，整句中文是一个 token，
+// 「词中/词尾」检索全部落空（实测搜「定位」「换装」0 结果）。
+// 中文走 Intl.Segmenter 词级切分（带词中词尾即中），拉丁文自然按词；
+// 建索引（构建期 Node）与查询（浏览器）两侧必须同源，否则零结果；
+// 无 Segmenter 的老浏览器（Firefox <125）退回空白切分，等价原状。
+// 函数会被序列化下发客户端（_vp-fn_ 机制），必须自包含，只可引用 globalThis。
+const searchTokenize = (text: string): string[] => {
+  const intl = Intl as unknown as {
+    Segmenter?: new (locale: string, o: { granularity: string }) => {
+      segment(s: string): { segment: string; isWordLike?: boolean }[]
+    }
+  }
+  if (typeof Intl !== 'undefined' && intl.Segmenter) {
+    const g = globalThis as { __vpSegmenter?: { segment(s: string): { segment: string; isWordLike?: boolean }[] } }
+    g.__vpSegmenter = g.__vpSegmenter || new intl.Segmenter('zh', { granularity: 'word' })
+    // segment() 返回可迭代对象而非数组，须先展开
+    return [...g.__vpSegmenter.segment(text)].filter(s => s.isWordLike).map(s => s.segment)
+  }
+  return text.split(/\s+/).filter(Boolean)
+}
+
 function proxyApi(req: IncomingMessage, res: ServerResponse, next: () => void): void {
   const url = req.url ?? ''
   if (!url.startsWith('/api/')) {
@@ -377,6 +398,12 @@ export default defineConfig({
     search: {
       provider: 'local',
       options: {
+        // 中文分词：建索引与查询两侧共用同一函数（见上方 searchTokenize 注释）；
+        // fuzzy/prefix/boost 是 VitePress 默认值，用户 searchOptions 是合并不是覆盖
+        miniSearch: {
+          options: { tokenize: searchTokenize },
+          searchOptions: { tokenize: searchTokenize }
+        },
         // 本地搜索弹层默认英文兜底（源码 fallback 'Search'），中文 locale 需显式翻译；en 用默认
         locales: {
           root: {

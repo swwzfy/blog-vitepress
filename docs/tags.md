@@ -2,6 +2,7 @@
 title: 标签
 description: "按标签浏览全部文章，快速找到同一主题下的内容。"
 aside: false
+search: false
 ---
 
 # 标签

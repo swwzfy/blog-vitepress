@@ -1,5 +1,6 @@
 ---
 layout: home
+search: false
 description: "Kiran's personal blog: engineering notes, indie development and life essays, in Chinese and English with full-text RSS."
 hero:
   name: Kiran
