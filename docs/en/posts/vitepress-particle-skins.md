@@ -23,7 +23,7 @@ function pickSkin() {
   const w = weatherSkin(weatherCode);        // real-time rain/snow (a later layer)
   if (w) return w;
   const m = new Date().getMonth() + 1;
-  if (m >= 3 && m <= 4) return 'sakura';     // cherry blossoms
+  if (m >= 3 && m <= 4) return 'sakura';     // cherry + peach
   if (m >= 6 && m <= 8) return isDark() ? 'firefly' : 'lotus';
   if (m >= 10 && m <= 11) return 'foliage';  // maple + ginkgo
   if (m === 12 || m <= 2) return 'winter';   // plum + ice crystals
@@ -33,10 +33,10 @@ function pickSkin() {
 
 Every skin is drawn live with canvas 2D, zero images, and together they form a four-season floral calendar (this layer went through two more rounds of tinkering after launch — what's written here is the current state): spring sakura, summer lotus, autumn maple and ginkgo, winter plum —
 
-- **Spring (Mar–Apr) sakura**: pointed ellipse petals pieced from two Bézier curves, swaying as they fall;
-- **Summer (Jun–Aug) lotus pond**: in light mode a living pond — two clusters of translucent leaves at the bottom edges (notched ellipses with radial veins, swaying in the wind), one or two lotus flowers breathing open, double-ring ripples every second or two, a dragonfly hopping between the leaves ("on the tip of the tender lotus, a dragonfly has come to rest"), and the occasional petal drifting across the water; fireflies take over in dark mode;
-- **Autumn (Oct–Nov) maple + ginkgo**: five-lobed maple leaves in two reds tumbling down, mixed 6:4 with golden ginkgo fans (wide sway, slow descent, veins and stems) — crimson against gold, the two best cards of autumn, no need to pick just one;
-- **Winter (Dec–Feb) plum + ice crystals**: on sunny days whole five-petal blossoms drift down sparse and slow (near-white pink, one size smaller and paler than sakura) while four-point star glints twinkle in place — plum blossoms defying the snow; actual snowfall switches to the snow skin via the real-time weather layer, snow is snow and flowers are flowers;
+- **Spring (Mar–Apr) sakura + peach**: cherry petals carry their signature notched tip (pieced from two Bézier curves), while peach blossoms fall as whole five-petal flowers in a deeper pink — two kinds of pink drifting together, so you can tell who is who;
+- **Summer (Jun–Aug) lotus pond**: in light mode a living pond — two clusters of translucent leaves at the bottom edges (wavy margins, branching veins, radial gradient, swaying in the wind), one or two lotus flowers breathing open (white-based pointed petals with pink tips over a seed pod), double-ring ripples every second or two, a dragonfly hopping between the leaves ("on the tip of the tender lotus, a dragonfly has come to rest"), and the occasional petal drifting across the water; fireflies take over in dark mode;
+- **Autumn (Oct–Nov) maple + ginkgo**: the maple follows a hand-tuned real-crimson outline — a top lobe, two upper-side lobes, two small lower ones, serrated edges and five palmate veins (three shades of red, tumbling down), mixed 6:4 with golden ginkgo fans whose outer edges ripple — crimson against gold, the two best cards of autumn, no need to pick just one;
+- **Winter (Dec–Feb) plum + ice crystals**: on sunny days whole five-petal blossoms drift down sparse and slow (near-white pink, five overlapping petals with six stamens, one size smaller and paler than sakura) while four-point star glints twinkle in place — plum blossoms defying the snow; actual snowfall switches to the snow skin via the real-time weather layer, snow is snow and flowers are flowers;
 - Deep night (after 23:00) in dark mode turns to starry sky with meteors; May and September fall back to plain specks.
 
 All falling skins share a `Faller` base class — sinusoidal sway + steady descent + wrap-around at the edges; subclasses only decide what they look like. A few polish spots that are easy to miss:

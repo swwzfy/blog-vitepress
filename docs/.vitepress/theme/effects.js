@@ -142,7 +142,7 @@ function initParticles() {
     }
   }
 
-  // 樱花瓣：贝塞尔尖椭圆，摇摆下落 + 自转（3-4 月）
+  // 樱花瓣：尖端带标志性缺刻的贝塞尔花瓣，摇摆下落 + 自转（3-4 月）
   class Petal extends Faller {
     constructor() { super(); this.reset(false); }
     reset(fromTop) {
@@ -164,29 +164,87 @@ function initParticles() {
       ctx.translate(this.x, this.y);
       ctx.rotate(this.rot);
       ctx.fillStyle = `hsla(342, 80%, ${this.light}%, ${this.opacity})`;
+      const s = this.size;
       ctx.beginPath();
-      ctx.moveTo(0, -this.size);
-      ctx.quadraticCurveTo(this.size * 0.85, 0, 0, this.size);
-      ctx.quadraticCurveTo(-this.size * 0.85, 0, 0, -this.size);
+      ctx.moveTo(0, s * 0.95);
+      ctx.quadraticCurveTo(s * 0.62, s * 0.62, s * 0.6, -s * 0.1);
+      ctx.quadraticCurveTo(s * 0.58, -s * 0.42, s * 0.3, -s * 0.62);
+      ctx.quadraticCurveTo(s * 0.12, -s * 0.72, 0, -s * 0.52);
+      ctx.quadraticCurveTo(-s * 0.12, -s * 0.72, -s * 0.3, -s * 0.62);
+      ctx.quadraticCurveTo(-s * 0.58, -s * 0.42, -s * 0.6, -s * 0.1);
+      ctx.quadraticCurveTo(-s * 0.62, s * 0.62, 0, s * 0.95);
       ctx.fill();
       ctx.restore();
     }
   }
 
-  // 枫叶：五裂掌形（贝塞尔经深缺口连五个叶尖），翻滚下落（10-11 月，与银杏 6:4 混飘）
-  class Maple extends Faller {
+  // 桃花：整朵五瓣、灼灼深粉、瓣形略尖，与樱花瓣混飘（3-4 月）
+  class PeachBlossom extends Faller {
     constructor() { super(); this.reset(false); }
     reset(fromTop) {
       this.topPad = 16;
       this.edgePad = 16;
-      this.size = Math.random() * 3.5 + 4.5;
+      this.r = Math.random() * 0.9 + 1.9;
+      this.speedY = Math.random() * 0.3 + 0.25;
+      this.swayAmp = Math.random() * 0.45 + 0.2;
+      this.swayFreq = Math.random() * 0.014 + 0.008;
+      this.rot = Math.random() * Math.PI * 2;
+      this.rotSpeed = (Math.random() - 0.5) * 0.03;
+      this.opacity = Math.random() * 0.25 + 0.6;
+      this.light = Math.random() * 6 + 72;
+      this.setPos(fromTop);
+    }
+    draw() {
+      ctx.save();
+      ctx.translate(this.x, this.y);
+      ctx.rotate(this.rot);
+      ctx.globalAlpha = this.opacity;
+      ctx.fillStyle = `hsla(345, 68%, ${this.light}%, 1)`;
+      for (let i = 0; i < 5; i++) {
+        const a = -Math.PI / 2 + i * ((Math.PI * 2) / 5);
+        ctx.save();
+        ctx.rotate(a);
+        ctx.beginPath();
+        ctx.ellipse(0, -this.r * 1.2, this.r * 0.72, this.r * 1.08, 0, 0, Math.PI * 2);
+        ctx.fill();
+        ctx.restore();
+      }
+      // 桃花花心偏紫红，缀几枚黄色花丝
+      ctx.fillStyle = 'rgba(140, 35, 55, 0.8)';
+      ctx.beginPath();
+      ctx.arc(0, 0, this.r * 0.3, 0, Math.PI * 2);
+      ctx.fill();
+      ctx.fillStyle = 'rgba(244, 202, 120, 0.9)';
+      for (let i = 0; i < 5; i++) {
+        const a = -Math.PI / 4 + i * ((Math.PI * 2) / 5);
+        ctx.beginPath();
+        ctx.arc(Math.cos(a) * this.r * 0.5, Math.sin(a) * this.r * 0.5, this.r * 0.12, 0, Math.PI * 2);
+        ctx.fill();
+      }
+      ctx.globalAlpha = 1;
+      ctx.restore();
+    }
+  }
+
+  // 枫叶：参考真实红枫轮廓——顶裂 + 左右上裂 + 两枚下小裂，裂瓣宽厚、裂缘带锯齿、主脉五出（10-11 月）
+  // 轮廓按 (角度°, 半径系数) 手调，左半程序镜像
+  const MAPLE_PTS = [
+    [-90, 1.0], [-74, 0.62], [-60, 0.3], [-46, 0.62], [-30, 0.97], [-14, 0.58],
+    [4, 0.28], [22, 0.46], [38, 0.7], [56, 0.42], [88, 0.2],
+  ];
+  class Maple extends Faller {
+    constructor() { super(); this.reset(false); }
+    reset(fromTop) {
+      this.topPad = 18;
+      this.edgePad = 18;
+      this.size = Math.random() * 3.5 + 5;
       this.speedY = Math.random() * 0.6 + 0.45;
       this.swayAmp = Math.random() * 0.5 + 0.2;
       this.swayFreq = Math.random() * 0.016 + 0.01;
       this.rot = Math.random() * Math.PI * 2;
       this.rotSpeed = (Math.random() - 0.5) * 0.09;
       this.opacity = Math.random() * 0.25 + 0.5;
-      this.color = Math.random() < 0.5 ? '#d95f43' : '#c0392b';
+      this.color = ['#c0392b', '#b03024', '#9e2b20'][Math.floor(Math.random() * 3)];
       this.setPos(fromTop);
     }
     draw() {
@@ -195,33 +253,49 @@ function initParticles() {
       ctx.rotate(this.rot);
       ctx.globalAlpha = this.opacity;
       ctx.fillStyle = this.color;
-      const R = this.size;
+      const R = this.size * 1.7;
+      const pts = [];
+      MAPLE_PTS.forEach(([a, r]) => {
+        const rad = (a * Math.PI) / 180;
+        pts.push([Math.cos(rad) * r * R, Math.sin(rad) * r * R]);
+      });
+      for (let i = MAPLE_PTS.length - 2; i >= 0; i--) {
+        const rad = ((180 - MAPLE_PTS[i][0]) * Math.PI) / 180;
+        pts.push([Math.cos(rad) * MAPLE_PTS[i][1] * R, Math.sin(rad) * MAPLE_PTS[i][1] * R]);
+      }
+      // 裂瓣宽厚的诀窍：顶点做尖角，每条边的中点沿径向外推 25%，让边缘向外鼓
+      const m = pts.length;
       ctx.beginPath();
-      for (let i = 0; i < 5; i++) {
-        const ta = -Math.PI / 2 + i * ((Math.PI * 2) / 5);
-        if (i === 0) ctx.moveTo(Math.cos(ta) * R, Math.sin(ta) * R);
-        const na = ta + Math.PI / 5;
-        const nb = ta + (Math.PI * 2) / 5;
-        ctx.quadraticCurveTo(
-          Math.cos(na) * R * 0.34, Math.sin(na) * R * 0.34,
-          Math.cos(nb) * R, Math.sin(nb) * R
-        );
+      ctx.moveTo(pts[0][0], pts[0][1]);
+      for (let i = 0; i < m; i++) {
+        const a1 = pts[i], a2 = pts[(i + 1) % m];
+        ctx.quadraticCurveTo(((a1[0] + a2[0]) / 2) * 1.25, ((a1[1] + a2[1]) / 2) * 1.25, a2[0], a2[1]);
       }
       ctx.closePath();
       ctx.fill();
-      // 叶柄从两片下瓣的缺口处伸出
+      // 主脉五出
+      ctx.strokeStyle = 'rgba(60, 8, 8, 0.28)';
+      ctx.lineWidth = 0.7;
+      for (const [a, r] of [[-90, 0.88], [-30, 0.85], [-150, 0.85], [38, 0.62], [142, 0.62]]) {
+        const rad = (a * Math.PI) / 180;
+        ctx.beginPath();
+        ctx.moveTo(0, 0.12 * R);
+        ctx.lineTo(Math.cos(rad) * r * R, Math.sin(rad) * r * R);
+        ctx.stroke();
+      }
+      // 叶柄从底部凹口伸出
       ctx.strokeStyle = this.color;
       ctx.lineWidth = 1;
       ctx.beginPath();
-      ctx.moveTo(0, R * 0.45);
-      ctx.lineTo(0, R * 1.35);
+      ctx.moveTo(0, 0.2 * R);
+      ctx.lineTo(0, 1.25 * R);
       ctx.stroke();
       ctx.globalAlpha = 1;
       ctx.restore();
     }
   }
 
-  // 银杏：扇面 + 顶部中央 V 缺口 + 放射叶脉，摆幅大、落得慢，像纸片打旋（10-11 月）
+  // 银杏：扇面外缘波浪起伏、顶部中央缺刻、放射叶脉，摆幅大、落得慢（10-11 月）
   class Ginkgo extends Faller {
     constructor() { super(); this.reset(false); }
     reset(fromTop) {
@@ -235,6 +309,7 @@ function initParticles() {
       this.rotSpeed = (Math.random() - 0.5) * 0.04;
       this.opacity = Math.random() * 0.25 + 0.5;
       this.color = Math.random() < 0.5 ? '#e6b94d' : '#f2c94c';
+      this.wobble = Math.random() * Math.PI * 2;
       this.setPos(fromTop);
     }
     draw() {
@@ -243,23 +318,31 @@ function initParticles() {
       ctx.rotate(this.rot);
       ctx.globalAlpha = this.opacity;
       ctx.fillStyle = this.color;
-      const R = this.size * 1.6;
+      const R = this.size * 2;
+      const spread = Math.PI * 0.85;
+      const base = -Math.PI / 2 - spread / 2;
+      // 扇面：外缘按角度采点，正弦波浪 + 顶部中央高斯缺刻
       ctx.beginPath();
       ctx.moveTo(0, 0);
-      ctx.quadraticCurveTo(-R * 0.9, -R * 0.25, -R * 0.78, -R * 0.85);
-      ctx.quadraticCurveTo(-R * 0.4, -R * 1.06, -R * 0.12, -R * 0.92);
-      ctx.lineTo(0, -R * 0.68);
-      ctx.lineTo(R * 0.12, -R * 0.92);
-      ctx.quadraticCurveTo(R * 0.4, -R * 1.06, R * 0.78, -R * 0.85);
-      ctx.quadraticCurveTo(R * 0.9, -R * 0.25, 0, 0);
+      const steps = 18;
+      for (let i = 0; i <= steps; i++) {
+        const a = base + (spread * i) / steps;
+        const wave = 1 + 0.05 * Math.sin(a * 6 + this.wobble);
+        const taper = i === 0 || i === steps ? 0.72 : 1;
+        const notch = R * 0.12 * Math.exp(-Math.pow((a + Math.PI / 2) / 0.18, 2));
+        const r = R * wave * taper - notch;
+        ctx.lineTo(Math.cos(a) * r, Math.sin(a) * r);
+      }
       ctx.closePath();
       ctx.fill();
-      ctx.strokeStyle = 'rgba(120, 84, 20, 0.35)';
-      ctx.lineWidth = 0.6;
-      for (const k of [-0.55, -0.18, 0.18, 0.55]) {
+      // 放射叶脉
+      ctx.strokeStyle = 'rgba(120, 84, 20, 0.3)';
+      ctx.lineWidth = 0.5;
+      for (let k = 1; k < 9; k++) {
+        const a = base + (spread * k) / 9;
         ctx.beginPath();
-        ctx.moveTo(0, -R * 0.12);
-        ctx.lineTo(k * R, -R * 0.85);
+        ctx.moveTo(0, 0);
+        ctx.lineTo(Math.cos(a) * R * 0.82, Math.sin(a) * R * 0.82);
         ctx.stroke();
       }
       ctx.strokeStyle = 'rgba(150, 110, 40, 0.8)';
@@ -323,13 +406,21 @@ function initParticles() {
       for (let i = 0; i < 5; i++) {
         const a = -Math.PI / 2 + i * ((Math.PI * 2) / 5);
         ctx.beginPath();
-        ctx.arc(Math.cos(a) * this.r * 1.35, Math.sin(a) * this.r * 1.35, this.r, 0, Math.PI * 2);
+        ctx.arc(Math.cos(a) * this.r * 1.1, Math.sin(a) * this.r * 1.1, this.r, 0, Math.PI * 2);
         ctx.fill();
       }
-      ctx.fillStyle = isDark() ? 'rgba(240, 196, 120, 0.9)' : 'rgba(235, 185, 110, 0.95)';
+      // 花蕊：一点雌蕊 + 六枚雄蕊
+      ctx.fillStyle = isDark() ? 'rgba(214, 170, 88, 0.95)' : 'rgba(200, 148, 62, 0.95)';
       ctx.beginPath();
-      ctx.arc(0, 0, this.r * 0.42, 0, Math.PI * 2);
+      ctx.arc(0, 0, this.r * 0.2, 0, Math.PI * 2);
       ctx.fill();
+      ctx.fillStyle = isDark() ? 'rgba(244, 208, 128, 0.95)' : 'rgba(238, 196, 108, 0.95)';
+      for (let i = 0; i < 6; i++) {
+        const a = -Math.PI / 3 + i * ((Math.PI * 2) / 6);
+        ctx.beginPath();
+        ctx.arc(Math.cos(a) * this.r * 0.42, Math.sin(a) * this.r * 0.42, this.r * 0.13, 0, Math.PI * 2);
+        ctx.fill();
+      }
       ctx.globalAlpha = 1;
       ctx.restore();
     }
@@ -428,20 +519,37 @@ function initParticles() {
       ctx.save();
       ctx.translate(this.x, this.y);
       ctx.rotate(this.rot + sway);
-      ctx.fillStyle = `rgba(${this.green}, 0.16)`;
-      const gap = 0.28;
+      // 中心深、边缘浅的径向渐变
+      const g = ctx.createRadialGradient(0, 0, this.rx * 0.12, 0, 0, this.rx);
+      g.addColorStop(0, `rgba(${this.green}, 0.26)`);
+      g.addColorStop(1, `rgba(${this.green}, 0.1)`);
+      ctx.fillStyle = g;
+      // 波浪缘参数化椭圆描一圈，缺口由首尾弦切出
+      const steps = 26;
+      const span = Math.PI * 2 - 0.56;
       ctx.beginPath();
-      ctx.moveTo(0, 0);
-      ctx.ellipse(0, 0, this.rx, this.ry, 0, this.notch + gap, this.notch - gap + Math.PI * 2);
+      for (let i = 0; i <= steps; i++) {
+        const a = this.notch + 0.28 + (span * i) / steps;
+        const wave = 1 + 0.035 * Math.sin(a * 7 + this.phase * 3);
+        const x = Math.cos(a) * this.rx * wave;
+        const y = Math.sin(a) * this.ry * wave;
+        i === 0 ? ctx.moveTo(x, y) : ctx.lineTo(x, y);
+      }
       ctx.closePath();
       ctx.fill();
-      ctx.strokeStyle = `rgba(${this.green}, 0.22)`;
+      // 主脉八出，近缘各分两枝
+      ctx.strokeStyle = `rgba(${this.green}, 0.26)`;
       ctx.lineWidth = 1;
-      for (let k = 0; k < 6; k++) {
-        const a = this.notch + gap + ((Math.PI * 2 - gap * 2) * (k + 0.5)) / 6;
+      for (let k = 0; k < 8; k++) {
+        const a = this.notch + 0.28 + (span * (k + 0.5)) / 8;
+        const bx = Math.cos(a), by = Math.sin(a);
         ctx.beginPath();
         ctx.moveTo(0, 0);
-        ctx.lineTo(Math.cos(a) * this.rx * 0.82, Math.sin(a) * this.ry * 0.82);
+        ctx.lineTo(bx * this.rx * 0.85, by * this.ry * 0.85);
+        ctx.moveTo(bx * this.rx * 0.52, by * this.ry * 0.52);
+        ctx.lineTo(bx * this.rx * 0.7 - by * 7, by * this.ry * 0.7 + bx * 7);
+        ctx.moveTo(bx * this.rx * 0.52, by * this.ry * 0.52);
+        ctx.lineTo(bx * this.rx * 0.7 + by * 7, by * this.ry * 0.7 - bx * 7);
         ctx.stroke();
       }
       ctx.restore();
@@ -466,23 +574,38 @@ function initParticles() {
       ctx.rotate(-0.35);
       ctx.scale(breathe, breathe);
       for (let ring = 0; ring < 2; ring++) {
-        const petals = ring === 0 ? 6 : 5;
-        const len = this.s * (ring === 0 ? 1 : 0.62);
-        ctx.fillStyle = ring === 0 ? 'rgba(248, 205, 220, 0.5)' : 'rgba(252, 228, 236, 0.6)';
+        const petals = ring === 0 ? 9 : 6;
+        const len = this.s * (ring === 0 ? 1 : 0.55);
+        const w = len * (ring === 0 ? 0.3 : 0.38);
         for (let i = 0; i < petals; i++) {
           const a = (i / petals) * Math.PI * 2 + (ring === 1 ? 0.35 : 0);
           ctx.save();
           ctx.rotate(a);
+          // 花瓣：基部白、瓣尖粉的尖瓣
+          const g = ctx.createLinearGradient(0, 0, 0, -len);
+          g.addColorStop(0, 'rgba(252, 234, 240, 0.55)');
+          g.addColorStop(1, 'rgba(246, 178, 203, 0.62)');
+          ctx.fillStyle = g;
           ctx.beginPath();
-          ctx.ellipse(0, -len * 0.5, len * 0.22, len * 0.5, 0, 0, Math.PI * 2);
+          ctx.moveTo(0, 0);
+          ctx.quadraticCurveTo(w, -len * 0.42, 0, -len);
+          ctx.quadraticCurveTo(-w, -len * 0.42, 0, 0);
           ctx.fill();
           ctx.restore();
         }
       }
-      ctx.fillStyle = 'rgba(238, 196, 120, 0.55)';
+      // 莲蓬：小圆盘 + 数枚莲子
+      ctx.fillStyle = 'rgba(196, 200, 108, 0.6)';
       ctx.beginPath();
-      ctx.arc(0, 0, this.s * 0.18, 0, Math.PI * 2);
+      ctx.arc(0, 0, this.s * 0.16, 0, Math.PI * 2);
       ctx.fill();
+      ctx.fillStyle = 'rgba(140, 148, 72, 0.6)';
+      for (let i = 0; i < 4; i++) {
+        const a = -Math.PI / 4 + i * ((Math.PI * 2) / 4);
+        ctx.beginPath();
+        ctx.arc(Math.cos(a) * this.s * 0.07, Math.sin(a) * this.s * 0.07, this.s * 0.035, 0, Math.PI * 2);
+        ctx.fill();
+      }
       ctx.restore();
     }
   }
@@ -721,7 +844,8 @@ function initParticles() {
   function buildParticles() {
     switch (skin) {
       case 'sakura':
-        particles = Array.from({ length: countFor(24000, 20, 55) }, () => new Petal());
+        particles = Array.from({ length: countFor(24000, 20, 55) }, () =>
+          Math.random() < 0.62 ? new Petal() : new PeachBlossom());
         break;
       case 'foliage':
         particles = Array.from({ length: countFor(30000, 14, 40) }, () =>
