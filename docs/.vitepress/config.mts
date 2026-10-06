@@ -96,7 +96,7 @@ function proxyApi(req: IncomingMessage, res: ServerResponse, next: () => void): 
 
 export default defineConfig({
   title: "Kiran's Blog",
-  description: '独立开发者 · 写作者 · 终身学习者',
+  description: '独立开发者 · 写作者 · 坐标扬州',
   lang: 'zh-CN',
   // 顶层开关：VPDocFooter 靠 page.lastUpdated 才渲染"最后更新"，
   // themeConfig.lastUpdated 只是 label，缺这个开关时间戳永远不出数
@@ -135,14 +135,14 @@ export default defineConfig({
       label: 'English',
       lang: 'en-US',
       title: "Kiran's Blog",
-      description: 'Indie Developer · Writer · Lifelong Learner',
+      description: 'Indie Developer · Writer · Based in Yangzhou',
       head: [
         ['meta', { property: 'og:image', content: hostname + '/og-en.png' }],
         ['meta', { property: 'og:image:width', content: '1200' }],
         ['meta', { property: 'og:image:height', content: '630' }],
         ['meta', { name: 'twitter:image', content: hostname + '/og-en.png' }],
-        ['meta', { property: 'og:description', content: 'Indie Developer · Writer · Lifelong Learner' }],
-        ['meta', { name: 'twitter:description', content: 'Indie Developer · Writer · Lifelong Learner' }]
+        ['meta', { property: 'og:description', content: 'Indie Developer · Writer · Based in Yangzhou' }],
+        ['meta', { name: 'twitter:description', content: 'Indie Developer · Writer · Based in Yangzhou' }]
       ],
       themeConfig: {
         nav: [
@@ -267,7 +267,7 @@ export default defineConfig({
     ['meta', { name: 'theme-color', content: '#1b1b1f', media: '(prefers-color-scheme: dark)' }],
     ['meta', { property: 'og:type', content: 'website' }],
     ['meta', { property: 'og:title', content: "Kiran's Blog" }],
-    ['meta', { property: 'og:description', content: '独立开发者 · 写作者 · 终身学习者' }],
+    ['meta', { property: 'og:description', content: '独立开发者 · 写作者 · 坐标扬州' }],
     ['meta', { property: 'og:locale', content: 'zh_CN' }],
     ['meta', { property: 'og:image', content: hostname + '/og.png' }],
     ['meta', { property: 'og:image:width', content: '1200' }],
@@ -277,7 +277,7 @@ export default defineConfig({
     // i18n SEO 的 hreflang 改由 buildEnd 逐页注入（scripts/build-seo.js），
     // 指向对应语种的同一页面，而不是全站一律指向首页
     ['meta', { name: 'twitter:title', content: "Kiran's Blog" }],
-    ['meta', { name: 'twitter:description', content: '独立开发者 · 写作者 · 终身学习者' }]
+    ['meta', { name: 'twitter:description', content: '独立开发者 · 写作者 · 坐标扬州' }]
   ],
   async buildEnd(siteConfig) {
     const { createRequire } = await import('module')

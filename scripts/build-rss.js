@@ -136,7 +136,7 @@ async function buildRss(siteConfig) {
       out: 'feed.rss',
       htmlOut: 'feed.html',
       title: "Kiran's Blog",
-      description: '独立开发者 · 写作者 · 终身学习者',
+      description: '独立开发者 · 写作者 · 坐标扬州',
       language: 'zh-CN',
       homeUrl: HOSTNAME + '/',
       posts: loadPosts(ZH_POSTS_DIR, 'posts')
@@ -145,7 +145,7 @@ async function buildRss(siteConfig) {
       out: 'en/feed.rss',
       htmlOut: 'en/feed.html',
       title: "Kiran's Blog",
-      description: 'Indie Developer · Writer · Lifelong Learner',
+      description: 'Indie Developer · Writer · Based in Yangzhou',
       language: 'en-US',
       homeUrl: HOSTNAME + '/en/',
       posts: loadPosts(EN_POSTS_DIR, 'en/posts')

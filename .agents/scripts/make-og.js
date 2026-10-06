@@ -50,7 +50,7 @@ const OUT = path.resolve(
 )
 const EYEBROW = String(args.eyebrow || "KIRAN'S BLOG")
 const TITLE = String(args.title || 'Kiran')
-const SUBTITLE = String(args.subtitle || '独立开发者 · 写作者 · 终身学习者')
+const SUBTITLE = String(args.subtitle || '独立开发者 · 写作者 · 和 AI 一起折腾')
 const URL_TEXT = String(args.url || 'jossecho.com')
 
 if (!fs.existsSync(SRC)) {

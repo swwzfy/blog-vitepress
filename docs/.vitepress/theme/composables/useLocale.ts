@@ -38,8 +38,8 @@ const dict = {
   ttsPlay: { zh: '朗读本文', en: 'Read aloud' },
   ttsStop: { zh: '停止朗读', en: 'Stop reading' },
   footerDesc: {
-    zh: '独立开发者 · 写作者 · 终身学习者',
-    en: 'Indie Developer · Writer · Lifelong Learner'
+    zh: '独立开发者 · 写作者 · 坐标扬州',
+    en: 'Indie Developer · Writer · Based in Yangzhou'
   },
   rights: { zh: '保留所有权利', en: 'All rights reserved.' },
   uptime: { zh: '已运行 {days} 天', en: '{days} days online' },
