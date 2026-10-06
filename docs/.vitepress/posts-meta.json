@@ -1,5 +1,5 @@
 {
-  "generatedAt": "2026-10-05T06:29:49.405Z",
+  "generatedAt": "2026-10-06T02:46:13.795Z",
   "zh": [
     {
       "path": "posts/ai-code-edit-weaknesses.md",
@@ -192,6 +192,18 @@
         "前端"
       ],
       "words": 883
+    },
+    {
+      "path": "posts/vitepress-particle-skins.md",
+      "url": "/posts/vitepress-particle-skins",
+      "title": "VitePress 换肤实录：博客背景怎么知道你那边在下雨",
+      "date": "2026-10-06",
+      "description": "背景粒子先按季节换装，再跟实时天气下雨飘雪，最后连定位都收进了自己的服务器。比特效更值钱的是翻车现场：被 requestIdleCallback 吞掉的 TypeError、一个 404 拖死全站特效的静态 import、回环 curl 502 的设计行为。",
+      "tags": [
+        "VitePress",
+        "前端"
+      ],
+      "words": 2249
     },
     {
       "path": "posts/vitepress-three-custom-tricks.md",
@@ -423,6 +435,18 @@
         "Frontend"
       ],
       "words": 653
+    },
+    {
+      "path": "en/posts/vitepress-particle-skins.md",
+      "url": "/en/posts/vitepress-particle-skins",
+      "title": "Particle Skins: How My Blog Background Knows It's Raining Where You Are",
+      "date": "2026-10-06",
+      "description": "The background particles first dressed by season, then followed the real-time weather, and finally geolocation moved onto my own server. The crashes taught more than the feature: a TypeError swallowed by requestIdleCallback, a static import that let one 404 kill every effect on the site, and a 502 that was not a bug.",
+      "tags": [
+        "VitePress",
+        "Frontend"
+      ],
+      "words": 1632
     },
     {
       "path": "en/posts/vitepress-three-custom-tricks.md",
