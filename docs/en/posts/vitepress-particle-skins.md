@@ -13,7 +13,7 @@ This post chronicles giving it skins: first by season, then by real-time weather
 
 <!-- more -->
 
-## Layer one: skins by season
+## Layer one: skins by season — a four-season floral calendar
 
 The season logic lives in one function that picks a skin by month, theme and hour:
 
@@ -24,17 +24,27 @@ function pickSkin() {
   if (w) return w;
   const m = new Date().getMonth() + 1;
   if (m >= 3 && m <= 4) return 'sakura';     // cherry blossoms
-  if (m >= 6 && m <= 8) return isDark() ? 'firefly' : 'plain';
-  if (m >= 10 && m <= 11) return 'leaves';   // falling leaves
-  if (m === 12 || m <= 2) return 'snow';     // snow
+  if (m >= 6 && m <= 8) return isDark() ? 'firefly' : 'lotus';
+  if (m >= 10 && m <= 11) return 'foliage';  // maple + ginkgo
+  if (m === 12 || m <= 2) return 'winter';   // plum + ice crystals
   return 'plain';                            // plain specks in May and September
 }
 ```
 
-Every skin is drawn live with canvas 2D, zero images: petals are pointed ellipses pieced from two Bézier curves, leaves carry a midrib, fireflies are radial-gradient halos breathing in and out, and shooting stars are thrown in by a scheduler. All falling skins share a `Faller` base class — sinusoidal sway + steady descent + wrap-around at the edges; subclasses only decide what they look like. A few polish spots that are easy to miss:
+Every skin is drawn live with canvas 2D, zero images, and together they form a four-season floral calendar (this layer went through two more rounds of tinkering after launch — what's written here is the current state): spring sakura, summer lotus, autumn maple and ginkgo, winter plum —
+
+- **Spring (Mar–Apr) sakura**: pointed ellipse petals pieced from two Bézier curves, swaying as they fall;
+- **Summer (Jun–Aug) lotus pond**: in light mode a living pond — two clusters of translucent leaves at the bottom edges (notched ellipses with radial veins, swaying in the wind), one or two lotus flowers breathing open, double-ring ripples every second or two, a dragonfly hopping between the leaves ("on the tip of the tender lotus, a dragonfly has come to rest"), and the occasional petal drifting across the water; fireflies take over in dark mode;
+- **Autumn (Oct–Nov) maple + ginkgo**: five-lobed maple leaves in two reds tumbling down, mixed 6:4 with golden ginkgo fans (wide sway, slow descent, veins and stems) — crimson against gold, the two best cards of autumn, no need to pick just one;
+- **Winter (Dec–Feb) plum + ice crystals**: on sunny days whole five-petal blossoms drift down sparse and slow (near-white pink, one size smaller and paler than sakura) while four-point star glints twinkle in place — plum blossoms defying the snow; actual snowfall switches to the snow skin via the real-time weather layer, snow is snow and flowers are flowers;
+- Deep night (after 23:00) in dark mode turns to starry sky with meteors; May and September fall back to plain specks.
+
+All falling skins share a `Faller` base class — sinusoidal sway + steady descent + wrap-around at the edges; subclasses only decide what they look like. A few polish spots that are easy to miss:
 
 - The hero already has a pink gradient, so petal lightness is clamped to 56–66 or they melt into the background;
 - Snow turns gray-blue in light mode — white dots on white are invisible;
+- The pond lives only at the page edges, leaving the middle blank for content, its translucent green clamped at 0.16 — decoration doesn't fight the text for space;
+- The ice crystals' four-point star geometry is lifted straight from the logo's ✦ marks, quietly unifying the brand language;
 - Particle count scales with screen area, with per-skin caps tuned by visual weight: 40–120 rain streaks, 30–90 snowflakes, only 8–26 fireflies;
 - Switching theme, returning to the tab, or crossing 23:00 re-evaluates the skin on the spot (a MutationObserver watches the `<html>` class);
 - Mobile (≤768px) and `prefers-reduced-motion` users get none of it — motion is for those who don't mind it.

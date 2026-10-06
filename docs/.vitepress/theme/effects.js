@@ -40,7 +40,8 @@ function initParticles() {
   let mouseX = -1000, mouseY = -1000;
 
   // —— 皮肤：按月份/明暗/时刻/实时天气给粒子换装，全部 canvas 2D 现场绘制，零图片 ——
-  // 优先级：深夜星空（23 点后且暗色）> 实时雨/雪（weather.js，晴/多云/雾不干预）> 季节飘落物 > 素净微粒（5/9 月兜底）。
+  // 优先级：深夜星空（23 点后且暗色）> 实时雨/雪（weather.js，晴/多云/雾不干预）> 季节 > 素净微粒（5/9 月兜底）。
+  // 季节即四季花历：3-4 月樱花、6-8 月荷塘（暗色流萤）、10-11 月枫+银杏、12-2 月梅+冰晶（实际雨雪由降水皮肤接管）。
   const isDark = () => document.documentElement.classList.contains('dark');
   const isNight = () => { const h = new Date().getHours(); return h >= 23 || h < 5; };
   // Open-Meteo weather_code → 皮肤意图：雨系（毛毛雨 51-57 / 雨 61-67 / 阵雨 80-82 / 雷暴 95+）→ rain，
@@ -58,14 +59,18 @@ function initParticles() {
     if (w) return w;
     const m = new Date().getMonth() + 1;
     if (m >= 3 && m <= 4) return 'sakura';
-    if (m >= 6 && m <= 8) return isDark() ? 'firefly' : 'plain';
-    if (m >= 10 && m <= 11) return 'leaves';
-    if (m === 12 || m <= 2) return 'snow';
+    if (m >= 6 && m <= 8) return isDark() ? 'firefly' : 'lotus';
+    if (m >= 10 && m <= 11) return 'foliage';
+    if (m === 12 || m <= 2) return 'winter';
     return 'plain';
   }
   let skin = pickSkin();
   let shootingStars = [];
   let shootAt = 0;
+  let lotusRipples = [];
+  let rippleAt = 0;
+  let lotusPetals = [];
+  let petalAt = 0;
 
   // DPR 适配：物理像素 = CSS 像素 * dpr，避免 retina 上模糊。dpr 上限 2 防止 4K 屏过度膨胀。
   // 粒子坐标一律用 CSS 像素（vw/vh），物理像素映射交给 setTransform；鼠标坐标也是 CSS 像素。
@@ -168,21 +173,20 @@ function initParticles() {
     }
   }
 
-  // 落叶：秋色小叶 + 主叶脉，摆幅与翻滚都比花瓣强（10-11 月）
-  const LEAF_COLORS = ['#c9764b', '#d89a3e', '#b65440', '#94a04a'];
-  class Leaf extends Faller {
+  // 枫叶：五裂掌形（贝塞尔经深缺口连五个叶尖），翻滚下落（10-11 月，与银杏 6:4 混飘）
+  class Maple extends Faller {
     constructor() { super(); this.reset(false); }
     reset(fromTop) {
-      this.topPad = 14;
-      this.edgePad = 14;
-      this.size = Math.random() * 2.5 + 4;
-      this.speedY = Math.random() * 0.7 + 0.35;
+      this.topPad = 16;
+      this.edgePad = 16;
+      this.size = Math.random() * 3.5 + 4.5;
+      this.speedY = Math.random() * 0.6 + 0.45;
       this.swayAmp = Math.random() * 0.5 + 0.2;
-      this.swayFreq = Math.random() * 0.018 + 0.01;
+      this.swayFreq = Math.random() * 0.016 + 0.01;
       this.rot = Math.random() * Math.PI * 2;
-      this.rotSpeed = (Math.random() - 0.5) * 0.06;
-      this.opacity = Math.random() * 0.25 + 0.45;
-      this.color = LEAF_COLORS[Math.floor(Math.random() * LEAF_COLORS.length)];
+      this.rotSpeed = (Math.random() - 0.5) * 0.09;
+      this.opacity = Math.random() * 0.25 + 0.5;
+      this.color = Math.random() < 0.5 ? '#d95f43' : '#c0392b';
       this.setPos(fromTop);
     }
     draw() {
@@ -191,16 +195,78 @@ function initParticles() {
       ctx.rotate(this.rot);
       ctx.globalAlpha = this.opacity;
       ctx.fillStyle = this.color;
+      const R = this.size;
       ctx.beginPath();
-      ctx.moveTo(0, -this.size);
-      ctx.quadraticCurveTo(this.size, -this.size * 0.15, 0, this.size);
-      ctx.quadraticCurveTo(-this.size, -this.size * 0.15, 0, -this.size);
+      for (let i = 0; i < 5; i++) {
+        const ta = -Math.PI / 2 + i * ((Math.PI * 2) / 5);
+        if (i === 0) ctx.moveTo(Math.cos(ta) * R, Math.sin(ta) * R);
+        const na = ta + Math.PI / 5;
+        const nb = ta + (Math.PI * 2) / 5;
+        ctx.quadraticCurveTo(
+          Math.cos(na) * R * 0.34, Math.sin(na) * R * 0.34,
+          Math.cos(nb) * R, Math.sin(nb) * R
+        );
+      }
+      ctx.closePath();
       ctx.fill();
-      ctx.strokeStyle = 'rgba(0, 0, 0, 0.18)';
-      ctx.lineWidth = 0.6;
+      // 叶柄从两片下瓣的缺口处伸出
+      ctx.strokeStyle = this.color;
+      ctx.lineWidth = 1;
       ctx.beginPath();
-      ctx.moveTo(0, -this.size * 0.7);
-      ctx.lineTo(0, this.size * 0.7);
+      ctx.moveTo(0, R * 0.45);
+      ctx.lineTo(0, R * 1.35);
+      ctx.stroke();
+      ctx.globalAlpha = 1;
+      ctx.restore();
+    }
+  }
+
+  // 银杏：扇面 + 顶部中央 V 缺口 + 放射叶脉，摆幅大、落得慢，像纸片打旋（10-11 月）
+  class Ginkgo extends Faller {
+    constructor() { super(); this.reset(false); }
+    reset(fromTop) {
+      this.topPad = 16;
+      this.edgePad = 16;
+      this.size = Math.random() * 3 + 4;
+      this.speedY = Math.random() * 0.35 + 0.25;
+      this.swayAmp = Math.random() * 0.7 + 0.35;
+      this.swayFreq = Math.random() * 0.014 + 0.008;
+      this.rot = Math.random() * Math.PI * 2;
+      this.rotSpeed = (Math.random() - 0.5) * 0.04;
+      this.opacity = Math.random() * 0.25 + 0.5;
+      this.color = Math.random() < 0.5 ? '#e6b94d' : '#f2c94c';
+      this.setPos(fromTop);
+    }
+    draw() {
+      ctx.save();
+      ctx.translate(this.x, this.y);
+      ctx.rotate(this.rot);
+      ctx.globalAlpha = this.opacity;
+      ctx.fillStyle = this.color;
+      const R = this.size * 1.6;
+      ctx.beginPath();
+      ctx.moveTo(0, 0);
+      ctx.quadraticCurveTo(-R * 0.9, -R * 0.25, -R * 0.78, -R * 0.85);
+      ctx.quadraticCurveTo(-R * 0.4, -R * 1.06, -R * 0.12, -R * 0.92);
+      ctx.lineTo(0, -R * 0.68);
+      ctx.lineTo(R * 0.12, -R * 0.92);
+      ctx.quadraticCurveTo(R * 0.4, -R * 1.06, R * 0.78, -R * 0.85);
+      ctx.quadraticCurveTo(R * 0.9, -R * 0.25, 0, 0);
+      ctx.closePath();
+      ctx.fill();
+      ctx.strokeStyle = 'rgba(120, 84, 20, 0.35)';
+      ctx.lineWidth = 0.6;
+      for (const k of [-0.55, -0.18, 0.18, 0.55]) {
+        ctx.beginPath();
+        ctx.moveTo(0, -R * 0.12);
+        ctx.lineTo(k * R, -R * 0.85);
+        ctx.stroke();
+      }
+      ctx.strokeStyle = 'rgba(150, 110, 40, 0.8)';
+      ctx.lineWidth = 1;
+      ctx.beginPath();
+      ctx.moveTo(0, 0);
+      ctx.lineTo(0, R * 0.5);
       ctx.stroke();
       ctx.globalAlpha = 1;
       ctx.restore();
@@ -227,6 +293,78 @@ function initParticles() {
         ? `rgba(255, 255, 255, ${this.opacity})`
         : `rgba(112, 138, 168, ${this.opacity * 0.85})`;
       ctx.fill();
+    }
+  }
+
+  // 梅花：整朵五瓣小花，浅粉近白，疏落慢落（12-2 月晴日；实际下雪由 weather-snow 接管）
+  class PlumBlossom extends Faller {
+    constructor() { super(); this.reset(false); }
+    reset(fromTop) {
+      this.topPad = 14;
+      this.edgePad = 14;
+      this.r = Math.random() * 1.3 + 1.4;
+      this.speedY = Math.random() * 0.25 + 0.2;
+      this.swayAmp = Math.random() * 0.4 + 0.15;
+      this.swayFreq = Math.random() * 0.012 + 0.007;
+      this.rot = Math.random() * Math.PI * 2;
+      this.rotSpeed = (Math.random() - 0.5) * 0.02;
+      this.opacity = Math.random() * 0.3 + 0.55;
+      this.light = Math.random() * 6 + 82;
+      this.setPos(fromTop);
+    }
+    draw() {
+      ctx.save();
+      ctx.translate(this.x, this.y);
+      ctx.rotate(this.rot);
+      ctx.globalAlpha = this.opacity;
+      ctx.fillStyle = isDark()
+        ? `hsla(350, 72%, ${this.light - 6}%, 0.95)`
+        : `hsla(350, 62%, ${this.light}%, 1)`;
+      for (let i = 0; i < 5; i++) {
+        const a = -Math.PI / 2 + i * ((Math.PI * 2) / 5);
+        ctx.beginPath();
+        ctx.arc(Math.cos(a) * this.r * 1.35, Math.sin(a) * this.r * 1.35, this.r, 0, Math.PI * 2);
+        ctx.fill();
+      }
+      ctx.fillStyle = isDark() ? 'rgba(240, 196, 120, 0.9)' : 'rgba(235, 185, 110, 0.95)';
+      ctx.beginPath();
+      ctx.arc(0, 0, this.r * 0.42, 0, Math.PI * 2);
+      ctx.fill();
+      ctx.globalAlpha = 1;
+      ctx.restore();
+    }
+  }
+
+  // 冰晶：四角星芒（复用 logo 星点几何），原地明灭不下落，与梅花同拼冬季晴日皮肤
+  class IceCrystal {
+    constructor() { this.reset(); }
+    reset() {
+      this.x = Math.random() * vw;
+      this.y = Math.random() * vh;
+      this.s = Math.random() * 2.2 + 1.6;
+      this.freq = Math.random() * 0.02 + 0.008;
+      this.phase = Math.random() * Math.PI * 2;
+    }
+    update() { this.phase += this.freq; }
+    draw() {
+      // 2.5 次方缓动出「偶尔一闪」：大部分帧接近透明，直接跳过绘制
+      const tw = Math.max(0, Math.sin(this.phase));
+      const a = Math.pow(tw, 2.5) * 0.95;
+      if (a < 0.02) return;
+      ctx.save();
+      ctx.translate(this.x, this.y);
+      ctx.fillStyle = isDark()
+        ? `rgba(214, 232, 255, ${a})`
+        : `rgba(126, 156, 196, ${a})`;
+      const s = this.s * (0.6 + 0.4 * tw);
+      ctx.beginPath();
+      ctx.moveTo(0, -s);
+      ctx.quadraticCurveTo(s * 0.16, -s * 0.16, s, 0);
+      ctx.quadraticCurveTo(s * 0.16, s * 0.16, 0, s);
+      ctx.quadraticCurveTo(-s * 0.16, s * 0.16, -s, 0);
+      ctx.quadraticCurveTo(-s * 0.16, -s * 0.16, 0, -s);
+      ctx.fill();
+      ctx.restore();
     }
   }
 
@@ -260,6 +398,231 @@ function initParticles() {
       ctx.moveTo(this.x, this.y);
       ctx.lineTo(this.x - this.slant * k, this.y - this.speedY * k);
       ctx.stroke();
+    }
+  }
+
+  // 荷叶：带缺口的扁平椭圆 + 放射叶脉，青绿半透明，锚在画面底缘缓慢摇摆（夏季亮色专属）
+  // 只住左右两簇边角，页面中间留白给内容
+  class LotusLeaf {
+    constructor(i, n) {
+      const zone = i % 2 === 0
+        ? 0.03 + Math.random() * 0.2
+        : 0.77 + Math.random() * 0.2;
+      this.x = (n > 6 && i === n - 1 ? 0.45 + Math.random() * 0.1 : zone) * vw;
+      this.y = vh * (0.86 + Math.random() * 0.13);
+      this.rx = Math.random() * 34 + 40;
+      this.ry = this.rx * (Math.random() * 0.1 + 0.34);
+      this.rot = (Math.random() - 0.5) * 0.5;
+      this.freq = Math.random() * 0.01 + 0.012;
+      this.phase = Math.random() * Math.PI * 2;
+      this.notch = Math.random() < 0.5 ? -0.5 : 0.6;
+      this.green = Math.random() < 0.5 ? '90, 148, 96' : '66, 128, 88';
+    }
+    // 蜻蜓的落脚点：叶面偏上的随机位置
+    landSpot() {
+      return { x: this.x + (Math.random() - 0.5) * this.rx * 0.8, y: this.y - this.ry * 0.85 };
+    }
+    update() { this.phase += this.freq; }
+    draw() {
+      const sway = Math.sin(this.phase) * 0.07;
+      ctx.save();
+      ctx.translate(this.x, this.y);
+      ctx.rotate(this.rot + sway);
+      ctx.fillStyle = `rgba(${this.green}, 0.16)`;
+      const gap = 0.28;
+      ctx.beginPath();
+      ctx.moveTo(0, 0);
+      ctx.ellipse(0, 0, this.rx, this.ry, 0, this.notch + gap, this.notch - gap + Math.PI * 2);
+      ctx.closePath();
+      ctx.fill();
+      ctx.strokeStyle = `rgba(${this.green}, 0.22)`;
+      ctx.lineWidth = 1;
+      for (let k = 0; k < 6; k++) {
+        const a = this.notch + gap + ((Math.PI * 2 - gap * 2) * (k + 0.5)) / 6;
+        ctx.beginPath();
+        ctx.moveTo(0, 0);
+        ctx.lineTo(Math.cos(a) * this.rx * 0.82, Math.sin(a) * this.ry * 0.82);
+        ctx.stroke();
+      }
+      ctx.restore();
+    }
+  }
+
+  // 荷花：内外两圈花瓣，粉白渐变，比荷叶更淡，随呼吸极缓开合（夏季亮色专属）
+  class LotusFlower {
+    constructor() {
+      const side = Math.random() < 0.5 ? 0.1 + Math.random() * 0.1 : 0.8 + Math.random() * 0.1;
+      this.x = side * vw;
+      this.y = vh * (0.8 + Math.random() * 0.1);
+      this.s = Math.random() * 5 + 10;
+      this.freq = Math.random() * 0.006 + 0.006;
+      this.phase = Math.random() * Math.PI * 2;
+    }
+    update() { this.phase += this.freq; }
+    draw() {
+      const breathe = 1 + Math.sin(this.phase) * 0.08;
+      ctx.save();
+      ctx.translate(this.x, this.y);
+      ctx.rotate(-0.35);
+      ctx.scale(breathe, breathe);
+      for (let ring = 0; ring < 2; ring++) {
+        const petals = ring === 0 ? 6 : 5;
+        const len = this.s * (ring === 0 ? 1 : 0.62);
+        ctx.fillStyle = ring === 0 ? 'rgba(248, 205, 220, 0.5)' : 'rgba(252, 228, 236, 0.6)';
+        for (let i = 0; i < petals; i++) {
+          const a = (i / petals) * Math.PI * 2 + (ring === 1 ? 0.35 : 0);
+          ctx.save();
+          ctx.rotate(a);
+          ctx.beginPath();
+          ctx.ellipse(0, -len * 0.5, len * 0.22, len * 0.5, 0, 0, Math.PI * 2);
+          ctx.fill();
+          ctx.restore();
+        }
+      }
+      ctx.fillStyle = 'rgba(238, 196, 120, 0.55)';
+      ctx.beginPath();
+      ctx.arc(0, 0, this.s * 0.18, 0, Math.PI * 2);
+      ctx.fill();
+      ctx.restore();
+    }
+  }
+
+  // 涟漪：从荷塘荡开双圈扁圆环，一两秒一圈，让水面动起来（夏季亮色专属）
+  class Ripple {
+    constructor() {
+      this.x = (Math.random() < 0.5 ? 0.06 + Math.random() * 0.18 : 0.76 + Math.random() * 0.18) * vw;
+      this.y = vh * (0.86 + Math.random() * 0.1);
+      this.max = Math.random() * 40 + 50;
+      this.r = 4;
+      this.alive = true;
+    }
+    update() {
+      this.r += 0.45;
+      if (this.r >= this.max) this.alive = false;
+    }
+    draw() {
+      const a = (1 - this.r / this.max) * 0.2;
+      ctx.strokeStyle = `rgba(96, 148, 128, ${a})`;
+      ctx.lineWidth = 1;
+      ctx.beginPath();
+      ctx.ellipse(this.x, this.y, this.r, this.r * 0.32, 0, 0, Math.PI * 2);
+      ctx.stroke();
+      ctx.strokeStyle = `rgba(96, 148, 128, ${a * 0.6})`;
+      ctx.beginPath();
+      ctx.ellipse(this.x, this.y, this.r * 0.55, this.r * 0.176, 0, 0, Math.PI * 2);
+      ctx.stroke();
+    }
+  }
+
+  // 落英：偶尔一片花瓣落上水面，缓缓横漂、随波轻点（夏季亮色专属）
+  class PetalDrift {
+    constructor() {
+      const fromLeft = Math.random() < 0.5;
+      this.x = fromLeft ? -12 : vw + 12;
+      this.dir = fromLeft ? 1 : -1;
+      this.y = vh * (0.84 + Math.random() * 0.12);
+      this.speed = (Math.random() * 0.4 + 0.5) * this.dir;
+      this.len = Math.random() * 2.5 + 3.5;
+      this.rot = (Math.random() - 0.5) * 0.6;
+      this.freq = Math.random() * 0.05 + 0.04;
+      this.phase = Math.random() * Math.PI * 2;
+      this.alive = true;
+    }
+    update() {
+      this.x += this.speed;
+      this.phase += this.freq;
+      this.y += Math.sin(this.phase) * 0.1;
+      if (this.x < -20 || this.x > vw + 20) this.alive = false;
+    }
+    draw() {
+      ctx.save();
+      ctx.translate(this.x, this.y);
+      ctx.rotate(this.rot + Math.sin(this.phase) * 0.25);
+      ctx.fillStyle = 'rgba(248, 205, 220, 0.45)';
+      ctx.beginPath();
+      ctx.ellipse(0, 0, this.len, this.len * 0.45, 0, 0, Math.PI * 2);
+      ctx.fill();
+      ctx.restore();
+    }
+  }
+
+  // 蜻蜓：在荷叶间起落——停时翅膀收拢微沉浮，飞时走弧线、翅膀扑动（夏季亮色专属）
+  class Dragonfly {
+    constructor(spots) {
+      this.spots = spots;
+      this.phase = Math.random() * Math.PI * 2;
+      this.x = vw * 0.5;
+      this.y = vh * 0.6;
+      this.state = 'rest';
+      this.timer = 60 + Math.random() * 120;
+      this.from = null;
+      this.to = null;
+      this.t = 0;
+      this.flyDur = 60;
+      this.wing = 0;
+      this.dir = 1;
+    }
+    pickSpot() {
+      const s = this.spots[Math.floor(Math.random() * this.spots.length)];
+      this.from = { x: this.x, y: this.y };
+      this.to = s.landSpot();
+      this.t = 0;
+      this.flyDur = 50 + Math.random() * 40;
+      this.dir = this.to.x >= this.from.x ? 1 : -1;
+    }
+    update() {
+      if (this.state === 'rest') {
+        this.phase += 0.06;
+        this.y += Math.sin(this.phase) * 0.06;
+        this.timer -= 1;
+        if (this.timer <= 0) {
+          this.state = 'fly';
+          this.pickSpot();
+        }
+      } else {
+        this.t += 1;
+        const k = Math.min(1, this.t / this.flyDur);
+        const e = k * k * (3 - 2 * k);
+        this.x = this.from.x + (this.to.x - this.from.x) * e;
+        this.y = this.from.y + (this.to.y - this.from.y) * e - Math.sin(k * Math.PI) * 16;
+        this.wing += 1.1;
+        if (k >= 1) {
+          this.state = 'rest';
+          this.timer = 160 + Math.random() * 260;
+        }
+      }
+    }
+    draw() {
+      const flying = this.state === 'fly';
+      const flutter = flying ? Math.sin(this.wing) : 0;
+      ctx.save();
+      ctx.translate(this.x, this.y);
+      ctx.scale(this.dir, 1);
+      // 身体：细长腹 + 头
+      ctx.strokeStyle = 'rgba(46, 92, 84, 0.6)';
+      ctx.lineWidth = 1.6;
+      ctx.beginPath();
+      ctx.moveTo(-9, 0);
+      ctx.lineTo(3, -1);
+      ctx.stroke();
+      ctx.fillStyle = 'rgba(46, 92, 84, 0.65)';
+      ctx.beginPath();
+      ctx.arc(4.5, -1.2, 1.6, 0, Math.PI * 2);
+      ctx.fill();
+      // 四片翅：停时向后收拢，飞时绕根部扑动
+      const baseA = flying ? -1.25 + flutter * 0.35 : -1.05;
+      const baseB = flying ? -0.65 + flutter * 0.35 : -0.75;
+      for (const [ang, alpha] of [[baseA, 0.18], [baseA + 0.2, 0.32], [baseB, 0.16], [baseB + 0.18, 0.3]]) {
+        ctx.save();
+        ctx.translate(1, -1.5);
+        ctx.rotate(ang);
+        ctx.fillStyle = `rgba(196, 222, 228, ${alpha})`;
+        ctx.beginPath();
+        ctx.ellipse(5, 0, 5, 1.3, 0, 0, Math.PI * 2);
+        ctx.fill();
+        ctx.restore();
+      }
+      ctx.restore();
     }
   }
 
@@ -360,9 +723,25 @@ function initParticles() {
       case 'sakura':
         particles = Array.from({ length: countFor(24000, 20, 55) }, () => new Petal());
         break;
-      case 'leaves':
-        particles = Array.from({ length: countFor(30000, 14, 40) }, () => new Leaf());
+      case 'foliage':
+        particles = Array.from({ length: countFor(30000, 14, 40) }, () =>
+          Math.random() < 0.6 ? new Maple() : new Ginkgo());
         break;
+      case 'winter': {
+        particles = [
+          ...Array.from({ length: countFor(38000, 8, 22) }, () => new PlumBlossom()),
+          ...Array.from({ length: countFor(30000, 10, 26) }, () => new IceCrystal()),
+        ];
+        break;
+      }
+      case 'lotus': {
+        const leaves = countFor(38000, 5, 9);
+        particles = Array.from({ length: leaves }, (_, i) => new LotusLeaf(i, leaves));
+        particles.push(new LotusFlower());
+        if (Math.random() < 0.6) particles.push(new LotusFlower());
+        particles.push(new Dragonfly(particles.filter(p => p.landSpot)));
+        break;
+      }
       case 'snow':
         particles = Array.from({ length: countFor(18000, 30, 90) }, () => new Snowflake());
         break;
@@ -379,6 +758,8 @@ function initParticles() {
         particles = Array.from({ length: Math.min(80, Math.floor(vw * vh / 15000)) }, () => new Particle());
     }
     shootAt = performance.now() + 2500 + Math.random() * 5000;
+    rippleAt = performance.now() + 800 + Math.random() * 1200;
+    petalAt = performance.now() + 2000 + Math.random() * 3000;
   }
 
   // 先 resize 拿到 vw/vh（非 plain 皮肤在 resize 内部完成首次 build），plain 再手动 build
@@ -448,7 +829,24 @@ function initParticles() {
         shootAt = now + 4000 + Math.random() * 5000;
       }
     }
+    if (skin === 'lotus') {
+      const now = performance.now();
+      if (now >= rippleAt) {
+        lotusRipples.push(new Ripple());
+        rippleAt = now + 1400 + Math.random() * 1800;
+      }
+      if (now >= petalAt && lotusPetals.length < 3) {
+        lotusPetals.push(new PetalDrift());
+        petalAt = now + 3000 + Math.random() * 5000;
+      }
+    }
     particles.forEach(p => { p.update(); p.draw(); });
+    if (skin === 'lotus') {
+      lotusRipples.forEach(r => { r.update(); r.draw(); });
+      lotusRipples = lotusRipples.filter(r => r.alive);
+      lotusPetals.forEach(p => { p.update(); p.draw(); });
+      lotusPetals = lotusPetals.filter(p => p.alive);
+    }
     if (skin === 'stars') {
       shootingStars.forEach(s => { s.update(); s.draw(); });
       shootingStars = shootingStars.filter(s => s.alive);
