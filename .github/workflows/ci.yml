@@ -27,6 +27,9 @@ jobs:
       - name: Frontmatter check
         run: npm run check:frontmatter
 
+      - name: Absolute-word check
+        run: npm run check:adwords
+
       - name: Lint
         run: npm run lint
 

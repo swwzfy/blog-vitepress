@@ -131,6 +131,7 @@ npm run dev                # 本地开发（predev 自动 kill 旧 :5173 进程�
 npm run build              # 构建静态文件 + sitemap + 双语 RSS + SEO 注入 + 字体剔除
 npm run preview            # 预览构建结果
 npm run check:frontmatter  # 校验文章 frontmatter 完整性
+npm run check:adwords      # 校验绝对化用语（广告法口径，命中即非 0 退出）
 npm run typecheck          # TypeScript 类型检查
 npm run lint               # ESLint 检查（lint:fix 自动修复）
 npm run og                 # 重生成 OG 图（.agents/scripts/make-og.js）
