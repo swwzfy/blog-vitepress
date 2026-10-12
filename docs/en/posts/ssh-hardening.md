@@ -7,7 +7,7 @@ description: "A server exposed to the public internet has one door: SSH. Change 
 
 # Hardening SSH on a Fresh Server
 
-Once a server is live, SSH is the only door you can walk through. And that door gets knocked on, constantly, by the whole internet.
+Once a server is live, SSH is the way in. And that door gets knocked on, constantly, by the whole internet.
 
 I pulled the logs on my freshly launched server a week in — there were already thousands of login attempts from unfamiliar IPs, all scripts blindly trying `root` passwords. They aren't after you specifically; they sweep every machine that exposes port 22. You just happened to get scanned.
 
@@ -22,9 +22,9 @@ This post records how I locked the door. Every step is generic and works on any 
 | Key-based login | Your password gets cracked and the box becomes a bot |
 | Disable root login | Attackers walk straight in with root |
 | Change the default port | Your logs drown in blind scans |
-| Add fail2ban | A single IP can retry forever |
+| Add fail2ban | A single IP can retry without limit |
 
-Half an hour of work, and the payoff is permanent. There's no way to do that math wrong.
+Half an hour of work, and the payoff lasts. There's no way to do that math wrong.
 
 ## Step 1: stop logging in as root
 
@@ -41,7 +41,7 @@ From now on, log in as `deploy` and use `sudo` when you need privileges. Keep `r
 
 ## Step 2: key login, password off
 
-This is the single most important step. A key is a hundreds-of-bits random string — brute-forcing it is mathematically infeasible. A password, however complex, can't survive infinite retries.
+This is the key step. A key is a hundreds-of-bits random string — brute-forcing it is mathematically infeasible. A password, however complex, can't survive infinite retries.
 
 Generate a key pair **on your own machine**:
 

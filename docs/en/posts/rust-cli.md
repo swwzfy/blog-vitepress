@@ -16,7 +16,7 @@ Why I decided to rewrite a working Python CLI tool in Rust, and what I learned a
 
 The Python version worked, but took 800ms to start. For a tool called hundreds of times a day, those 800ms add up to frustration.
 
-My requirements were simple: fast, single-file distribution, cross-platform. Rust was practically the only choice.
+My requirements were simple: fast, single-file distribution, cross-platform. Few languages tick all three boxes; Rust does.
 
 ## Development Process
 

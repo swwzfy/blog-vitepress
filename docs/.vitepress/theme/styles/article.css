@@ -337,7 +337,7 @@
   box-shadow: 0 4px 16px var(--vp-c-brand-soft);
 }
 
-/* 缺位（最早/最新一篇）时占位对齐，不显示 */
+/* 缺位（首篇/末篇）时占位对齐，不显示 */
 .post-nav-card.is-empty {
   visibility: hidden;
 }

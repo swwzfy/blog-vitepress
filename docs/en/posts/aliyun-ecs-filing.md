@@ -7,7 +7,7 @@ description: From instance selection, purchase, and ICP filing to going live —
 
 # Alibaba Cloud ECS: Instance Selection & ICP Filing
 
-My blog used to run on pure static hosting — convenient, but no real control. This year I moved it onto my own Alibaba Cloud server, working through the domain, the ICP filing, and Nginx step by step. I got stuck once at the filing stage, and the lesson was expensive. This post records the two most painful parts — instance selection and ICP filing — for anyone trying to go live in mainland China.
+My blog used to run on pure static hosting — convenient, but no real control. This year I moved it onto my own Alibaba Cloud server, working through the domain, the ICP filing, and Nginx step by step. I got stuck once at the filing stage, and the lesson was expensive. This post records the two painful parts — instance selection and ICP filing — for anyone trying to go live in mainland China.
 
 <!-- more -->
 
@@ -28,7 +28,7 @@ Most of my readers are in mainland China, and a blog is a long-term commitment �
 
 Alibaba Cloud has two common options — don't jump straight to ECS:
 
-- **Lightweight Application Server (Lighthouse)**: pre-installed OS + application images, cheap and hassle-free, ideal for low-load personal blogs.
+- **Lightweight Application Server (Lighthouse)**: pre-installed OS + application images, cheap and hassle-free, a good fit for low-load personal blogs.
 - **ECS (Elastic Compute Service)**: flexible, scalable, any image you want, but more configuration knobs and a higher price.
 
 For a personal blog, **the Lightweight Application Server is almost always the right pick** — 2 vCPU / 2 GB to start, more than enough for Nginx serving a static site. Save ECS for when you genuinely need load balancing or multiple instances.
@@ -44,7 +44,7 @@ Instance selection and purchase take half an hour. The real grind is the filing.
 3. Identity verification (these days mostly in-app facial recognition)
 4. Provincial authority review — once approved, you get the ICP filing number and put it in the site footer
 
-Review times vary by province: a few days at best, two or three weeks at worst. Plan accordingly.
+Review times vary by province: a few days on the fast end, two or three weeks on the slow end. Plan accordingly.
 
 ### The trap: a personal filing is not "put whatever you want"
 

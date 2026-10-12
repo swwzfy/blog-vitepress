@@ -44,7 +44,7 @@ sudo nginx -t && sudo systemctl reload nginx
 curl -s -A 'Mozilla/5.0' 'https://www.jossecho.com/api/hit?url=/test'
 curl -s 'https://www.jossecho.com/api/stats.json?url=/test'
 # 期望 {"uv": 1, "pv": 1, "views": 1, "likes": 0}
-# 点赞：同 IP+路径 永久去重，连点两次 likes 仍是 1
+# 点赞：同 IP+路径 长期去重，连点两次 likes 仍是 1
 curl -s -A 'Mozilla/5.0' 'https://www.jossecho.com/api/like?url=/test'
 curl -s 'https://www.jossecho.com/api/top.json'      # 文章阅读 Top N（默认 8）
 curl -s 'https://www.jossecho.com/api/trend.json'    # 近 30 天逐日 pv/uv
@@ -57,7 +57,7 @@ curl -s 'https://www.jossecho.com/api/trend.json'    # 近 30 天逐日 pv/uv
 首页时钟卡与背景粒子按**访客所在地**显示天气。定位在服务端完成：访客 IP 经
 [ip2region](https://github.com/lionsoul2014/ip2region) 离线库查城市（数据文件独立部署，
 **不入仓库**，从该仓库 `data/` 目录下载 `ip2region_v4.xdb`（11MB）与 `ip2region_v6.xdb`
-（37MB）），城市坐标永久缓存、天气按城市缓存 30 分钟（Open-Meteo 上游）。判不出
+（37MB）），城市坐标常驻缓存、天气按城市缓存 30 分钟（Open-Meteo 上游）。判不出
 中国城市（海外/内网/数据缺失）回退扬州。xdb 文件缺失只影响这一个端点（返回 502），
 服务本体与前端（回退浏览器直连定位链）都不受影响。
 
@@ -73,7 +73,7 @@ curl -s 'https://www.jossecho.com/api/trend.json'    # 近 30 天逐日 pv/uv
 
 ```bash
 # 不带 X-Real-IP（本机回环）：设计行为就是 502 {"error":"no cn city for client ip"}
-# —— 服务端只对中国公网城市负责，回环/内网/海外交前端浏览器定位链接管（其最终兜底扬州）
+# —— 服务端只对中国公网城市负责，回环/内网/海外交前端浏览器定位链接管（兜底扬州）
 curl -s http://127.0.0.1:8787/api/weather
 # 伪装一个江苏电信 IP：这才是有效的部署验证（X-Real-IP 由 nginx 在线上注入，本地测试手动加）
 curl -s -H 'X-Real-IP: 114.114.114.114' http://127.0.0.1:8787/api/weather
@@ -89,9 +89,9 @@ curl -s -H 'X-Real-IP: 114.114.114.114' http://127.0.0.1:8787/api/weather
 - **访客（uv）**：全历史去重 IP（哈希后），明细不清理，所以是真正的累计值
 - **访问（pv）**：全历史打点次数，同 IP 同路径 30 分钟内的刷新只计一次
 - **阅读数（views）**：该路径的累计打点数
-- **点赞（likes）**：该路径的累计点赞数，同 IP 同路径永久只计一次（无"取消赞"）
+- **点赞（likes）**：该路径的累计点赞数，同 IP 同路径只计一次（无"取消赞"）
 - **圈子动态（friend_feeds 表）**：后台线程每 6 小时抓一次各友链 RSS（启动即抓一轮），
-  每友链最多 4 条；数据源是 `/var/lib/site-stats/friends.json`（部署时从仓库上传，
+  每友链至多 4 条；数据源是 `/var/lib/site-stats/friends.json`（部署时从仓库上传，
   加删友链后同步更新）；各站存活状态在 friend_health 表（SSH 只读查看）
 - **端点 `/api/friends-activity`**：与构建期 friends-activity.json 同构，
   前端拿不到时自动回退已提交的种子文件

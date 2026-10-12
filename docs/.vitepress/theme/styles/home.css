@@ -141,7 +141,7 @@
   .home-bento .bento-item-full .cmd-list {
     display: grid;
     /* minmax(0,1fr)：cmd-row 里的等宽字体命令文本不可换行，min-width:auto 会让
-       最长那条撑爆轨道 —— 窗口缩窄时列宽失衡、内容溢出卡片 */
+       过长的那条撑爆轨道 —— 窗口缩窄时列宽失衡、内容溢出卡片 */
     grid-template-columns: repeat(4, minmax(0, 1fr));
     align-items: stretch;
   }
@@ -223,7 +223,7 @@
   margin: 0 0 var(--space-4);
 }
 
-/* 最多阅读卡（HomeBento）：通栏单独成行 —— 4 列制下窄卡必留洞（同快捷指令卡的处理）。
+/* 热门阅读卡（HomeBento）：通栏单独成行 —— 4 列制下窄卡必留洞（同快捷指令卡的处理）。
    窄屏竖排一行一条；≥960 三条横排铺满。接口不可达时整卡不渲染。
    .vp-doc 前缀压 markdown 的 ul 样式（disc 圆点 / 缩进），单类规则特异性不够 */
 .vp-doc .hot-list {
@@ -267,10 +267,10 @@
 
 @media (min-width: 960px) {
   /* 媒体查询里同样要 .vp-doc 前缀：否则 0,1,0 < 0,2,0，三列 grid 会被
-     上面的基础 flex 规则永久压死（2026-10-02 实测翻过车） */
+     上面的基础 flex 规则始终压死（2026-10-02 实测翻过车） */
   .vp-doc .hot-list {
     display: grid;
-    /* minmax(0,1fr) 而非 1fr：grid 子项 min-width:auto 会被最长的不可换行标题
+    /* minmax(0,1fr) 而非 1fr：grid 子项 min-width:auto 会被过长的不可换行标题
        撑爆轨道 —— 等宽变不等宽（文字对不齐）、窗口窄时溢出卡片 */
     grid-template-columns: repeat(3, minmax(0, 1fr));
     gap: var(--space-4);

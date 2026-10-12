@@ -9,7 +9,7 @@ description: 从安装解释器到跑起第一个项目，uv/poetry/pip 三个�
 
 第一次装 Python 的人会被一堆名词劝退：解释器、虚拟环境、pip、conda、uv、poetry……
 
-这篇是**最朴素的入门**——每一步都给可复制粘贴的命令，跑通就跑通，卡了就回来看一眼。
+这篇是**朴素的入门**——每一步都给可复制粘贴的命令，跑通就跑通，卡了就回来看一眼。
 
 <!-- more -->
 
@@ -24,10 +24,10 @@ description: 从安装解释器到跑起第一个项目，uv/poetry/pip 三个�
 ### Windows
 
 1. 打开 [python.org/downloads](https://www.python.org/downloads/)
-2. 点 **Python 3.12.x** 或最新稳定版（**不要下 3.13 之前的旧版**）
+2. 点 **Python 3.12.x** 或当前稳定版（**不要下 3.13 之前的旧版**）
 3. 跑下载的 `.exe`，**关键步骤**：
 
-   - 勾选 **Add python.exe to PATH**（这是最常被忘的一步）
+   - 勾选 **Add python.exe to PATH**（这是常被忘的一步）
    - 点 **Install Now**
 4. 装完打开 PowerShell，验证：
 
@@ -75,13 +75,13 @@ sudo apt install python3.12 python3.12-venv
 
 装好解释器，下一步是装第三方库。Python 有三个主流选择，**新手选 uv**。
 
-### 为什么 uv 排第一
+### 为什么先装 uv
 
 | 工具 | 速度 | 上手难度 | 锁文件 | 适合场景 |
 |---|---|---|---|---|
-| **uv** ⭐ | ⚡ 比 pip 快 10-100 倍 | 易（命令近似 pip） | 自动（`uv.lock`） | 2024+ 新项目首选 |
+| **uv** ⭐ | ⚡ 比 pip 快 10-100 倍 | 易（命令近似 pip） | 自动（`uv.lock`） | 2024+ 新项目优先选择 |
 | poetry | 中 | 中（有自己的命令体系） | 自动（`poetry.lock`） | 已有项目、复杂依赖 |
-| pip | 慢 | 最简单 | 需 `pip freeze` 手维护 | 学习/临时脚本 |
+| pip | 慢 | 容易上手 | 需 `pip freeze` 手维护 | 学习/临时脚本 |
 
 uv 是 [Astral](https://astral.sh) 用 Rust 写的，一个二进制搞定包管理 + 虚拟环境 + Python 版本管理。
 

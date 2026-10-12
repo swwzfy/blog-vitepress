@@ -24,10 +24,10 @@ The interpreter is the program that reads `.py` files and runs them. Install one
 ### Windows
 
 1. Open [python.org/downloads](https://www.python.org/downloads/)
-2. Click **Python 3.12.x** or the latest stable release (don't grab anything older than 3.11)
+2. Click **Python 3.12.x** or the current stable release (don't grab anything older than 3.11)
 3. Run the downloaded `.exe`. The **critical step**:
 
-   - Check **Add python.exe to PATH** (this is the one most people forget)
+   - Check **Add python.exe to PATH** (this is the step people forget)
    - Click **Install Now**
 4. Open PowerShell and verify:
 
@@ -77,11 +77,11 @@ With an interpreter installed, the next step is installing third-party libraries
 
 ### Why uv Comes First
 
-| Tool | Speed | Learning Curve | Lockfile | Best For |
+| Tool | Speed | Learning Curve | Lockfile | Good For |
 |---|---|---|---|---|
 | **uv** ⭐ | ⚡ 10–100× faster than pip | Easy (commands resemble pip) | Automatic (`uv.lock`) | New projects from 2024+ |
 | poetry | Medium | Medium (its own command grammar) | Automatic (`poetry.lock`) | Existing projects, complex deps |
-| pip | Slow | Simplest | Manual (`pip freeze`) | Learning, throwaway scripts |
+| pip | Slow | Easy | Manual (`pip freeze`) | Learning, throwaway scripts |
 
 uv is written in Rust by [Astral](https://astral.sh). One binary handles package management, virtual environments, and even Python version management.
 

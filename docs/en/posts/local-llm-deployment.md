@@ -7,7 +7,7 @@ description: Five typical paths for running models on your own hardware — desk
 
 # Local LLM Deployment — From PC to Self-Hosted Server, Five Paths Side by Side
 
-LLMs got cheap enough that "running one locally" stopped being a hard-core enthusiast thing. I've used a few of the desktop tools myself — MacBook to PC, up to 30B-class models. The server-side options below are mostly from reading docs and community write-ups, not from running a real cluster. My biggest takeaway: **there's no "best" setup, only the one that matches your situation**.
+LLMs got cheap enough that "running one locally" stopped being a hard-core enthusiast thing. I've used a few of the desktop tools myself — MacBook to PC, up to 30B-class models. The server-side options below are mostly from reading docs and community write-ups, not from running a real cluster. My takeaway: **there's no setup that fits everyone, only the one that matches your situation**.
 
 Here's a side-by-side look at five typical paths. Start by checking what hardware you have and how many people you're serving — that lands you in the right tier fast.
 
@@ -29,7 +29,7 @@ There are essentially three layers:
 - **Local services** — background services exposing HTTP APIs: Ollama, llama.cpp server
 - **Production servers** — dedicated GPU boxes with inference frameworks: vLLM, TGI, SGLang
 
-## 1. Desktop apps (easiest on-boarding)
+## 1. Desktop apps (easy on-boarding)
 
 LM Studio, Jan, GPT4All — the "click and chat" tier.
 
@@ -41,11 +41,11 @@ LM Studio, Jan, GPT4All — the "click and chat" tier.
 **Weaknesses:**
 - Usually single-user, no public API exposed
 - Live in your menu bar / task tray and compete for resources with other apps
-- Larger models (30B+) hit a hard ceiling on consumer hardware
+- Larger models (30B+) hit a hard limit on consumer hardware
 
 **Fit**: first-timers, occasional use, "let me see what this is about."
 
-## 2. Local services (most practical)
+## 2. Local services (practical)
 
 Ollama is the headline here. llama.cpp server is the lower-level sibling.
 
@@ -73,7 +73,7 @@ Ollama is the headline here. llama.cpp server is the lower-level sibling.
 
 ## 3. Production servers (serious tier)
 
-I haven't actually run this tier myself. What's below is mainly a summary of official docs, community feedback, and public benchmarks — treat it as reference material, not a runbook, and always cross-check the latest docs before going to production.
+I haven't actually run this tier myself. What's below is mainly a summary of official docs, community feedback, and public benchmarks — treat it as reference material, not a runbook, and always cross-check the current docs before going to production.
 
 The "real users depend on it" tier. vLLM, TGI, SGLang as the big three.
 
@@ -134,7 +134,7 @@ Rules of thumb:
 
 ## 6. General recommendations
 
-1. **Don't chase the biggest model on day one.** Most public benchmarks and qualitative reports put the gap between 14B Q4 and 70B Q4 narrower than you'd expect — the smaller one typically runs 3–4× faster.
+1. **Don't chase an oversized model on day one.** Many public benchmarks and qualitative reports put the gap between 14B Q4 and 70B Q4 narrower than you'd expect — the smaller one typically runs 3–4× faster.
 2. **Don't trust quantization leaderboards blindly.** Look at download counts and community feedback.
 3. **Desktop apps and server frameworks are different worlds.** Same hardware, different tool — resource scheduling, memory management, context utilization can all diverge. Check each project's documentation for specifics.
 4. **Models above 50GB justify an SSD.** Loading from a spinning disk will be painfully slow; time-to-first-token takes a serious hit.

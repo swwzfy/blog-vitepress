@@ -1,6 +1,6 @@
 // 访客实时天气共享源：Bento 时钟卡（DateTimeWeather.vue）与粒子换肤（effects.js）
 // 从这里拿同一份天气数据，每 30 分钟自刷。数据链优先级：
-//   1) 同源 /api/weather（stats 后端：ip2region 离线定位 + 按城市缓存，国内判定最准）
+//   1) 同源 /api/weather（stats 后端：ip2region 离线定位 + 按城市缓存，国内判定较准）
 //   2) 浏览器直连定位链：ipwho.is → geojs.io（IP 城市级、免授权弹窗，sessionStorage
 //      缓存 6h）+ Open-Meteo——stats 服务不可用时的回退
 //   3) 定位全失败回退扬州（站主所在地兜底）

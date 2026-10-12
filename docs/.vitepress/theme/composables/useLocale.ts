@@ -34,7 +34,7 @@ const dict = {
   reads: { zh: '次阅读', en: 'reads' },
   likePost: { zh: '给这篇文章点赞', en: 'Like this post' },
   reactAria: { zh: '给这篇文章添加反应', en: 'React to this post' },
-  hotPosts: { zh: '最多阅读', en: 'Most Read' },
+  hotPosts: { zh: '热门阅读', en: 'Popular' },
   ttsPlay: { zh: '朗读本文', en: 'Read aloud' },
   ttsStop: { zh: '停止朗读', en: 'Stop reading' },
   footerDesc: {
@@ -52,7 +52,7 @@ const dict = {
   },
   bentoWriting: { zh: '写作', en: 'Writing' },
   bentoDescWriting: {
-    zh: '记录思考过程，分享踩过的坑。写作是最好的学习方式。',
+    zh: '记录思考过程，分享踩过的坑。写作是很有效的学习方式。',
     en: 'Documenting the thinking process, sharing lessons learned. Writing is the best way to learn.'
   },
   bentoLife: { zh: '生活', en: 'Life' },
@@ -81,13 +81,13 @@ const dict = {
   statTags: { zh: '个标签', en: 'Tags' },
   statWords: { zh: '全站字数', en: 'Words' },
   statThisMonth: { zh: '本月更新', en: 'This month' },
-  recentPosts: { zh: '最新文章', en: 'Recent Posts' },
+  recentPosts: { zh: '近期文章', en: 'Recent Posts' },
   viewAll: { zh: '全部文章', en: 'View all' },
 
   // —— 友链 / 生活 ——
   circleTitle: { zh: '圈子动态', en: 'Latest from the Circle' },
   circleDesc: {
-    zh: '构建时聚合的朋友博客最新文章，去他们那里看看。',
+    zh: '构建时聚合的朋友博客近期文章，去他们那里看看。',
     en: 'Recent posts from friend blogs, aggregated at build time.'
   },
   noLifePosts: { zh: '还没有生活类文章。', en: 'No life articles yet.' },

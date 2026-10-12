@@ -7,7 +7,7 @@ description: Tested multiple coffee shops in Yangzhou for WiFi, outlets, noise, 
 
 # Yangzhou Coffee Shop Work Guide
 
-Based in Yangzhou, I code from coffee shops regularly. I've tested multiple spots for WiFi, outlets, noise, and coffee quality. Yangzhou has a slow pace, beautiful lakes and greenery — perfect for focused work.
+Based in Yangzhou, I code from coffee shops regularly. I've tested multiple spots for WiFi, outlets, noise, and coffee quality. Yangzhou has a slow pace, beautiful lakes and greenery — great for focused work.
 
 <!-- more -->
 
@@ -26,7 +26,7 @@ For remote workers, a good coffee shop has four dimensions:
 
 ### Jishe Cafe&Bar (Gengzi Street)
 
-Day coffee, night bar model — one of the earliest in Yangzhou. The barista doubles as bartender, and specialty drinks have a cocktail-like complexity.
+Day coffee, night bar model — one of Yangzhou's early specialty shops. The barista doubles as bartender, and specialty drinks have a cocktail-like complexity.
 
 - **Address**: No. 66 Gengzi Street, Guangling District
 - **Hours**: 12:00-18:00 / 19:00-24:00
@@ -70,7 +70,7 @@ Self-roasted beans, constantly rotating menu, using SOE for coffee. Small but we
 
 ### TODAY'S BEAN
 
-Self-roasted beans with a rich menu — there's always something to match your taste. Small and cozy, perfect for long sessions.
+Self-roasted beans with a rich menu — there's always something to match your taste. Small and cozy, great for long sessions.
 
 - **Address**: No. 41 Guan Alley, Guangling District
 - **Hours**: 08:00-18:00
@@ -132,7 +132,7 @@ Located on the first floor of the China Grand Canal Museum's Dayun Tower, with m
 - **Instagram spots**: More photographers than workers, noisy environment
 - **Delivery-only shops**: No seating or extremely uncomfortable
 
-### Best Time Slots
+### Good Time Slots
 
 | Time | Rating | Notes |
 |------|--------|-------|
@@ -162,4 +162,4 @@ Located on the first floor of the China Grand Canal Museum's Dayun Tower, with m
 | Manner | ⭐⭐⭐ | ⭐⭐⭐ | ⭐⭐⭐ | ⭐⭐⭐ | ⭐⭐⭐ |
 | Luckin | ⭐⭐ | ⭐ | ⭐⭐ | ⭐⭐ | ⭐⭐ |
 
-> Yangzhou moves slowly, and so do its coffee shops. Bring noise-canceling headphones, buy one coffee and stay at least two hours, avoid peak hours. The best café is the one you visit regularly — because you can go every day.
+> Yangzhou moves slowly, and so do its coffee shops. Bring noise-canceling headphones, buy one coffee and stay at least two hours, avoid peak hours. A good café is the one you visit regularly — because you can go every day.

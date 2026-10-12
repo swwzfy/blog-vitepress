@@ -11,11 +11,11 @@ I've written about [why I let AI manage my memory](/en/posts/ai-memory) and [the
 
 <!-- more -->
 
-## The Ceiling of Conversational AI
+## The Limits of Conversational AI
 
 No matter how long the context window gets, a large model still lives in the "conversation" layer. It can give you answers, code, and advice — but the next step, actually writing that code into a file, running it, verifying it with a screenshot, and deploying it, is on you.
 
-That was my real state for the past year: AI thinks, I do. The manual hand-off in between ate most of my energy.
+That was my real state for the past year: AI thinks, I do. The manual hand-off in between ate much of my energy.
 
 ## What WorkBuddy Is
 
@@ -27,7 +27,7 @@ In other words, it can read and write files in your project, run commands, spin 
 
 > This echoes the "everything is a plugin" idea I saw in [DeepSeek Harness](/en/posts/deepseek-harness) — except WorkBuddy ships capabilities like "read/write files", "run commands", and "generate images" as built-in tools out of the box, rather than an empty frame you have to assemble yourself.
 
-## The Layers I Use Most
+## The Layers I Use Daily
 
 | Layer | What it does for me | Where it shows up on the blog |
 |-------|---------------------|-------------------------------|

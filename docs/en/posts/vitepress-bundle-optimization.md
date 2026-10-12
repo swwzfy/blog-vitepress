@@ -2,7 +2,7 @@
 title: How a 640KB Chunk Disappeared from My VitePress Blog
 date: 2026-10-05
 tags: [VitePress, Performance]
-description: A zero word count in prerendered HTML led me to a 640KB mega chunk — every post compiled into JS just to read a few KB of frontmatter. Moving metadata to build time cut the largest JS bundle to 48KB and shaved half a megabyte off dist.
+description: A zero word count in prerendered HTML led me to a 640KB mega chunk — every post compiled into JS just to read a few KB of frontmatter. Moving metadata to build time cut the main JS bundle to 48KB and shaved half a megabyte off dist.
 ---
 
 # How a 640KB Chunk Disappeared from My VitePress Blog
@@ -60,7 +60,7 @@ Three steps to deal with it:
 
 | Metric | Before | After |
 | --- | --- | --- |
-| Largest JS chunk | 640KB (147KB gz) | 48KB |
+| Main JS chunk | 640KB (147KB gz) | 48KB |
 | dist size | 7.1M | 6.5M |
 | modulepreload on every page | every post compiled | one 17KB JSON |
 | Word count seen by crawlers | 0 | "6 min read · 1,657 characters" |
@@ -71,4 +71,4 @@ One benefit that does not show up in numbers — page rendering is now decoupled
 
 **If it can be computed at build time, keep it out of the runtime bundle.**
 
-A post's word count, title and tags are settled the moment the markdown file hits the disk. There is no reason to make every visitor's browser compute them again after the page opens. The "static" in static site generation is at its most valuable when it pushes everything forward that can be pushed forward — the bundle should only carry what genuinely needs interactivity.
+A post's word count, title and tags are settled the moment the markdown file hits the disk. There is no reason to make every visitor's browser compute them again after the page opens. The "static" in static site generation earns its keep when it pushes everything forward that can be pushed forward — the bundle should only carry what genuinely needs interactivity.

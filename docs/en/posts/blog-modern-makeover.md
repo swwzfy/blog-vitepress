@@ -78,7 +78,7 @@ export function initPageTransitions(router) {
 
 Here's the flow: the moment `startViewTransition` is called, the browser captures the old snapshot; the Promise inside the callback decides when the new snapshot is taken. So `onBeforeRouteChange` starts the transition and stashes the resolver; when the router has finished swapping the DOM and `onAfterRouteChanged` fires, we resolve — the browser then captures the new snapshot and plays the cross-fade. The DOM update doesn't have to happen inside the callback; the callback only needs to say "done".
 
-That 3-second fallback is not decoration: while a VT is pending, the browser suspends rendering. If the route errors out before the after-hook, the page stays frozen on the old snapshot forever. A lost transition is always better than a locked page.
+That 3-second fallback is not decoration: while a VT is pending, the browser suspends rendering. If the route errors out before the after-hook, the page stays frozen on the old snapshot. A lost transition beats a locked page.
 
 The theme toggle got the same upgrade. The old "fullscreen gradient sweep" overlay is gone, replaced by the same native approach: intercept the first click in the capture phase, wrap the toggle in `startViewTransition`, and replay it:
 
@@ -143,7 +143,7 @@ The glow position is just the `radial-gradient` center reading CSS variables. To
 
 ## 4. Display type + tight tracking: the cheapest typography signal
 
-Nothing clever here, just the highest ROI move in the whole pass: bigger titles, tighter letter-spacing.
+Nothing clever here — just a move with a big payoff for very little work: bigger titles, tighter letter-spacing.
 
 ```css
 .VPHero .name {
@@ -177,7 +177,7 @@ The hard part is how VitePress is built: `.VPFeatures` sizes its `.item`s with s
 }
 ```
 
-This is where I hit the most characteristic trap of the whole pass: **selector specificity**. My first attempt was `.datetime-weather-item { width: 50% }` — a single class (0,1,0), completely dominated by `:has(...) .item` (0,4,0). The clock card didn't move a pixel. The spanning rule needed the same specificity and a later position in the file.
+This is where I hit a characteristic trap of the whole pass: **selector specificity**. My first attempt was `.datetime-weather-item { width: 50% }` — a single class (0,1,0), completely dominated by `:has(...) .item` (0,4,0). The clock card didn't move a pixel. The spanning rule needed the same specificity and a later position in the file.
 
 Second trap: **`:nth-child` follows DOM order, not visual order**. The clock card displays first thanks to `order: -1`, but in the DOM it's the 4th child — Teleport appends it at the end. The staggered entrance delays were written against `:nth-child`, so the first card you see had to be styled as `nth-child(4)`.
 

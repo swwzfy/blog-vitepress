@@ -81,6 +81,6 @@ These two frameworks aren't rivals. They're division of labor.
 
 - **Short-term tasks + lots of external interfaces** → OpenClaw is faster, integration cost is lower
 - **Long-term logic + strategy accumulation needed** → Hermes fits better, gets smoother with use
-- **Most real-world scenarios** → Hybrid routing is the best deal: OpenClaw handles "doing," Hermes handles "thinking"
+- **Most real-world scenarios** → Hybrid routing is a good deal: OpenClaw handles "doing," Hermes handles "thinking"
 
-> There's no best framework, only the tool that fits the situation. Used right, even ugly designs save lives. Used wrong, even the prettiest design is a burden.
+> No framework fits everything; pick the tool that fits the situation. Used right, even ugly designs save lives. Used wrong, even the prettiest design is a burden.

@@ -22,7 +22,7 @@ docs/
 │   │   ├── Tags.vue          # 标签页组件
 │   │   ├── Archives.vue      # 归档页组件
 │   │   ├── Stats.vue         # 统计组件（文章数、字数等）
-│   │   ├── RecentPosts.vue   # 首页最近文章组件
+│   │   ├── RecentPosts.vue   # 首页近期文章组件
 │   │   ├── DateTimeWeather.vue # 首页日期天气组件
 │   │   ├── LifeList.vue      # 生活页列表组件（位于 components/ 下）
 │   │   ├── useTags.ts        # 标签数据加载
@@ -189,12 +189,12 @@ npm run build       # 生成静态文件到 docs/.vitepress/dist
 
 `_headers` 已配置正确的 Content-Type 和缓存策略，确保 RSS 和 HTML 文件以 UTF-8 编码传输。
 
-## 最近改进
+## 近期改进
 
 - ✅ 粒子背景四季花历 + 实时天气换装：樱花桃花 / 荷塘 / 枫叶银杏 / 梅花冰晶 / 雪 / 雨丝 / 深夜星空流星（雨雪由访客所在地实时天气驱动——定位三级链：stats 后端 ip2region → 浏览器直连 → 扬州兜底）
 - ✅ 天气链路容错加固：天气模块运行时动态加载（chunk 缺失只降级、不拖垮其他特效）；顺修 rAF 停帧监听注册失效的历史 bug（visibilityWatchers 误用数组 .add）
 - ✅ 自建访客统计替代不蒜子（`server/` 纯标准库 Python + SQLite），扩展点赞、热榜、搜索热词与友链动态服务端化
-- ✅ 构建期文章元信息聚合：最大 JS 640KB → 48KB，dist 7.1M → 6.5M
+- ✅ 构建期文章元信息聚合：主 JS 640KB → 48KB，dist 7.1M → 6.5M
 - ✅ 归档页重设计、Bento 首页、View Transitions 路由过渡、全局噪点
 - ✅ 标签分类学收敛 47 → 12（见 `TAG-TAXONOMY.md`）
 - ✅ 桌面端 live2D 看板娘（tororo 白猫）、自定义 404 页（星空动画）

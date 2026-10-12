@@ -78,7 +78,7 @@ I used OpenSpec to add Giscus comments to my blog. The full process:
 
 **Archive phase**: All done, archived with full history preserved.
 
-The biggest win: **traceability**. Every decision is recorded, every task has status. If you get interrupted, just check tasks.md to see where you left off.
+The real win: **traceability**. Every decision is recorded, every task has status. If you get interrupted, just check tasks.md to see where you left off.
 
 ## Why You Need It
 
@@ -102,7 +102,7 @@ This "think first" process is more valuable than any code AI writes.
 - **Small teams**: Change logs beat verbal alignment when multiple people collaborate
 - **Complex features**: Multi-file, multi-module changes need clear thinking first
 
-Not ideal for: one-off scripts, rapid prototypes, or cases where you already know exactly what you need and just want AI to type faster.
+Not a good fit for: one-off scripts, rapid prototypes, or cases where you already know exactly what you need and just want AI to type faster.
 
 ## Installation
 
@@ -116,8 +116,8 @@ After init, it generates `.claude/skills/` (or equivalent for your AI tool). You
 
 ## My Take
 
-AI coding tools evolve fast, but "how humans and AI collaborate" is still unsolved. Most tools optimize for "how fast AI writes code." OpenSpec optimizes for "how efficiently human and AI align on requirements."
+AI coding tools evolve fast, but "how humans and AI collaborate" is still unsolved. Many tools optimize for "how fast AI writes code." OpenSpec optimizes for "how efficiently human and AI align on requirements."
 
 It's not flashy — just a bunch of markdown files. But those markdown files shift AI from "guessing what you want" to "execute after confirmation."
 
-> The best tools don't make you faster. They make you more accurate.
+> Good tools don't make you faster. They make you more accurate.

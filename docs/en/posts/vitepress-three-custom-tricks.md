@@ -106,7 +106,7 @@ Three details worth the text:
 |---|---|
 | Move with `transform`, not `left/top` | `left/top` triggers layout reflow every frame; `transform` runs on the compositor, on the GPU |
 | Theme-aware `mix-blend-mode` | `screen` to brighten on dark, `multiply` on light — otherwise the glow turns muddy gray on white |
-| Fade `opacity` to 0 on `mouseleave` | Otherwise a blob of light freezes at the edge of the screen forever |
+| Fade `opacity` to 0 on `mouseleave` | Otherwise a blob of light freezes at the edge of the screen |
 
 On mobile it's `display: none` — on a device with no mouse, the effect means nothing.
 
@@ -131,7 +131,7 @@ So I made it static: two `radial-gradient` blobs, one purple, one pink, opacity 
 
 Zero per-frame cost. The moving parts are the particles and the glow; the static gradient just sets the floor. **Atmosphere comes from layering, not from motion.**
 
-Sometimes the best performance optimization is deleting an animation.
+Sometimes a good performance optimization is deleting an animation.
 
 ## The checklist
 
@@ -143,4 +143,4 @@ All three effects together are under 250 lines. To wrap up:
 | Cursor glow | `transform` compositor layer, eased follow, `pointer-events: none` | Off |
 | Ambient gradient | Static, zero per-frame cost | On |
 
-Before adding any of this, ask: on what device, at what cost, for whom? The animation you can't answer that for — not building it is the optimal solution.
+Before adding any of this, ask: on what device, at what cost, for whom? The animation you can't answer that for — not building it is the right call.

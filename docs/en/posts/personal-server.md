@@ -2,7 +2,7 @@
 title: Building a Personal Server from Scratch
 date: 2026-04-28
 tags: [Server Ops]
-description: From a bare CentOS box to a static blog plus a live stats backend — SSH hardening, BT Panel and Nginx reverse proxying, systemd, least privilege, and three real deployment failures.
+description: From a bare CentOS box to a static blog plus a live stats backend — SSH hardening, BT Panel and Nginx reverse proxying, systemd, need-to-know permissions, and three real deployment failures.
 ---
 
 # Building a Personal Server from Scratch
@@ -102,7 +102,7 @@ It started small: third-party visitor counters were unreliable and out of my con
 My design principle was "as simple as possible":
 
 - **Python standard library + SQLite**, no framework at all. At blog scale MySQL never comes into play; SQLite is a single file, and backing it up means copying one file;
-- **Listen on 127.0.0.1:8787 only.** No traffic from the public internet reaches it directly; every external request goes through nginx's `/api/` reverse proxy — the three-line location from the previous section is its only entrance;
+- **Listen on 127.0.0.1:8787 only.** No traffic from the public internet reaches it directly; every external request goes through nginx's `/api/` reverse proxy — the three-line location from the previous section is the way in;
 - A resident thread fetches friends' RSS feeds on a schedule and aggregates them into the database.
 
 One version detail I hit while writing it: CentOS 7 ships Python 3.6, and `ThreadingHTTPServer` — a 3.7+ API — is off the table, so you assemble your own from `ThreadingMixIn`.
@@ -130,7 +130,7 @@ WantedBy=multi-user.target
 
 The lines worth going through one by one:
 
-- `User=`/`Group=`: **which identity the service runs as**. Security-wise the most important line in the file — and where my first failure happened;
+- `User=`/`Group=`: **which identity the service runs as**. Security-wise the key line in the file — and where my first failure happened;
 - `Restart=always` + `RestartSec=3`: if it crashes, pick it back up in three seconds;
 - `WantedBy=multi-user.target`: start on boot.
 
@@ -138,7 +138,7 @@ Keep three commands straight: after editing the unit file → `systemctl daemon-
 
 ## Three Failures, Logged
 
-This section is the most valuable part of the post. Three incidents, three lessons.
+This section carries the real value of the post. Three incidents, three lessons.
 
 ### #1: status=217/USER, crash-looping
 
@@ -180,7 +180,7 @@ The update routine is four steps:
 
 1. `npm run docs:build` locally;
 2. Upload and overwrite the whole dist folder;
-3. If the backend changed, re-upload stats.py and `systemctl restart stats` — **the step most often forgotten**; the symptom is a new frontend serving stale API data;
+3. If the backend changed, re-upload stats.py and `systemctl restart stats` — **the step people forget**; the symptom is a new frontend serving stale API data;
 4. Ctrl+F5 in the browser.
 
 The debugging trio: `systemctl status stats` for life signs, `journalctl -u stats` for logs, and `curl 127.0.0.1:8787/...` to test the service itself with nginx out of the picture.
@@ -190,6 +190,6 @@ The debugging trio: `systemctl status stats` for life signs, `journalctl -u stat
 1. **The first hour sets the security floor**: key-based login and non-root services — never skip these two.
 2. **BT Panel is fine, as long as you know what it does for you**: the /www directory convention, the www run user, the true semantics of the reverse-proxy dialog.
 3. **For a dynamic service, nail both ends**: only one entrance from the internet (the nginx reverse proxy), and the process lives under systemd.
-4. **Incidents are the best teachers**: 217/USER taught me to check users, the missing directory taught me self-healing code, root's leftovers taught me unified identity — each one is now a line of defense in the config.
+4. **Incidents are good teachers**: 217/USER taught me to check users, the missing directory taught me self-healing code, root's leftovers taught me unified identity — each one is now a line of defense in the config.
 
 > Your server is your home in the digital world. This post is the bricklaying; the filing post is the household registration. Only with straight walls and papers in order is the home truly lived in.

@@ -1,5 +1,5 @@
 {
-  "generatedAt": "2026-10-06T08:00:27.875Z",
+  "generatedAt": "2026-10-12T01:29:52.440Z",
   "zh": [
     {
       "path": "posts/ai-code-edit-weaknesses.md",
@@ -12,7 +12,7 @@
         "前端",
         "AI"
       ],
-      "words": 1584
+      "words": 1582
     },
     {
       "path": "posts/ai-memory.md",
@@ -24,7 +24,7 @@
         "AI",
         "知识管理"
       ],
-      "words": 1830
+      "words": 1828
     },
     {
       "path": "posts/aliyun-ecs-filing.md",
@@ -35,7 +35,7 @@
       "tags": [
         "服务器运维"
       ],
-      "words": 1186
+      "words": 1188
     },
     {
       "path": "posts/blog-modern-makeover.md",
@@ -47,7 +47,7 @@
         "VitePress",
         "前端"
       ],
-      "words": 2569
+      "words": 2564
     },
     {
       "path": "posts/blog-tech-stack.md",
@@ -59,7 +59,7 @@
         "VitePress",
         "前端"
       ],
-      "words": 2081
+      "words": 2080
     },
     {
       "path": "posts/deepseek-harness.md",
@@ -73,7 +73,7 @@
         "编程语言",
         "工具"
       ],
-      "words": 1804
+      "words": 1801
     },
     {
       "path": "posts/local-llm-deployment.md",
@@ -85,7 +85,7 @@
         "AI",
         "本地大模型"
       ],
-      "words": 1400
+      "words": 1394
     },
     {
       "path": "posts/openclaw-vs-hermes.md",
@@ -97,7 +97,7 @@
         "AI",
         "Agent"
       ],
-      "words": 1354
+      "words": 1355
     },
     {
       "path": "posts/openspec-review.md",
@@ -110,18 +110,18 @@
         "工具",
         "Agent"
       ],
-      "words": 1166
+      "words": 1165
     },
     {
       "path": "posts/personal-server.md",
       "url": "/posts/personal-server",
       "title": "从零搭建个人服务器",
       "date": "2026-04-28",
-      "description": "从登录一台裸机 CentOS 到静态博客和动态统计服务真正跑起来：SSH 加固、宝塔与 Nginx 反代、systemd 托管、权限最小化，和三次真实上线事故的完整记录。",
+      "description": "从登录一台裸机 CentOS 到静态博客和动态统计服务真正跑起来：SSH 加固、宝塔与 Nginx 反代、systemd 托管、按需授权，和三次真实上线事故的完整记录。",
       "tags": [
         "服务器运维"
       ],
-      "words": 2525
+      "words": 2524
     },
     {
       "path": "posts/python-setup.md",
@@ -140,23 +140,23 @@
       "url": "/posts/self-hosted-visitor-stats",
       "title": "自建访客统计实录：告别不蒜子，200 行 Python + SQLite",
       "date": "2026-10-01",
-      "description": "不蒜子常年半死不活，页脚挂着永远的减号。用 Python 标准库加 SQLite 自建访客统计，零第三方依赖，从写完到上线踩了五个坑，每个都比效果值钱。",
+      "description": "不蒜子常年半死不活，页脚老挂着一道减号。用 Python 标准库加 SQLite 自建访客统计，零第三方依赖，从写完到上线踩了五个坑，每个都比效果值钱。",
       "tags": [
         "服务器运维"
       ],
-      "words": 1657
+      "words": 1653
     },
     {
       "path": "posts/ssh-hardening.md",
       "url": "/posts/ssh-hardening",
       "title": "SSH 安全加固实战",
       "date": "2026-09-03",
-      "description": "一台暴露公网的服务器，SSH 是唯一的门。改端口、禁 root、配密钥、上 fail2ban，把暴力破解挡在门外。",
+      "description": "一台暴露公网的服务器，SSH 是进服务器的必经之门。改端口、禁 root、配密钥、上 fail2ban，把暴力破解挡在门外。",
       "tags": [
         "服务器运维",
         "安全"
       ],
-      "words": 1466
+      "words": 1465
     },
     {
       "path": "posts/suzhou-hanshan-temple.md",
@@ -167,19 +167,19 @@
       "tags": [
         "生活"
       ],
-      "words": 1445
+      "words": 1440
     },
     {
       "path": "posts/vitepress-bundle-optimization.md",
       "url": "/posts/vitepress-bundle-optimization",
       "title": "VitePress 瘦身实录：一个 640KB 的 chunk 是怎么消失的",
       "date": "2026-10-05",
-      "description": "本来只想修爬虫眼里的「字数 0」，顺藤摸出一个 640KB 的巨型 chunk——全站文章的编译产物，只为拿几 KB 的 frontmatter。把元信息搬进构建期后，最大 JS 降到 48KB，dist 顺带瘦了半兆。",
+      "description": "本来只想修爬虫眼里的「字数 0」，顺藤摸出一个 640KB 的巨型 chunk——全站文章的编译产物，只为拿几 KB 的 frontmatter。把元信息搬进构建期后，主 JS chunk 降到 48KB，dist 顺带瘦了半兆。",
       "tags": [
         "VitePress",
         "性能"
       ],
-      "words": 1257
+      "words": 1255
     },
     {
       "path": "posts/vitepress-live2d-mascot.md",
@@ -191,19 +191,19 @@
         "VitePress",
         "前端"
       ],
-      "words": 883
+      "words": 881
     },
     {
       "path": "posts/vitepress-particle-skins.md",
       "url": "/posts/vitepress-particle-skins",
       "title": "VitePress 换肤实录：博客背景怎么知道你那边在下雨",
       "date": "2026-10-06",
-      "description": "背景粒子先按季节换装，再跟实时天气下雨飘雪，最后连定位都收进了自己的服务器。比特效更值钱的是翻车现场：被 requestIdleCallback 吞掉的 TypeError、一个 404 拖死全站特效的静态 import、回环 curl 502 的设计行为。",
+      "description": "背景粒子先按季节换装，再跟实时天气下雨飘雪，末了连定位都收进了自己的服务器。比特效更值钱的是翻车现场：被 requestIdleCallback 吞掉的 TypeError、一个 404 拖死全站特效的静态 import、回环 curl 502 的设计行为。",
       "tags": [
         "VitePress",
         "前端"
       ],
-      "words": 2656
+      "words": 2655
     },
     {
       "path": "posts/vitepress-three-custom-tricks.md",
@@ -216,7 +216,7 @@
         "前端",
         "性能"
       ],
-      "words": 1333
+      "words": 1329
     },
     {
       "path": "posts/workbuddy.md",
@@ -229,7 +229,7 @@
         "工具",
         "Agent"
       ],
-      "words": 953
+      "words": 951
     },
     {
       "path": "posts/yangzhou-cafe.md",
@@ -255,7 +255,7 @@
         "Frontend",
         "AI"
       ],
-      "words": 1076
+      "words": 1071
     },
     {
       "path": "en/posts/ai-memory.md",
@@ -267,7 +267,7 @@
         "AI",
         "Knowledge Management"
       ],
-      "words": 1291
+      "words": 1290
     },
     {
       "path": "en/posts/aliyun-ecs-filing.md",
@@ -278,7 +278,7 @@
       "tags": [
         "Server Ops"
       ],
-      "words": 844
+      "words": 849
     },
     {
       "path": "en/posts/blog-modern-makeover.md",
@@ -290,7 +290,7 @@
         "VitePress",
         "Frontend"
       ],
-      "words": 1830
+      "words": 1827
     },
     {
       "path": "en/posts/blog-tech-stack.md",
@@ -316,7 +316,7 @@
         "Languages",
         "Tools"
       ],
-      "words": 1269
+      "words": 1272
     },
     {
       "path": "en/posts/local-llm-deployment.md",
@@ -340,7 +340,7 @@
         "AI",
         "Agent"
       ],
-      "words": 880
+      "words": 879
     },
     {
       "path": "en/posts/openspec-review.md",
@@ -353,18 +353,18 @@
         "Tools",
         "Agent"
       ],
-      "words": 727
+      "words": 728
     },
     {
       "path": "en/posts/personal-server.md",
       "url": "/en/posts/personal-server",
       "title": "Building a Personal Server from Scratch",
       "date": "2026-04-28",
-      "description": "From a bare CentOS box to a static blog plus a live stats backend — SSH hardening, BT Panel and Nginx reverse proxying, systemd, least privilege, and three real deployment failures.",
+      "description": "From a bare CentOS box to a static blog plus a live stats backend — SSH hardening, BT Panel and Nginx reverse proxying, systemd, need-to-know permissions, and three real deployment failures.",
       "tags": [
         "Server Ops"
       ],
-      "words": 1837
+      "words": 1833
     },
     {
       "path": "en/posts/python-setup.md",
@@ -376,18 +376,18 @@
         "Languages",
         "Tools"
       ],
-      "words": 868
+      "words": 867
     },
     {
       "path": "en/posts/self-hosted-visitor-stats.md",
       "url": "/en/posts/self-hosted-visitor-stats",
       "title": "Self-Hosting Visitor Stats: Ditching Busuanzi with 200 Lines of Python and SQLite",
       "date": "2026-10-01",
-      "description": "The free stats service on my blog footer was half-dead, leaving a permanent dash. I replaced it with a self-hosted counter built on the Python standard library and SQLite — zero dependencies, five pitfalls, each worth more than the feature.",
+      "description": "The free stats service on my blog footer was half-dead, leaving a dead dash. I replaced it with a self-hosted counter built on the Python standard library and SQLite — zero dependencies, five pitfalls, each worth more than the feature.",
       "tags": [
         "Server Ops"
       ],
-      "words": 1255
+      "words": 1257
     },
     {
       "path": "en/posts/ssh-hardening.md",
@@ -399,7 +399,7 @@
         "Server Ops",
         "Security"
       ],
-      "words": 1071
+      "words": 1065
     },
     {
       "path": "en/posts/suzhou-hanshan-temple.md",
@@ -417,12 +417,12 @@
       "url": "/en/posts/vitepress-bundle-optimization",
       "title": "How a 640KB Chunk Disappeared from My VitePress Blog",
       "date": "2026-10-05",
-      "description": "A zero word count in prerendered HTML led me to a 640KB mega chunk — every post compiled into JS just to read a few KB of frontmatter. Moving metadata to build time cut the largest JS bundle to 48KB and shaved half a megabyte off dist.",
+      "description": "A zero word count in prerendered HTML led me to a 640KB mega chunk — every post compiled into JS just to read a few KB of frontmatter. Moving metadata to build time cut the main JS bundle to 48KB and shaved half a megabyte off dist.",
       "tags": [
         "VitePress",
         "Performance"
       ],
-      "words": 961
+      "words": 959
     },
     {
       "path": "en/posts/vitepress-live2d-mascot.md",
@@ -446,7 +446,7 @@
         "VitePress",
         "Frontend"
       ],
-      "words": 1972
+      "words": 1977
     },
     {
       "path": "en/posts/vitepress-three-custom-tricks.md",
@@ -459,7 +459,7 @@
         "Frontend",
         "Performance"
       ],
-      "words": 996
+      "words": 995
     },
     {
       "path": "en/posts/workbuddy.md",
@@ -483,7 +483,7 @@
       "tags": [
         "Life"
       ],
-      "words": 756
+      "words": 757
     }
   ]
 }

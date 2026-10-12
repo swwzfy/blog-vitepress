@@ -1002,7 +1002,7 @@ function initParticles() {
   });
 
   // weather.js 独立成 chunk，运行时动态加载：静态 import 会在部署缺该文件时连带
-  // effects 整个模块加载失败（粒子/光晕/进度条/灯箱全灭）。catch 后最坏只是没有天气层
+  // effects 整个模块加载失败（粒子/光晕/进度条/灯箱全灭）。catch 后退到底只是没有天气层
   import('./weather.js')
     .then(({ watchWeather }) => {
       // 天气数据到达/30 分钟刷新时重估皮肤（weather.js 已有缓存会立即回调一次）；

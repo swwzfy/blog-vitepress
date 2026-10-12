@@ -13,7 +13,7 @@ description: 给三年攒下的「效果存量」做一次减法：噪点纹理�
 
 <!-- more -->
 
-最终落地五件事：全局噪点、原生 View Transitions、大标题紧字距、卡片边框追光、Bento 首页。顺手把 about 页名片化，还做了一次全站中英文内容对齐。效果都不复杂，坑倒是踩了不少，这篇照旧把坑摊开讲。
+落地下来是五件事：全局噪点、原生 View Transitions、大标题紧字距、卡片边框追光、Bento 首页。顺手把 about 页名片化，还做了一次全站中英文内容对齐。效果都不复杂，坑倒是踩了不少，这篇照旧把坑摊开讲。
 
 ## 一、噪点纹理：十行 CSS 买来的胶片感
 
@@ -49,7 +49,7 @@ SVG 里两个滤镜节点：`feTurbulence` 产生分形噪声，`feColorMatrix t
 
 写完一测——站内点链接，毫无反应。
 
-查了才明白：**这条 CSS 只对"跨文档导航"生效**，也就是浏览器完整加载一个新 HTML 的场景。而 VitePress 站内点击走的是 client router——fetch 新页面的数据、原地换 DOM，本质是 SPA 导航，浏览器根本不认为发生了一次"文档切换"。跨文档 View Transition 永远等不到出场机会。
+查了才明白：**这条 CSS 只对"跨文档导航"生效**，也就是浏览器完整加载一个新 HTML 的场景。而 VitePress 站内点击走的是 client router——fetch 新页面的数据、原地换 DOM，本质是 SPA 导航，浏览器根本不认为发生了一次"文档切换"。跨文档 View Transition 等不到出场机会。
 
 所以只能走同文档路线：用 `document.startViewTransition()` 手动包住 DOM 更新。问题是怎么拿到"更新前"和"更新后"两个时机。VitePress 的 router 提供了两个钩子，正好是一前一后：
 
@@ -77,7 +77,7 @@ export function initPageTransitions(router) {
 
 原理捋一下：`startViewTransition` 调用的瞬间浏览器拍旧快照；callback 里的 Promise 决定新快照的时机——所以我让 `onBeforeRouteChange` 开启过渡、把 resolve 存起来，等 router 把 DOM 换完、`onAfterRouteChanged` 触发时再 resolve，浏览器这时候拍新快照、播 cross-fade。DOM 更新可以发生在 callback 外面，callback 只负责说"好了"。
 
-那个 3 秒兜底不是 decorative：VT 挂起期间浏览器会暂停渲染，万一路由因为异常没走到 after 钩子，页面就永久冻结在旧快照上了。宁可过渡消失，不能把用户锁在半路。
+那个 3 秒兜底不是 decorative：VT 挂起期间浏览器会暂停渲染，万一路由因为异常没走到 after 钩子，页面就一直冻结在旧快照上了。宁可过渡消失，不能把用户锁在半路。
 
 主题切换也顺手升级了。原来那套"全屏渐变盖层扫过一遍"的过渡删掉，换成同款原生方案：capture 阶段拦下切换按钮的第一次点击，包进 `startViewTransition` 再重放：
 
@@ -95,7 +95,7 @@ document.addEventListener('click', (e) => {
 }, true)
 ```
 
-capture 阶段 `stopPropagation` 掉第一次点击，Vue 的 toggle 收不到；VT 的 callback 里 `btn.click()` 重放，这次带着 `replaying` 标记从处理器最前面直接放行。旧文件删掉，主题切换从"糊一层光"变成真正的整页 cross-fade。
+capture 阶段 `stopPropagation` 掉第一次点击，Vue 的 toggle 收不到；VT 的 callback 里 `btn.click()` 重放，这次带着 `replaying` 标记从处理器入口直接放行。旧文件删掉，主题切换从"糊一层光"变成真正的整页 cross-fade。
 
 ## 三、边框追光：卡片不再上浮
 
@@ -138,11 +138,11 @@ document.addEventListener('pointermove', (e) => {
 })
 ```
 
-光斑位置 = `radial-gradient` 的圆心吃 CSS 变量，鼠标到哪光到哪。移动端没有 hover 无所谓，`pointer-events: none` 保证这层永远不挡交互。
+光斑位置 = `radial-gradient` 的圆心吃 CSS 变量，鼠标到哪光到哪。移动端没有 hover 无所谓，`pointer-events: none` 保证这层不挡交互。
 
-## 四、大标题 + 紧字距：最便宜的排版信号
+## 四、大标题 + 紧字距：成本很低的排版信号
 
-这条没什么技术含量，但性价比最高：标题放大、字距收紧，是最直接的"现代排版"信号。
+这条没什么技术含量，但性价比很高：标题放大、字距收紧，是很直接的"现代排版"信号。
 
 ```css
 .VPHero .name {
@@ -176,9 +176,9 @@ document.addEventListener('pointermove', (e) => {
 }
 ```
 
-这里踩了本次改造最典型的坑：**选择器特异性**。我最初给跨列卡写 `.datetime-weather-item { width: 50% }`，单类 (0,1,0) 完全打不过 `:has(...) .item` 的 (0,4,0)，页面上时钟卡纹丝不动。跨列规则提到同特异性、声明在后面，才压得回去。
+这里踩了本次改造很典型的坑：**选择器特异性**。我一开始给跨列卡写 `.datetime-weather-item { width: 50% }`，单类 (0,1,0) 完全打不过 `:has(...) .item` 的 (0,4,0)，页面上时钟卡纹丝不动。跨列规则提到同特异性、声明在后面，才压得回去。
 
-第二个坑：**`:nth-child` 是 DOM 序不是显示序**。时钟卡靠 `order: -1` 显示在最前面，但 DOM 上它是 Teleport append 到末尾的第 4 个子元素。首屏入场动画的错峰 delay 是按 `:nth-child` 写的，不改的话动画顺序和视觉顺序对不上——显示第一张的卡要写 `nth-child(4)`。
+第二个坑：**`:nth-child` 是 DOM 序不是显示序**。时钟卡靠 `order: -1` 排在前面，但 DOM 上它是 Teleport append 到末尾的第 4 个子元素。首屏入场动画的错峰 delay 是按 `:nth-child` 写的，不改的话动画顺序和视觉顺序对不上——显示第一张的卡要写 `nth-child(4)`。
 
 时钟卡跨成宽卡之后，内部布局也要跟着变：窄卡时时间竖排，宽卡时横排（问候居左、大时钟居中、天气靠右）。这里用了容器查询而不是媒体查询：
 
@@ -211,7 +211,7 @@ document.addEventListener('pointermove', (e) => {
 
 about 页原来是纯文档流，顺手升级成和首页同语言的版式：渐变名片头部（logo 盒 + 文楷大字 + 梵语 tagline）、三张带追光的兴趣卡、联系方式胶囊按钮 + 二维码卡。Markdown 正文一个字没动，只是外面套了带 class 的 HTML 容器。
 
-另一件是全站中英文对齐体检：文章 17 篇两边一一对应没问题，但时间线英文版多出 4 条对不上的经历、友链一边是真实站点一边是 8 个占位假名、英文首页布局和中文不同构。按"以真实内容为准"逐一对齐了。i18n 站点最怕的不是缺翻译，是两边各自生长——定期 diff 一遍很有必要。
+另一件是全站中英文对齐体检：文章 17 篇两边一一对应没问题，但时间线英文版多出 4 条对不上的经历、友链一边是真实站点一边是 8 个占位假名、英文首页布局和中文不同构。按"以真实内容为准"逐一对齐了。i18n 站点怕的不是缺翻译，是两边各自生长——定期 diff 一遍很有必要。
 
 ## 结语
 

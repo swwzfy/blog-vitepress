@@ -35,7 +35,7 @@ Every skin is drawn live with canvas 2D, zero images, and together they form a f
 
 - **Spring (Mar–Apr) sakura + peach**: cherry petals carry their signature notched tip (pieced from two Bézier curves), while peach blossoms fall as whole five-petal flowers in a deeper pink — two kinds of pink drifting together, so you can tell who is who;
 - **Summer (Jun–Aug) lotus pond**: in light mode a living pond — two clusters of translucent leaves at the bottom edges (wavy margins, branching veins, radial gradient, swaying in the wind), one or two lotus flowers breathing open (white-based pointed petals with pink tips over a seed pod), double-ring ripples every second or two, a dragonfly hopping between the leaves ("on the tip of the tender lotus, a dragonfly has come to rest"), and the occasional petal drifting across the water; fireflies take over in dark mode;
-- **Autumn (Oct–Nov) maple + ginkgo**: the maple follows a hand-tuned real-crimson outline — a top lobe, two upper-side lobes, two small lower ones, serrated edges and five palmate veins (three shades of red, tumbling down), mixed 6:4 with golden ginkgo fans whose outer edges ripple — crimson against gold, the two best cards of autumn, no need to pick just one;
+- **Autumn (Oct–Nov) maple + ginkgo**: the maple follows a hand-tuned real-crimson outline — a top lobe, two upper-side lobes, two small lower ones, serrated edges and five palmate veins (three shades of red, tumbling down), mixed 6:4 with golden ginkgo fans whose outer edges ripple — crimson against gold, autumn's two strong cards, no need to pick just one;
 - **Winter (Dec–Feb) plum + ice crystals**: on sunny days whole five-petal blossoms drift down sparse and slow (near-white pink, five overlapping petals with six stamens, one size smaller and paler than sakura) while four-point star glints twinkle in place — plum blossoms defying the snow; actual snowfall switches to the snow skin via the real-time weather layer, snow is snow and flowers are flowers;
 - Deep night (after 23:00) in dark mode turns to starry sky with meteors; May and September fall back to plain specks.
 
@@ -63,7 +63,7 @@ The day the seasonal version shipped, something felt off: a calendar knows the m
 
 The fix maps Open-Meteo's `weather_code` to a skin intent: rain family (drizzle 51–57 / rain 61–67 / showers 80–82 / thunderstorm 95+) swaps in rain streaks, snow family (71–77 / 85–86) swaps in snow; clear, cloudy and fog leave the background alone — it shouldn't report every nuance of the sky. Frost has no weather_code, so per an early decision it's not done. Priority: night sky > real-time precipitation > season.
 
-Rain is the only new skin: thin line segments falling fast along a fixed wind direction, no sway. The segment points along its velocity — tail = head − unit velocity × length — with separate light/dark colors. Thanks to the shared `Faller` base class, the new skin is about thirty lines.
+Rain is the new skin this round: thin line segments falling fast along a fixed wind direction, no sway. The segment points along its velocity — tail = head − unit velocity × length — with separate light/dark colors. Thanks to the shared `Faller` base class, the new skin is about thirty lines.
 
 The weather request also became a shared module, `weather.js`: the clock card's weather capsule and the particles consume the same data, the whole site issues one request that refreshes every 30 minutes, and failures are silent with each consumer falling back on its own (capsule hides / particles revert to seasonal).
 
@@ -95,7 +95,7 @@ Free IP APIs belong to someone else: rate limits, outages, terms that may change
 1. nginx puts the visitor IP into `X-Real-IP`;
 2. the ip2region offline database resolves the city: both v3 xdb files (v4 11MB + v6 37MB) are loaded whole into memory — no file handles during lookups, naturally thread-safe, no locks; the query logic is an inline zero-dependency implementation — a vector index pins the segment, binary search within it, and the v4 index is little-endian so comparisons reverse the bytes (v6 is plain big-endian);
 3. it only answers for Chinese cities: non-Chinese IPs, private ranges and unknowns get a 502 and are handed back to the browser-direct chain — international libraries judge overseas IPs better; when the city field is missing it falls back to the province, stripping the 市/省 suffix before querying;
-4. city → coordinates goes through Open-Meteo geocoding, cached in-process forever; weather is cached per city for 30 minutes. Every visitor shares these caches, so upstream pressure is negligible.
+4. city → coordinates goes through Open-Meteo geocoding, cached in-process for the life of the process; weather is cached per city for 30 minutes. Every visitor shares these caches, so upstream pressure is negligible.
 
 The frontend became a three-tier chain, each tier failing silently into the next:
 

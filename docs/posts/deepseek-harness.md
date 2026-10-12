@@ -36,9 +36,9 @@ DeepSeek 在 2026 年 8 月开源了 **Harness**——一个把 Agent 拆成可�
 | 运行有迹可循 | 所有 LLM 看到/产生的内容都进追加式会话日志，可回放可分叉 |
 | 多种运行模式 | 标准 / PTC / 极简 / 创造 四种预设，按场景切换 |
 
-最底层是一个叫 **Cordis** 的插件内核（[github.com/cordiverse/cordis](https://github.com/cordiverse/cordis)），只负责插件的加载、卸载和依赖关系，**不承载任何具体能力**。所有能力都得你自己装插件、自己写配置。
+底层是一个叫 **Cordis** 的插件内核（[github.com/cordiverse/cordis](https://github.com/cordiverse/cordis)），只负责插件的加载、卸载和依赖关系，**不承载任何具体能力**。所有能力都得你自己装插件、自己写配置。
 
-这也是它和 LangChain、Agno、CrewAI 这类框架最大的区别——**那些框架给你一套默认全家桶，DeepSeek Harness 给你一个空架子，所有部件都得自己拼**。
+这也是它和 LangChain、Agno、CrewAI 这类框架的关键区别——**那些框架给你一套默认全家桶，DeepSeek Harness 给你一个空架子，所有部件都得自己拼**。
 
 ---
 
@@ -48,13 +48,13 @@ DeepSeek Harness 是 Node 应用，依赖 Node 18+。如果你已经有 `node -v
 
 ### Windows
 
-最省事的方式是用 [nvm-windows](https://github.com/coreybutler/nvm-windows)：
+省事的方式是用 [nvm-windows](https://github.com/coreybutler/nvm-windows)：
 
 ```powershell
 # 安装 nvm-windows（下载 nvm-setup.exe）
 # https://github.com/coreybutler/nvm-windows/releases
 
-# 装最新 LTS
+# 装当前 LTS
 nvm install lts
 nvm use lts
 
@@ -73,7 +73,7 @@ npm -v
 ### macOS
 
 ```bash
-# 方式一：官方 pkg（最稳）
+# 方式一：官方 pkg（较稳）
 # 打开 https://nodejs.org/ 下载 macOS Installer (.pkg)
 
 # 方式二：Homebrew
@@ -164,7 +164,7 @@ npm run dev   # 或仓库里写的启动脚本
 |---|---|---|
 | **标准模式** | 完整工具链（文件编辑、Shell、文件检索、网页检索、Skills、计划、目标、子代理、工作流） | 日常编码 Agent |
 | **PTC 模式** | 标准模式全部 + Code Mode SDK（用 TypeScript 程序组合多步操作） | 复杂多步任务，模型写代码代替反复工具调用 |
-| **极简模式** | 仅 bash + str_replace_editor 两个工具 | 模型能力基准测试，最小变量 |
+| **极简模式** | 仅 bash + str_replace_editor 两个工具 | 模型能力基准测试，变量单一 |
 | **创造模式** | 标准模式全部 + 运行时检查 + 插件实验 + preset 创作指导 | 自定义 Agent preset |
 
 **怎么选**：
@@ -178,7 +178,7 @@ npm run dev   # 或仓库里写的启动脚本
 
 ## 和其他 Agent 工具的对比（简评）
 
-把 DeepSeek Harness 和最近接触较多的几个 Agent 工具摆一起看：
+把 DeepSeek Harness 和近期接触较多的几个 Agent 工具摆一起看：
 
 | 工具 | 核心思路 | 学习曲线 | 适合谁 |
 |---|---|---|---|

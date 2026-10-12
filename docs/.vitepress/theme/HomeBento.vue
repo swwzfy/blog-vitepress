@@ -8,7 +8,7 @@ import { statsAvailable } from '@/utils/stats'
 const { isEn, t } = useLocale()
 const router = useRouter()
 
-// —— 最多阅读（自建统计 /api/top.json，server/stats.py）——
+// —— 热门阅读（自建统计 /api/top.json，server/stats.py）——
 // 只在生产域名下拉数；拿不到就整卡隐藏，不占格、不挂"-"。
 // 排行是全站口径（中英混合），展示时映射到当前语种的镜像文章并去重
 // （本站中英 1:1 对应），两个语种的首页才能显示同一份榜单
@@ -95,7 +95,7 @@ const ANSWERS = [
   { zh: '写下来，别在脑子里转。', en: 'Write it down. Stop spinning it in your head.' },
   { zh: '留白也是一种答案。', en: 'Blank space is an answer too.' },
   { zh: '去外面走十分钟。', en: 'Go take a ten-minute walk.' },
-  { zh: '相信第一直觉。', en: 'Trust your first instinct.' }
+  { zh: '相信直觉。', en: 'Trust your instinct.' }
 ]
 // 指令卡的回显行：答案之书与流浪星球共用一条终端输出
 const feedback = ref('')
@@ -155,7 +155,7 @@ function askAnswer() {
             </div>
           </div>
         </div>
-        <!-- 最多阅读：通栏单独成行（4 列制下窄卡必留洞，同快捷指令卡的处理），
+        <!-- 热门阅读：通栏单独成行（4 列制下窄卡必留洞，同快捷指令卡的处理），
              必须排在订阅卡之后 —— 生活+订阅凑满一行，本卡独占一行。
              数据来自自建统计，接口不可达时整卡不渲染 -->
         <div v-if="hotPosts.length" class="item bento-item-full">

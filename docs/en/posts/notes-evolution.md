@@ -22,7 +22,7 @@ Database views are powerful. But after six months, two issues made me quit: slow
 
 ## Phase 3: Obsidian
 
-Markdown + local files = peace of mind. Bidirectional links, graph view, community plugins — used it for two years, the most satisfying solution.
+Markdown + local files = peace of mind. Bidirectional links, graph view, community plugins — used it for two years, and it suited me well.
 
 Until I realized I was spending 40% of my "note time" tweaking plugins and templates...
 
@@ -30,4 +30,4 @@ Until I realized I was spending 40% of my "note time" tweaking plugins and templ
 
 Obsidian for daily notes, important knowledge synced to my own SQLite database via scripts, with vector search.
 
-> The best note system is the one you actually use.
+> A good note system is the one you actually use.

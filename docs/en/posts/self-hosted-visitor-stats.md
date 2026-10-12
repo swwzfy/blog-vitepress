@@ -2,7 +2,7 @@
 title: "Self-Hosting Visitor Stats: Ditching Busuanzi with 200 Lines of Python and SQLite"
 date: 2026-10-01
 tags: [Server Ops]
-description: The free stats service on my blog footer was half-dead, leaving a permanent dash. I replaced it with a self-hosted counter built on the Python standard library and SQLite — zero dependencies, five pitfalls, each worth more than the feature.
+description: The free stats service on my blog footer was half-dead, leaving a dead dash. I replaced it with a self-hosted counter built on the Python standard library and SQLite — zero dependencies, five pitfalls, each worth more than the feature.
 ---
 
 # Self-Hosting Visitor Stats: Ditching Busuanzi with 200 Lines of Python and SQLite
@@ -62,7 +62,7 @@ dup = conn.execute(
 
 ## Pitfall 1: parameter name mismatch, the views field vanishes
 
-I tested locally right after writing — the only thing I did right up front.
+I tested locally right after writing — the one thing I did right up front.
 
 The service has two endpoints: /api/hit reads a u parameter, /api/stats.json reads url, and the frontend sends url. So the aggregation endpoint always returned:
 
@@ -119,7 +119,7 @@ The fix is to let the code cover for itself:
 os.makedirs(os.path.dirname(SALT_PATH), exist_ok=True)
 ```
 
-Lesson: steps in a deployment document written for "a person" will eventually be skipped by that person. The most reliable executor is the code.
+Lesson: steps in a deployment document written for "a person" will eventually be skipped by that person. The executor you can rely on is the code.
 
 ## Pitfall 4: testing in the foreground as root makes everything root-owned
 
@@ -184,6 +184,6 @@ Two honest disclaimers: IP-based dedup counts everyone behind one company networ
 
 ## Finally
 
-The ledger: about 200 lines of Python, 12 lines of systemd, 6 lines of nginx. The alternative was signing up for a third-party service, embedding someone else's script, reading my own data in someone else's dashboard — and a permanent dash on my footer whenever it died.
+The ledger: about 200 lines of Python, 12 lines of systemd, 6 lines of nginx. The alternative was signing up for a third-party service, embedding someone else's script, reading my own data in someone else's dashboard — and a dead dash on my footer whenever it died.
 
 Every pitfall in this post came from a single real deployment afternoon. The pitfalls are worth more than the feature — the feature is two numbers in a footer, the pitfalls are five lessons. Now they're all words, and next time a service of mine dies, this page will walk me through the potholes all over again.

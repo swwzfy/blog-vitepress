@@ -119,8 +119,8 @@ export default defineConfig({
   title: "Kiran's Blog",
   description: '独立开发者 · 写作者 · 坐标扬州',
   lang: 'zh-CN',
-  // 顶层开关：VPDocFooter 靠 page.lastUpdated 才渲染"最后更新"，
-  // themeConfig.lastUpdated 只是 label，缺这个开关时间戳永远不出数
+  // 顶层开关：VPDocFooter 靠 page.lastUpdated 才渲染"更新于"，
+  // themeConfig.lastUpdated 只是 label，缺这个开关时间戳不出数
   lastUpdated: true,
   locales: {
     root: {
@@ -143,7 +143,7 @@ export default defineConfig({
           label: '目录'
         },
         lastUpdated: {
-          text: '最后更新'
+          text: '更新于'
         },
         docFooter: {
           prev: '上一篇',
@@ -350,7 +350,7 @@ export default defineConfig({
 
     // VitePress 默认主题的 Inter @font-face（theme-default/styles/fonts.css）无条件打进
     // 产物 CSS，并随之拷出全部 14 个 woff2（~500KB）。本站字体栈是系统字体
-    // （tokens.css 覆盖了 --vp-font-family-base，勿回加 Inter 引用），这些文件永远不会
+    // （tokens.css 覆盖了 --vp-font-family-base，勿回加 Inter 引用），这些文件不会
     // 被请求，产物里直接剔除。
     // siteConfig.outDir 在 Windows 上是正斜杠风格，守卫前先 resolve 归一化，否则恒 false
     const outRoot = resolve(siteConfig.outDir)

@@ -168,7 +168,7 @@ onUnmounted(() => {
 </template>
 
 <style scoped>
-/* 首页 Bento 的时钟卡（HomeBento 第一格）：撑满网格单元，圆角/内边距对齐 bento 卡（12px / 24px）。
+/* 首页 Bento 的时钟卡（HomeBento 首格）：撑满网格单元，圆角/内边距对齐 bento 卡（12px / 24px）。
    底色 = 品牌渐变 + 两个静态氛围光斑（粉紫双色呼应全站配色，纯背景层，无动画开销） */
 .datetime-weather {
   height: 100%;

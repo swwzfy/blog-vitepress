@@ -38,7 +38,7 @@ Three design principles worth memorizing:
 
 The lowest layer is a plugin kernel called **Cordis** ([github.com/cordiverse/cordis](https://github.com/cordiverse/cordis)). It only handles plugin load/unload and dependency resolution — **no concrete capabilities of its own**. Every capability comes from a plugin you install and a config you write.
 
-This is also the biggest difference from LangChain, Agno, CrewAI: **those frameworks ship a full default toolkit; DeepSeek Harness ships an empty scaffold — you assemble everything yourself**.
+This is also the key difference from LangChain, Agno, CrewAI: **those frameworks ship a full default toolkit; DeepSeek Harness ships an empty scaffold — you assemble everything yourself**.
 
 ---
 
@@ -48,13 +48,13 @@ DeepSeek Harness is a Node app, requires Node 18+. Skip this section if `node -v
 
 ### Windows
 
-Easiest path: [nvm-windows](https://github.com/coreybutler/nvm-windows).
+The straightforward path: [nvm-windows](https://github.com/coreybutler/nvm-windows).
 
 ```powershell
 # Install nvm-windows (download nvm-setup.exe)
 # https://github.com/coreybutler/nvm-windows/releases
 
-# Install latest LTS
+# Install current LTS
 nvm install lts
 nvm use lts
 
@@ -73,7 +73,7 @@ Without nvm, just use the official installer:
 ### macOS
 
 ```bash
-# Option 1: official pkg (most stable)
+# Option 1: official pkg (stable)
 # Open https://nodejs.org/ and download the macOS Installer (.pkg)
 
 # Option 2: Homebrew
@@ -180,7 +180,7 @@ After install, the Web UI prompts for a mode. This is one of Harness's core abst
 
 A quick side-by-side of DeepSeek Harness and three other Agent tools I've worked with recently:
 
-| Tool | Core idea | Learning curve | Best for |
+| Tool | Core idea | Learning curve | Good for |
 |---|---|---|---|
 | **Claude Code** | Terminal-native CLI + MCP extension | Low (works out of the box) | Individual devs doing day-to-day coding tasks |
 | **OpenClaw** | Plugin-driven orchestration, strong on external API/system integration | Medium | Plugging AI into existing SaaS or internal systems |
@@ -189,12 +189,12 @@ A quick side-by-side of DeepSeek Harness and three other Agent tools I've worked
 
 These four don't overlap much — they're more like divisions of labor:
 
-- **Claude Code** — strongest solo operator. Zero config to write code, read files, run commands. Capability boundary = model + MCP servers; no plugin ecosystem to manage
-- **OpenClaw** — strongest team/system integration. Rich plugins for CRM/ERP/internal APIs, but you own the permission surface
-- **Hermes** — strongest long-term strategy accumulation. Gets smarter the more you use it; great for risk-control/advising where remembering *why* a decision was made matters
-- **DeepSeek Harness** — strongest foundational framework. **Not meant to be used directly** — it's for *building* Agents. Every capability is visible and replaceable
+- **Claude Code** — strong as a solo operator. Zero config to write code, read files, run commands. Capability boundary = model + MCP servers; no plugin ecosystem to manage
+- **OpenClaw** — strong at team/system integration. Rich plugins for CRM/ERP/internal APIs, but you own the permission surface
+- **Hermes** — strong at long-term strategy accumulation. Gets smarter the more you use it; great for risk-control/advising where remembering *why* a decision was made matters
+- **DeepSeek Harness** — a strong foundational framework. **Not meant to be used directly** — it's for *building* Agents. Every capability is visible and replaceable
 
-DeepSeek Harness's bar is **noticeably the highest** — you need to read Cordis docs, configure plugins, understand the event stream. The payoff: **no nested abstractions; every capability sits in a config file**. If you just want an Agent that gets work done, the first three are far easier. If you want to *build* an Agent, those three all require you to reinvent some layer.
+DeepSeek Harness's bar is **noticeably higher** — you need to read Cordis docs, configure plugins, understand the event stream. The payoff: **no nested abstractions; every capability sits in a config file**. If you just want an Agent that gets work done, the first three are far easier. If you want to *build* an Agent, those three all require you to reinvent some layer.
 
 ---
 
@@ -207,4 +207,4 @@ DeepSeek Harness's bar is **noticeably the highest** — you need to read Cordis
 - Cordis paper: [github.com/cordiverse/paper](https://github.com/cordiverse/paper)
 - Community plugins: [github.com/topics/dsh-plugin](https://github.com/topics/dsh-plugin)
 
-**Note**: DeepSeek Harness is currently in developer preview; core plugins and base APIs are still iterating. This article was written in August 2026; defer to the official repo README for the latest commands and details.
+**Note**: DeepSeek Harness is currently in developer preview; core plugins and base APIs are still iterating. This article was written in August 2026; defer to the official repo README for current commands and details.

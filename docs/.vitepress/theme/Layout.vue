@@ -16,7 +16,7 @@ const isArticle = computed(() => !!frontmatter.value.date)
 
 // 字数与阅读时长来自构建期 posts-meta.json（utils/posts.ts 的 wordsByRoutePath）。
 // 必须是 computed：SSR 渲染期即求值，产物 HTML 非 0 —— 若在 onMounted 里现算，
-// 爬虫/无 JS 环境拿到的永远是「0 分钟阅读 · 0 字」（改前的病灶）。
+// 爬虫/无 JS 环境拿到的始终是「0 分钟阅读 · 0 字」（改前的病灶）。
 const wordCount = computed(() => wordsByRoutePath.get(page.value.relativePath.replace(/\.md$/, '')) ?? 0)
 const readingTime = computed(() => Math.max(1, Math.ceil(wordCount.value / 300)))
 
@@ -61,7 +61,7 @@ const nextPost = ref<AdjacentPost | null>(null)
 /**
  * 上一篇/下一篇：按日期相邻取。列表按新→旧排列，后一位是更早的（上一篇），
  * 前一位是更新的（下一篇）。VitePress 自带的 prev/next 依赖 sidebar 配置，
- * 本站无 sidebar 永远不渲染，所以自己算。
+ * 本站无 sidebar 不会渲染，所以自己算。
  */
 function findAdjacent() {
   const currentPath = page.value.relativePath.replace(/\.md$/, '')
@@ -267,7 +267,7 @@ function syncReactionsState(path: string) {
   }
 }
 
-// 反应：GET 打点式（无文本输入），服务端按 IP+路径+表情永久去重，可多选不同表情、无取消；
+// 反应：GET 打点式（无文本输入），服务端按 IP+路径+表情长期去重，可多选不同表情、无取消；
 // localStorage 只记「我点过哪些」的 UI 态。行只在 postReactions 非 null（可用域且接口可达）时渲染
 async function react(emoji: string) {
   const path = window.location.pathname
@@ -298,7 +298,7 @@ function syncLikedState(path: string) {
   }
 }
 
-// 点赞：GET 打点式（与 /api/hit 同构，无用户文本输入），服务端按 IP+路径永久去重；
+// 点赞：GET 打点式（与 /api/hit 同构，无用户文本输入），服务端按 IP+路径长期去重；
 // localStorage 只管「我赞过」的 UI 态。按钮只在 postLikes 非 null（即可用域且
 // 接口可达）时渲染，所以这里不用再查 statsAvailable
 async function likePost() {

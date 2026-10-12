@@ -11,7 +11,7 @@ It started with a friend's blog. Leelaa's archive page: a centered header, a hor
 
 On a whim, I had AI rebuild it. Two days later the archive page really was transformed: the right column gone, a header line reading "19 posts · 22,489 words", a sticky year bar that scrolls sideways, every article turned into a card with a big date numeral.
 
-But the thing worth writing down from these two days is not what the page became. It is what the process exposed about how AI edits code. The most representative incident: **I pinpointed the bug down to "the horizontal line above the 2026 heading", and it still fixed the wrong one.**
+But the thing worth writing down from these two days is not what the page became. It is what the process exposed about how AI edits code. A representative incident: **I pinpointed the bug down to "the horizontal line above the 2026 heading", and it still fixed the wrong one.**
 
 ## The fault-line detective story
 
@@ -33,13 +33,13 @@ One fault line, four rounds. And note this: I had said "above" back in round two
 
 ## Five weaknesses, as the retrospective sees them
 
-**One: it locates by impression, not by evidence.** The moment I said "horizontal line", AI's attention locked onto the line it had added itself — it has strong memory salience for its own creations. It never asked how many horizontal lines the DOM actually contained or where they sat; it picked the most familiar suspect. I pointed at "above"; it fixed "nearby".
+**One: it locates by impression, not by evidence.** The moment I said "horizontal line", AI's attention locked onto the line it had added itself — it has strong memory salience for its own creations. It never asked how many horizontal lines the DOM actually contained or where they sat; it picked a familiar suspect. I pointed at "above"; it fixed "nearby".
 
 **Two: self-created elements pollute the scene.** That decorative rule was something it added unasked, imitating leelaa. When a bug appeared, its own decoration became the prime suspect — while the real culprit, a framework default, hid behind it.
 
 **Three: guess-first fixing.** Twice it made changes without locating anything: a frosted strip, a spacing tweak. It prefers "try a version and show the human" over "gather evidence first". The cost of being wrong was never its code — it was me opening the page, getting disappointed, and asking for a revert.
 
-**Four: the preview can lie.** One round was sneakier: it edited the local files but inspected a page it had hand-assembled in the browser — the thing it "verified" was not the build output at all. The bug stayed perfectly hidden, and it still reported success. The lesson worth the most here: between AI's "I looked, it's fine" and "it is actually fine" can sit an entire fabrication layer.
+**Four: the preview can lie.** One round was sneakier: it edited the local files but inspected a page it had hand-assembled in the browser — the thing it "verified" was not the build output at all. The bug stayed hidden, and it still reported success. The lesson that mattered here: between AI's "I looked, it's fine" and "it is actually fine" can sit an entire fabrication layer.
 
 **Five: framework defaults seep in layer by layer.** The defaults it missed over these two days could form a queue: the border-top above every h2, the margin between list items, list-style, even a separate mobile-only "Return to top" dropdown. Screenshot eyeballing never catches all of that — it only shows up at a certain zoom, a certain breakpoint, an angle you happen to be staring at.
 
@@ -61,4 +61,4 @@ To be fair, it also caught real bugs on its own patrol: every page hauled a 147 
 
 I'm happy with the archive page now: a stats header, a sticky year bar that scrolls sideways, articles as big-numeral cards. Looking back at the whole process, the weaknesses compress into one sentence:
 
-**AI is strong at writing new code. When editing existing code, the most expensive thing is not the code it writes — it is the alignment cost between you and the machine over "which line".** Use it like a guessing contestant and it will guess. Use it like a witness — evidence first, edits second, assertions to close — and two days become two hours, instead of two hours becoming two days.
+**AI is strong at writing new code. When editing existing code, the costly part is not the code it writes — it is the alignment cost between you and the machine over "which line".** Use it like a guessing contestant and it will guess. Use it like a witness — evidence first, edits second, assertions to close — and two days become two hours, instead of two hours becoming two days.

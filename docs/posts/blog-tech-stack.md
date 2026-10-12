@@ -104,7 +104,7 @@ function t(key) {
 
 **一个坑：DPR 和 CSS 像素混用**。
 
-最早把 canvas 宽高按物理像素设，粒子坐标按 CSS 像素算，鼠标坐标又是另一套。普通屏上凑合能跑，一到 2x 屏，粒子集体缩水、聚在左上角。
+起初把 canvas 宽高按物理像素设，粒子坐标按 CSS 像素算，鼠标坐标又是另一套。普通屏上凑合能跑，一到 2x 屏，粒子集体缩水、聚在左上角。
 
 正确做法：全系统只认 CSS 像素，物理像素换算收敛到 `setTransform` 一处：
 
@@ -144,7 +144,7 @@ glow.style.transform = `translate(${glowX}px, ${glowY}px) translate(-50%, -50%)`
 1. 全屏逐帧重绘，GPU 和电量持续消耗
 2. `hue-rotate` 周期性把品牌紫漂成绿色/蓝色，色彩纪律失守
 
-后来改成静态：两团 `radial-gradient`，透明度压到 0.15 和 0.1，垫在最底层。效果靠层次，不是运动。
+后来改成静态：两团 `radial-gradient`，透明度压到 0.15 和 0.1，垫在底层。效果靠层次，不是运动。
 
 ---
 
@@ -156,7 +156,7 @@ glow.style.transform = `translate(${glowX}px, ${glowY}px) translate(-50%, -50%)`
 
 ### 相关文章推荐
 
-`findRelated()` 按标签交集打分，同标签越多排名越靠前，平分时按日期倒序。最多取 3 篇。
+`findRelated()` 按标签交集打分，同标签越多排名越靠前，平分时按日期倒序。至多取 3 篇。
 
 ### 404 页面
 

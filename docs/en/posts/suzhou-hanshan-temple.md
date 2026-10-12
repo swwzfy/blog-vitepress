@@ -33,7 +33,7 @@ The bridge is a later restoration. Better to say that up front, so nobody stands
 
 Twelve hundred years ago, Zhang Ji — having failed the imperial exam — was sailing home. His boat stopped here for the night. He heard a bell in the distance and wrote these twenty-eight characters. Twelve centuries later I stood at the same spot, sun in my eyes, an old man beside me hunting for a photo angle, the river underneath still drifting slowly.
 
-The statue of Zhang Ji stands next to the tablet, a frail scholar with lowered eyes. A crowd of tourists fought for the best posing spot in front of it. I waited for them to clear, then snapped one clean shot for myself.
+The statue of Zhang Ji stands next to the tablet, a frail scholar with lowered eyes. A crowd of tourists fought for a good spot in front of it. I waited for them to clear, then snapped one clean shot for myself.
 
 ## Inside the gate
 
@@ -51,7 +51,7 @@ Looking up at it, I thought about this: in ancient times the bell marked the hou
 
 ## Hanshan Villa
 
-The temple has several side courtyards scattered around it. The most worthwhile is Hanshan Villa.
+The temple has several side courtyards scattered around it. The one worth seeing is Hanshan Villa.
 
 Past its entrance is a long corridor with the Diamond Sutra, the Heart Sutra, and poems by various historical figures carved into both walls. I walked along slowly, stopping at the ones I liked. These half-classical, half-vernacular verses line every wall — not great poetry, but the antique feel is real. They wear better than the "life is but a first meeting" quotes on social media.
 

@@ -7,7 +7,7 @@ description: Sessions end and context gets wiped. After four months of letting A
 
 # Why I Let AI Manage My Memory
 
-Every session starts with amnesia. When I wrote this piece in May, I had just set up a three-layer memory system for my AI — short-term, long-term, semantic retrieval — purely as a tech experiment. Four months in, it has become the least glamorous and most indispensable part of my workflow. And the deeper I lean on AI, the sharper the contrast gets — it can write a full day's worth of my code in minutes, yet it can't remember a decision we settled last week. This post now covers both the design and what those four months actually taught me.
+Every session starts with amnesia. When I wrote this piece in May, I had just set up a three-layer memory system for my AI — short-term, long-term, semantic retrieval — purely as a tech experiment. Four months in, it has become the least glamorous and yet indispensable part of my workflow. And the deeper I lean on AI, the sharper the contrast gets — it can write a full day's worth of my code in minutes, yet it can't remember a decision we settled last week. This post now covers both the design and what those four months actually taught me.
 
 <!-- more -->
 
@@ -15,7 +15,7 @@ Every session starts with amnesia. When I wrote this piece in May, I had just se
 
 Large models have context window limits, and long conversations get summarized — the plot survives, the facts don't. After a debugging session stretches to thousands of lines, the port numbers, paths and usernames confirmed early on get ground away, round after round of summarization. The summary remembers "we're fixing a crash loop" but not "the runtime user is www, not www-data" — and that detail is the switch for every next step. Real tasks, meanwhile, stubbornly refuse to fit inside one session.
 
-The best example is this blog's own visitor stats service. From finished locally to working in production, it spanned several sessions — is the server CentOS or Ubuntu? Is nginx sitting behind a BT Panel? Is the runtime user called www or www-data? Where does python3 live? None of these hard environment facts appear in the code, and git can't tell you either — yet every debugging session hinges on them.
+A clear example is this blog's own visitor stats service. From finished locally to working in production, it spanned several sessions — is the server CentOS or Ubuntu? Is nginx sitting behind a BT Panel? Is the runtime user called www or www-data? Where does python3 live? None of these hard environment facts appear in the code, and git can't tell you either — yet every debugging session hinges on them.
 
 I even hit the same pit twice. systemd reported 217/USER, the service looped on crash, and journalctl's verdict was just a wrong username in a config file. The first time was unfamiliarity. The second time, the fix lived in a conversation that had long since ended, and the config file re-uploaded to the server carried the wrong username right back. **Debugging conclusions that die with their session** — that is what amnesia costs.
 
@@ -49,13 +49,13 @@ When I wrote "semantic retrieval" in May, I assumed that meant a vector database
 
 **Two — don't store what the code already says.** Code structure, fixed bugs, commit history — the repository is its own record, and AI can look those up anytime. Memory is for what can't be looked up — hard environment facts, rejected proposals and why, user preferences, decisions in flight. A simple test — will this sentence probably still hold three months from now? "The server's runtime user is www" holds; what a home-page card looks like, or which files a particular build produced, does not.
 
-**Three — dare to delete.** A wrong memory is worse than no memory. A stale "that file is in place" sends the next session chasing ghosts for half an hour, while sitting there looking perfectly reasonable forever. Deleting is routine memory maintenance, not an exception.
+**Three — dare to delete.** A wrong memory is worse than no memory. A stale "that file is in place" sends the next session chasing ghosts for half an hour, while sitting there looking entirely reasonable. Deleting is routine memory maintenance, not an exception.
 
 ## When to Write
 
 Three moments deserve ink:
 
-**When corrected.** The moment a user rejects the AI's work is the most expensive conflict and the deepest lesson. When a frosted-glass proposal for the archive page redesign got shot down, what I recorded was not the verdict but the reason — and what to ask before trying again. A memory only takes shape once it grows a "why" and a "what to do next time".
+**When corrected.** The moment a user rejects the AI's work is a costly conflict and a deep lesson. When a frosted-glass proposal for the archive page redesign got shot down, what I recorded was not the verdict but the reason — and what to ask before trying again. A memory only takes shape once it grows a "why" and a "what to do next time".
 
 **After stepping into a pit.** After a rebuild, the local preview server must be restarted with the port fully cleared, or every new asset 404s — one line of notes means next time takes five seconds to match instead of half an hour to re-debug.
 
@@ -71,7 +71,7 @@ Memory is not a database — it is a **snapshot of the moment it was written**. 
 
 As for vector retrieval, it's still on the wishlist. The store is small enough that a well-written one-line description is its stand-in. The day the index outgrows one screen, we can talk about upgrading.
 
-## The Easiest Layer to Miss — It Does the Remembering
+## The Easy-to-Miss Layer — It Does the Remembering
 
 It's tempting to picture this store as "a diary I write for my AI to read". The direction is actually reversed — **the AI holds the pen**. It decides what to write at the moments it gets corrected, steps into a pit, or lands a decision; it maintains the index; it deletes stale entries itself. My only job is to say "no, that's wrong" when it misremembers — and that correction promptly becomes a memory of its own.
 
@@ -79,4 +79,4 @@ The management of memory is outsourced, end to end. What I get back is a collabo
 
 > Memory is about more than efficiency. A collaborator who starts from zero every time can't really know you; a collaborator who remembers why you rejected a proposal will ask first the next time around.
 >
-> This isn't perfect — memory management itself is an open problem. But it beats "starting from scratch every time", by a lot.
+> This is far from settled — memory management itself is an open problem. But it beats "starting from scratch every time", by a lot.
