@@ -533,7 +533,8 @@ function initParticles() {
         const wave = 1 + 0.035 * Math.sin(a * 7 + this.phase * 3);
         const x = Math.cos(a) * this.rx * wave;
         const y = Math.sin(a) * this.ry * wave;
-        i === 0 ? ctx.moveTo(x, y) : ctx.lineTo(x, y);
+        if (i === 0) ctx.moveTo(x, y);
+        else ctx.lineTo(x, y);
       }
       ctx.closePath();
       ctx.fill();
