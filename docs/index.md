@@ -15,6 +15,8 @@ hero:
       link: /about
 ---
 
+<TechStack />
+
 <HomeBento />
 
 <Stats />

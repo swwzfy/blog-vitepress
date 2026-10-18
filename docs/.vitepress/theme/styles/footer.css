@@ -72,6 +72,30 @@
   line-height: 1.6;
 }
 
+.footer-nav {
+  display: flex;
+  align-items: center;
+  gap: 6px;
+  font-size: 13px;
+  margin: 0 0 14px;
+  flex-wrap: wrap;
+}
+
+.footer-nav a {
+  color: var(--vp-c-text-3);
+  text-decoration: none;
+  transition: color 0.2s ease;
+}
+
+.footer-nav a:hover {
+  color: var(--vp-c-brand-1);
+}
+
+.footer-nav-dot {
+  opacity: 0.3;
+  user-select: none;
+}
+
 .footer-meta {
   font-size: 13px;
   color: var(--vp-c-text-3);

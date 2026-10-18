@@ -403,6 +403,10 @@ watch(() => page.value.relativePath, () => {
         <div v-if="frontmatter.tags?.length" class="article-tags">
           <span v-for="tag in frontmatter.tags" :key="tag" class="tag">{{ tag }}</span>
         </div>
+        <div v-if="frontmatter.tldr" class="tldr-block">
+          <div class="tldr-label">{{ t('tldrLabel') }}</div>
+          <p class="tldr-text">{{ frontmatter.tldr }}</p>
+        </div>
       </div>
     </template>
 
@@ -482,6 +486,15 @@ watch(() => page.value.relativePath, () => {
           <div class="footer-main">
             <div class="footer-brand">Kiran's Blog</div>
             <p class="footer-desc">{{ t('footerDesc') }}</p>
+            <nav class="footer-nav" :aria-label="t('footerMore')">
+              <a :href="isEn ? '/en/tags' : '/tags'">{{ isEn ? 'Tags' : '标签' }}</a>
+              <span class="footer-nav-dot">/</span>
+              <a :href="isEn ? '/en/timeline' : '/timeline'">{{ isEn ? 'Timeline' : '时间线' }}</a>
+              <span class="footer-nav-dot">/</span>
+              <a :href="isEn ? '/en/shelf' : '/shelf'">{{ isEn ? 'Shelf' : '书影音' }}</a>
+              <span class="footer-nav-dot">/</span>
+              <a :href="isEn ? '/en/friends' : '/friends'">{{ isEn ? 'Friends' : '友链' }}</a>
+            </nav>
             <p class="footer-meta">
               © 2026 Kiran. {{ t('rights') }}<br />
               Powered by VitePress

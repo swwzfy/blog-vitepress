@@ -43,6 +43,9 @@ const dict = {
   },
   rights: { zh: '保留所有权利', en: 'All rights reserved.' },
   uptime: { zh: '已运行 {days} 天', en: '{days} days online' },
+  footerMore: { zh: '更多', en: 'More' },
+
+  tldrLabel: { zh: 'TL;DR', en: 'TL;DR' },
 
   // —— 首页 Bento 卡片 ——
   bentoTech: { zh: '技术', en: 'Tech' },
@@ -75,6 +78,9 @@ const dict = {
   cmdWander: { zh: '流浪星球', en: 'Wander the planets' },
   cmdVisitFriend: { zh: '去串个门', en: 'Visit a friend' },
   warpingTo: { zh: '正在飞往「{name}」—— {desc}', en: 'warping to {name} — {desc}' },
+
+  // —— 首页技术栈 ——
+  techStackLabel: { zh: '技术栈', en: 'Tech Stack' },
 
   // —— 首页统计条 ——
   statPosts: { zh: '篇文章', en: 'Posts' },
