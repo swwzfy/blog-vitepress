@@ -3,6 +3,7 @@ title: Adding a Live2D Mascot to a VitePress Blog
 date: 2026-08-18
 tags: [VitePress, Frontend]
 description: How I wired a Live2D model into this VitePress blog, plus the five traps I fell into — webpack split-bundle order, tap_body key naming, VitePress Layout slot limitations, and more.
+tldr: A complete record of adding a Live2D mascot to VitePress, with the five traps — bundle order, key naming, Layout slot limits — already stepped in for you.
 ---
 
 # Adding a Live2D Mascot to a VitePress Blog

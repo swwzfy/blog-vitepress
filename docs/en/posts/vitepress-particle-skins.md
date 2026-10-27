@@ -3,6 +3,7 @@ title: "Particle Skins: How My Blog Background Knows It's Raining Where You Are"
 date: 2026-10-06
 tags: [VitePress, Frontend]
 description: "The background particles first dressed by season, then followed the real-time weather, and finally geolocation moved onto my own server. The crashes taught more than the feature: a TypeError swallowed by requestIdleCallback, a static import that let one 404 kill every effect on the site, and a 502 that was not a bug."
+tldr: Particles that dress by season and follow your local weather — and the crashes that taught more than the feature, from a swallowed TypeError to a 404 taking down every effect.
 ---
 
 # Particle Skins: How My Blog Background Knows It's Raining Where You Are

@@ -3,6 +3,7 @@ title: "Python Beginner's Guide: Environment Setup & First Project"
 date: 2026-08-12
 tags: [Languages, Tools]
 description: "From installing the interpreter to running your first project. Compares uv, poetry, and pip. Covers Windows, macOS, and Linux. Every command is copy-paste ready."
+tldr: From installing Python to your first project — uv, poetry, and pip compared, three platforms covered, every command copy-paste ready.
 ---
 
 # Python Beginner's Guide: Environment Setup & First Project

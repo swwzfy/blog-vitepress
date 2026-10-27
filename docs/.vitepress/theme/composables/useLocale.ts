@@ -45,7 +45,7 @@ const dict = {
   uptime: { zh: '已运行 {days} 天', en: '{days} days online' },
   footerMore: { zh: '更多', en: 'More' },
 
-  tldrLabel: { zh: 'TL;DR', en: 'TL;DR' },
+  tldrLabel: { zh: '先说结论', en: 'TL;DR' },
 
   // —— 首页 Bento 卡片 ——
   bentoTech: { zh: '技术', en: 'Tech' },

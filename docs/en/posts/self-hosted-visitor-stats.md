@@ -3,6 +3,7 @@ title: "Self-Hosting Visitor Stats: Ditching Busuanzi with 200 Lines of Python a
 date: 2026-10-01
 tags: [Server Ops]
 description: The free stats service on my blog footer was half-dead, leaving a dead dash. I replaced it with a self-hosted counter built on the Python standard library and SQLite — zero dependencies, five pitfalls, each worth more than the feature.
+tldr: A self-hosted visitor counter on the Python standard library and SQLite — zero dependencies, and five deployment traps each worth more than the feature.
 ---
 
 # Self-Hosting Visitor Stats: Ditching Busuanzi with 200 Lines of Python and SQLite

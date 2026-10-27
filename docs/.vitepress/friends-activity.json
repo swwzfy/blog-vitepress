@@ -1,6 +1,13 @@
 {
-  "fetchedAt": "2026-10-18T08:43:10.319Z",
+  "fetchedAt": "2026-10-27T00:01:17.818Z",
   "items": [
+    {
+      "title": "2026随便说说",
+      "link": "https://leelaa.cn/pages/radios/2026随便说说.html",
+      "date": "Fri, 16 Oct 2026 17:45:34 GMT",
+      "friend": "Leelaa",
+      "avatar": "/friends/leelaa.webp"
+    },
     {
       "title": "重生之测试发版别找我，飞书群里自己发",
       "link": "https://leelaa.cn/p/afbCza.html",
@@ -19,13 +26,6 @@
       "title": "如何在飞牛中使用统一网关",
       "link": "https://leelaa.cn/p/adeofa.html",
       "date": "Mon, 20 Jul 2026 10:15:00 GMT",
-      "friend": "Leelaa",
-      "avatar": "/friends/leelaa.webp"
-    },
-    {
-      "title": "优化的本质：是可选，还是必选？",
-      "link": "https://leelaa.cn/p/aaFlga.html",
-      "date": "Mon, 29 Jun 2026 06:18:24 GMT",
       "friend": "Leelaa",
       "avatar": "/friends/leelaa.webp"
     }

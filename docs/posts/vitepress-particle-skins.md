@@ -3,6 +3,7 @@ title: "VitePress 换肤实录：博客背景怎么知道你那边在下雨"
 date: 2026-10-06
 tags: [VitePress, 前端]
 description: 背景粒子先按季节换装，再跟实时天气下雨飘雪，末了连定位都收进了自己的服务器。比特效更值钱的是翻车现场：被 requestIdleCallback 吞掉的 TypeError、一个 404 拖死全站特效的静态 import、回环 curl 502 的设计行为。
+tldr: 背景粒子先按季节换装、再跟访客那边的实时天气——比特效值钱的是翻车现场：被吞的 TypeError、连坐全站的 404、502 的设计行为。
 ---
 
 # VitePress 换肤实录：博客背景怎么知道你那边在下雨

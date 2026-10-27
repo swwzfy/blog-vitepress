@@ -3,6 +3,7 @@ title: "DeepSeek Harness: Installing the All-Plugins Agent Framework"
 date: 2026-08-14
 tags: [AI, Agent, Languages, Tools]
 description: "DeepSeek Harness is an open-source Agent runtime where every capability is a plugin. This guide covers Node.js setup and two ways to install the Agent (npx one-liner vs. source clone)."
+tldr: An install-and-first-run guide to DeepSeek's all-plugins Agent framework, from Node.js setup to two install paths and four run modes.
 ---
 
 # DeepSeek Harness: Installing the All-Plugins Agent Framework

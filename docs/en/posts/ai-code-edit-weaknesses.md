@@ -3,6 +3,7 @@ title: "The Weak Spots of AI Code Editing: One Fault Line, Three Wrong Fixes"
 date: 2026-10-03
 tags: [VitePress, Frontend, AI]
 description: "I had AI rebuild my archive page. Even after I pinpointed the bug to the horizontal line above 2026, it still fixed the wrong one. A full retrospective of two days of human-AI collaboration: five weaknesses, four countermeasures."
+tldr: One fault line, three wrong fixes — a two-day retrospective of AI code editing's weak spots, and four tactics for working around them.
 ---
 
 # The Weak Spots of AI Code Editing: One Fault Line, Three Wrong Fixes

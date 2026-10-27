@@ -3,6 +3,7 @@ title: VitePress 瘦身实录：一个 640KB 的 chunk 是怎么消失的
 date: 2026-10-05
 tags: [VitePress, 性能]
 description: 本来只想修爬虫眼里的「字数 0」，顺藤摸出一个 640KB 的巨型 chunk——全站文章的编译产物，只为拿几 KB 的 frontmatter。把元信息搬进构建期后，主 JS chunk 降到 48KB，dist 顺带瘦了半兆。
+tldr: 修「字数 0」顺藤摸出一个 640KB 的巨型 chunk——元信息搬进构建期后主 JS 降到 48KB，dist 顺带瘦了半兆。
 ---
 
 # VitePress 瘦身实录：一个 640KB 的 chunk 是怎么消失的

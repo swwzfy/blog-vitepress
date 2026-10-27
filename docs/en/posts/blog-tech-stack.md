@@ -3,6 +3,7 @@ title: How This Blog Is Built
 date: 2026-09-20
 tags: [VitePress, Frontend]
 description: A walkthrough of the tech stack, theme customization, i18n setup, why I built RSS from scratch, and the performance trade-offs behind every visual effect.
+tldr: Why VitePress, why the theme is inherited rather than forked, how i18n works, and why RSS is hand-rolled — every choice in one post.
 ---
 
 # How This Blog Is Built

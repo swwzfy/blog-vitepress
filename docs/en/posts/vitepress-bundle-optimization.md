@@ -3,6 +3,7 @@ title: How a 640KB Chunk Disappeared from My VitePress Blog
 date: 2026-10-05
 tags: [VitePress, Performance]
 description: A zero word count in prerendered HTML led me to a 640KB mega chunk — every post compiled into JS just to read a few KB of frontmatter. Moving metadata to build time cut the main JS bundle to 48KB and shaved half a megabyte off dist.
+tldr: Chasing a zero word count led to a 640KB mega chunk — moving metadata to build time cut the main JS to 48KB and slimmed dist by half a megabyte.
 ---
 
 # How a 640KB Chunk Disappeared from My VitePress Blog

@@ -3,6 +3,7 @@ title: Building a Personal Server from Scratch
 date: 2026-04-28
 tags: [Server Ops]
 description: From a bare CentOS box to a static blog plus a live stats backend — SSH hardening, BT Panel and Nginx reverse proxying, systemd, need-to-know permissions, and three real deployment failures.
+tldr: From a bare CentOS box to a live blog and stats service — SSH hardening, Nginx, systemd, and three real incidents worth more than the checklist.
 ---
 
 # Building a Personal Server from Scratch

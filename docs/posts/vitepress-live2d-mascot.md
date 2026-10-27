@@ -3,6 +3,7 @@ title: 在 VitePress 博客集成 Live2D 看板娘
 date: 2026-08-18
 tags: [VitePress, 前端]
 description: 给博客加只小宠物，记录从选型到上线的几个坑，包括 webpack 拆包加载顺序、tap_body 键名、VitePress Layout slot 限制。
+tldr: 给博客加只小宠物的完整记录，webpack 拆包顺序、tap_body 键名、Layout slot 限制这些坑都替你踩过了。
 ---
 
 # 在 VitePress 博客集成 Live2D 看板娘

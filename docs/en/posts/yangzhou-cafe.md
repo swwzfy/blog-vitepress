@@ -3,6 +3,7 @@ title: Yangzhou Coffee Shop Work Guide
 date: 2026-06-22
 tags: [Life]
 description: Tested multiple coffee shops in Yangzhou for WiFi, outlets, noise, and coffee quality. A location guide for remote workers.
+tldr: Coffee shops in Yangzhou tested for WiFi, outlets, noise, and coffee — pick your remote-work spot by needs and budget.
 ---
 
 # Yangzhou Coffee Shop Work Guide

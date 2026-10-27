@@ -3,6 +3,7 @@ title: OpenClaw 与 Hermes：把 AI Agent 的两种解法拆开看
 date: 2026-07-16
 tags: [AI, Agent]
 description: 一个往外接，一个向内省——两种 AI Agent 路线在不同维度上的取舍。
+tldr: 一个往外接、一个向内省，十个维度拆开两种 AI Agent 路线的取舍，看完知道自己该选哪个。
 ---
 
 # OpenClaw 与 Hermes：把 AI Agent 的两种解法拆开看

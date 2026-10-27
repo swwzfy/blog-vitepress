@@ -3,6 +3,7 @@ title: A Visit to Hanshan Temple in Suzhou
 date: 2026-08-18
 tags: [Life]
 description: Half a year of writing code tired out my eyes and my mind. I took a weekend drive to see Hanshan Temple in Suzhou.
+tldr: Half a year of coding called for a weekend drive — Fengqiao bridge, temple halls, and a pagoda, a short trip that rested both eyes and mind.
 ---
 
 # A Visit to Hanshan Temple in Suzhou

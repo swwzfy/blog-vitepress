@@ -3,6 +3,7 @@ title: Why I Let AI Manage My Memory
 date: 2026-05-18
 tags: [AI, Knowledge Management]
 description: Sessions end and context gets wiped. After four months of letting AI manage its own memory, what makes it remember is not a vector database but a few dumb disciplines — one fact per file, index first, and the courage to delete.
+tldr: Four months of letting AI manage its own memory — what makes it remember is not a vector database but three dumb disciplines — one fact per file, index first, dare to delete.
 ---
 
 # Why I Let AI Manage My Memory

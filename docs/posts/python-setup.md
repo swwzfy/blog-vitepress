@@ -3,6 +3,7 @@ title: Python 新手入门：环境搭建与第一个项目
 date: 2026-08-12
 tags: [编程语言, 工具]
 description: 从安装解释器到跑起第一个项目，uv/poetry/pip 三个包管理器对照，Windows/macOS/Linux 三平台覆盖。每个命令都能复制粘贴直接跑。
+tldr: 从装解释器到跑起第一个项目，uv/poetry/pip 三个包管理器对照，三大平台覆盖，每条命令都能复制粘贴直接跑。
 ---
 
 # Python 新手入门：环境搭建与第一个项目

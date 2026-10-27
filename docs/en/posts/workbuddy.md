@@ -3,6 +3,7 @@ title: "WorkBuddy: Turning AI from a Chat Box into a Workbench"
 date: 2026-08-27
 tags: [AI, Tools, Agent]
 description: After trying plenty of AI tools, what I really lacked wasn't a chattier model — it was an assistant that actually does the work. WorkBuddy feels like it wires the filesystem, the terminal, the browser, and multimodal generation into a single conversation.
+tldr: What I lacked wasn't a chattier model but an assistant that does the work — WorkBuddy wires files, shell, browser, and image generation into one conversation.
 ---
 
 # WorkBuddy: Turning AI from a Chat Box into a Workbench

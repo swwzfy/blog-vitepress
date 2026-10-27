@@ -3,6 +3,7 @@ title: DeepSeek Harness：一切皆插件的 Agent 框架怎么装
 date: 2026-08-14
 tags: [AI, Agent, 编程语言, 工具]
 description: DeepSeek Harness 是 DeepSeek 开源的 Agent 运行框架，核心思路是「一切皆插件」。本文覆盖 Node.js 安装与两种 Agent 安装方式（npx 一键启动 + 源码克隆）。
+tldr: DeepSeek 开源的「一切皆插件」Agent 框架，从装 Node 到两种安装方式再到四种运行模式的上手记录。
 ---
 
 # DeepSeek Harness：一切皆插件的 Agent 框架怎么装
