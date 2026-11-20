@@ -29,3 +29,6 @@ server/statstest-tmp/
 # Live2D 自托管脚本：用户全局 gitignore 有 *.min.js 规则，会把这两个必备的
 # vendor 脚本静默排除（缺了看板娘加载不出来），项目内反选压过全局规则
 !docs/public/live2d/*.min.js
+
+# qoder 工具的积分缓存，非博客代码
+.qoder-credits/
