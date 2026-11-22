@@ -12,7 +12,7 @@ aside: false
 
 ## 申请友链
 
-先加上我的信息，再发邮件到 <a href="mailto:swwzfy@163.com">swwzfy@163.com</a> 告诉我你的站点，看到就会回访。
+先加上我的信息，再通过关于页的联系方式告诉我你的站点（公众号留言，或解开那个小彩蛋发邮件），看到就会回访。
 
 <div class="friend-apply">
   <div class="friend-info-row"><span class="friend-key">名称</span><span>Kiran's Blog</span></div>

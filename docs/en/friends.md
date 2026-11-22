@@ -12,7 +12,7 @@ People worth following.
 
 ## Apply for a Link Exchange
 
-Add my site first, then email <a href="mailto:swwzfy@163.com">swwzfy@163.com</a> with yours — I'll visit back as soon as I see it.
+Add my site first, then reach me via the About page — leave a message on the WeChat official account, or crack that little easter egg hiding my email. I'll visit back as soon as I see it.
 
 <div class="friend-apply">
   <div class="friend-info-row"><span class="friend-key">Name</span><span>Kiran's Blog</span></div>

@@ -55,11 +55,10 @@ description: "关于 Kiran：独立开发者与写作者，和 AI 副驾 JOSS �
 <div class="about-contact">
   <div class="about-card">
     <h3 class="about-card-title">联系方式</h3>
-    <p class="about-card-desc">邮件比较稳，GitHub 上能看到我全部的折腾记录。</p>
+    <p class="about-card-desc">GitHub 上能看到我全部的折腾记录。</p>
     <div class="about-links">
       <a class="about-link" href="https://github.com/swwzfy" target="_blank" rel="noopener">🐙 GitHub</a>
       <a class="about-link" href="https://www.zhihu.com/people/zi-fei-yu-53-37" target="_blank" rel="noopener">💭 知乎</a>
-      <a class="about-link" href="mailto:swwzfy@163.com">📧 Email</a>
     </div>
   </div>
   <div class="about-card">
@@ -70,3 +69,25 @@ description: "关于 Kiran：独立开发者与写作者，和 AI 副驾 JOSS �
     </div>
   </div>
 </div>
+
+## 联系我
+
+一个小彩蛋
+
+````js
+const Mine = class {
+  constructor() {
+    this.name = atob('S2lyYW4=')
+    this.email = atob('c3d3emZ5QDE2My5jb20=')
+    this.print()
+  }
+  print() {
+    Object.keys(this)
+      .filter((key) => typeof this[key] !== 'function')
+      .forEach((key) => {
+        console.log(`${key}: ${this[key]}`)
+      })
+  }
+}
+new Mine()
+````

@@ -50,20 +50,13 @@ function draftExcludes(): string[] {
 }
 
 // 社交链接：RSS 入口必须按语种分开 —— 英文站此前一律指向中文 /feed.rss，
-// 而 /en/feed.rss 早就由 buildRss 生成好了。github / email 两种语言一致，
+// 而 /en/feed.rss 早就由 buildRss 生成好了。github 两种语言一致，
 // 用工厂函数避免两处重复维护。
 // 注意放在 locale.themeConfig 里而不是顶层：顶层会同时作用于两个语种。
 function makeSocialLinks(rssHref: string) {
   return [
     { icon: 'rss', link: rssHref, ariaLabel: 'RSS Feed' },
-    { icon: 'github', link: 'https://github.com/swwzfy' },
-    {
-      icon: {
-        svg: '<svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect width="20" height="16" x="2" y="4" rx="2" fill="none"/><path d="m22 7-8.97 5.7a1.94 1.94 0 0 1-2.06 0L2 7" fill="none"/></svg>'
-      },
-      link: 'mailto:swwzfy@163.com',
-      ariaLabel: 'Email'
-    }
+    { icon: 'github', link: 'https://github.com/swwzfy' }
   ]
 }
 

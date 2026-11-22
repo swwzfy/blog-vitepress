@@ -150,8 +150,6 @@ function askAnswer() {
               <a :href="isEn ? '/en/feed.rss' : '/feed.rss'" target="_blank" rel="noopener">RSS</a>
               <span class="bento-dot">·</span>
               <a href="https://github.com/swwzfy" target="_blank" rel="noopener">GitHub</a>
-              <span class="bento-dot">·</span>
-              <a href="mailto:swwzfy@163.com">Email</a>
             </div>
           </div>
         </div>

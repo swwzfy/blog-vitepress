@@ -65,8 +65,8 @@ const dict = {
   },
   bentoSubscribe: { zh: '订阅本站', en: 'Subscribe' },
   bentoDescSubscribe: {
-    zh: 'RSS 全文输出，也欢迎在 GitHub、邮箱找到我。',
-    en: 'Full-text RSS feed, or find me on GitHub and by email.'
+    zh: 'RSS 全文输出，也欢迎在 GitHub 找到我。',
+    en: 'Full-text RSS feed, or find me on GitHub.'
   },
   bentoCommands: { zh: '快捷指令', en: 'Quick Commands' },
   bentoDescCommands: {

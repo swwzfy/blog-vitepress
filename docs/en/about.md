@@ -55,11 +55,10 @@ I don't chase trends; I write about what I've actually used and thought about. I
 <div class="about-contact">
   <div class="about-card">
     <h3 class="about-card-title">Contact</h3>
-    <p class="about-card-desc">Email is the reliable route; GitHub has all of my work-in-progress.</p>
+    <p class="about-card-desc">GitHub has all of my work-in-progress.</p>
     <div class="about-links">
       <a class="about-link" href="https://github.com/swwzfy" target="_blank" rel="noopener">🐙 GitHub</a>
       <a class="about-link" href="https://www.zhihu.com/people/zi-fei-yu-53-37" target="_blank" rel="noopener">💭 Zhihu</a>
-      <a class="about-link" href="mailto:swwzfy@163.com">📧 Email</a>
     </div>
   </div>
   <div class="about-card">
@@ -70,3 +69,25 @@ I don't chase trends; I write about what I've actually used and thought about. I
     </div>
   </div>
 </div>
+
+## Contact me
+
+A little easter egg.
+
+````js
+const Mine = class {
+  constructor() {
+    this.name = atob('S2lyYW4=')
+    this.email = atob('c3d3emZ5QDE2My5jb20=')
+    this.print()
+  }
+  print() {
+    Object.keys(this)
+      .filter((key) => typeof this[key] !== 'function')
+      .forEach((key) => {
+        console.log(`${key}: ${this[key]}`)
+      })
+  }
+}
+new Mine()
+````
